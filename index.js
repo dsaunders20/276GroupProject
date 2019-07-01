@@ -16,7 +16,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
-app.get('/', (req, res) => res.render('pages/index'))
+
+app.get('/', (req, res) => res.render('pages/login'))
+app.get('/login', (req, res) => res.render('pages/login'))
+app.get('/signup', (req, res) => res.render('pages/signup'))
 
 // when a user registers for the first time
 app.post('/signup', function(req, res){
@@ -88,30 +91,12 @@ app.post('/login', function(req, res, next){
       }
       if (userType === 'user')
       {
-        res.redirect('/');
+        res.render('pages/openingPage');
       }
     }
   });
 });
 
-  // var query2 = "SELECT * from users where username = ($1)";
-
-  // pool.query(query, [req_username], (error, result) => {
-  //   //console.log(result);
-  //   if (error){
-  //     res.redirect('/');
-  //   }
-  //     if (result.rows[0].username == req_username && result.rows[0].password == req_password)
-  //     {
-  //       res.redirect('/');
-  //     }
-  //     else
-  //     {
-  //     res.redirect('/failedLogin')
-  //     }
-  // }); 
-  //res.redirect('/');
-//});
 
 app.get('/failedLogin', (req, res) => res.render('pages/failedLogin'))
 
