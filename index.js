@@ -21,26 +21,10 @@ app.get('/', (req, res) => res.render('pages/index'))
 // when a user registers for the first time
 app.post('/signup', function(req, res){
   //console.log(req.body);
-  var username = req.body.username;
-  var password = req.body.password;
-
-  // need to check if the username already exists in the database, reject 
-
-  var query = "INSERT INTO users (username, password) VALUES ($1, $2)";
-
-  pool.query(query, [username, password], (error, result) => {
-      if (error) {throw error}
-      //console.log(result);
-  }); 
-  res.redirect('/');
-});
-
-// user trying to login
-app.post('/login', function(req, res, next){
-  console.log(req.body.username);
   var req_username = req.body.username;
   var req_password = req.body.password;
 
+  // need to check if the username already exists in the database, reject 
   var query1 = "SELECT username from users";
 
   pool.query(query1, (error, result) => {
@@ -48,19 +32,64 @@ app.post('/login', function(req, res, next){
     for( var i = 0; i < result.rows.length; i++) {
       if (result.rows[i].username === req_username) 
       {
+          // username is taken
           found = true;
           break;
       }
     }
+    if (found === true)
+    {
+      res.render('pages/failedSignUp')
+    }
+    if (found === false)
+    {
+      var query = "INSERT INTO users (username, password) VALUES ($1, $2)";
+
+      pool.query(query, [req_username, req_password], (error, result) => {
+          if (error) {throw error}
+          //console.log(result);
+          res.render('pages/successfulSignup');
+      }); 
+    }
+  })
+});
+
+// user trying to login
+app.post('/login', function(req, res, next){
+  //console.log(req.body.username);
+  var req_username = req.body.username;
+  var req_password = req.body.password;
+
+  var query1 = "SELECT username, password, type from users";
+
+  pool.query(query1, (error, result) => {
+    var found = false;
+    for( var i = 0; i < result.rows.length; i++) {
+      if (result.rows[i].username === req_username && result.rows[i].password === req_password) 
+      {
+          // valid account is found
+          found = true;
+          var userType = result.rows[i].type;
+          break;
+      }
+    }
+    // account was not found
     if (found === false)
     {
     res.redirect('/failedLogin');
     }
+    // determine whether account is user or admin
     if (found === true)
     {
-      // need to include a query here to find the username and match the passwords
-      // the query2 below may help
-      res.redirect('/');
+      if (userType === 'admin')
+      {
+        var results = { 'results': (result.rows[0].username) ? result.rows : [] };
+        res.render('pages/adminPage', results);
+      }
+      if (userType === 'user')
+      {
+        res.redirect('/');
+      }
     }
   });
 });
@@ -85,7 +114,6 @@ app.post('/login', function(req, res, next){
 //});
 
 app.get('/failedLogin', (req, res) => res.render('pages/failedLogin'))
-
 
 
 app.use(function(error, req, res, next) {
