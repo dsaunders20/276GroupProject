@@ -5,14 +5,14 @@ const PORT = process.env.PORT || 5000
 const app = express()
 
 const { Pool } = require('pg');
-var pool = new Pool({
-  host: 'localhost',
-  database: 'postgres'
-});
+// var pool = new Pool({
+//   host: 'localhost',
+//   database: 'postgres'
+// });
 
-//const pool = new Pool({
-//  connectionString: process.env.DATABASE_URL
-//});
+const pool = new Pool({
+ connectionString: process.env.DATABASE_URL
+});
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
@@ -69,8 +69,8 @@ app.post('/login', function(req, res, next){
   var req_username = req.body.username;
   var req_password = req.body.password;
 
-//  var query1 = "SELECT username, password, type from users";
-  var query1 = "SELECT username, password from users";
+var query1 = "SELECT username, password, type from users";
+  // var query1 = "SELECT username, password from users";
   var player;
   pool.query(query1, (error, result) => {
     var found = false;
@@ -80,7 +80,7 @@ app.post('/login', function(req, res, next){
           // valid account is found
           found = true;
           player = result.rows[i];
-//          var userType = result.rows[i].type;
+         var userType = result.rows[i].type;
           break;
       }
     }
@@ -92,16 +92,17 @@ app.post('/login', function(req, res, next){
     // determine whether account is user or admin
     if (found === true)
     {
-//      if (userType === 'admin')
-//      {
-//        var results = { 'results': (result.rows[0].username) ? result.rows : [] };
-//        res.render('pages/adminPage', results);
-//      }
-//      if (userType === 'user')
-//      {
-//        res.render('pages/openingPage');
-//      }
-        res.render('pages/gamePage',{player});
+     if (userType === 'admin')
+     {
+       var results = { 'results': (result.rows[0].username) ? result.rows : [] };
+       res.render('pages/adminPage', results);
+     }
+     if (userType === 'user')
+     {
+       res.render('pages/gamePage',{player});
+       //res.render('pages/openingPage');
+     }
+        //res.render('pages/gamePage',{player});
     }
   });
 });
