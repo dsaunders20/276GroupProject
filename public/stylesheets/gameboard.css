@@ -1,0 +1,277 @@
+body {
+	background: #FFFFFF;
+	margin: 0px;
+	min-width: 1075px;
+}
+
+td {
+	font-size: 12px;
+	font-family: arial, sans-serif;
+	border: 1px solid black;
+	text-align: center;
+}
+
+#board {
+    /* display: none; */
+    border: 2px solid black;
+    border-spacing: 3px;
+    margin: 2em 2em 2em 2em;
+    /* float: left; */
+    width: 95%;
+}
+
+
+#enlarge-wrap {
+	border: none;
+	z-index: 0;
+}
+
+.cell {
+	position: relative;
+	top: 0px;
+	left: 0px;
+	padding: 0px;
+	vertical-align: bottom;
+	background-repeat: no-repeat;
+	background-size: auto 40px;
+}
+
+.board-center {
+	width: 675px;
+	border: none;
+	vertical-align: bottom;
+	background-repeat: no-repeat;
+	background-size: auto 40px;
+}
+
+.board-corner {
+	width: 102px;
+	height: 102px;
+}
+
+.board-top {
+	width: 72px;
+	height: 102px;
+}
+
+.board-bottom {
+	width: 72px;
+	height: 102px;
+}
+
+.board-left {
+	width: 102px;
+	height: 72px;
+}
+
+.board-right {
+	width: 102px;
+	height: 72px;
+}
+
+.enlarge {
+	width: 150px;
+	height: 200px;
+	display: none;
+	background-color: white;
+	border: 2px solid black;
+	text-align: center;
+	font-size: 12px;
+	font-family: arial, sans-serif;
+	position: fixed;
+	z-index: 15;
+}
+
+.enlarge-color {
+	background: white;
+	width: 100%;
+	height: 40px;
+}
+
+.enlarge-name {
+	font-weight: bold;
+	font-size: 20px;
+	background-color: white;
+	height: 45px;
+}
+
+.enlarge-price {
+	background-color: white;
+	vertical-align: bottom;
+	height: 25px;
+}
+
+.enlarge-token {
+	height: 45px;
+	width: 150px;
+}
+
+.moneybarcell {
+	width: 83px;
+	min-width: 83px;
+}
+
+.moneybararrowcell {
+	background: white;
+	width: 30px;
+	border: none;
+	text-align: right;
+	padding: 0px;
+}
+
+.money-bar-arrow {
+	height: 30px;
+	width: 30px;
+}
+.propertycellcheckbox {
+	width: 20px;
+	height: 20px;
+	border: none;
+	vertical-align: middle;
+}
+
+.propertycellcolor {
+	padding: 0px;
+	width: 20px;
+	height: 20px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: white;
+}
+
+.propertycellname {
+	height: 20px;
+	width: 250px;
+	border: none;
+	cursor: default;
+	text-align: left;
+	vertical-align: middle;
+}
+
+.propertycelldeed {
+	width: 18px;
+	height: 20px;
+	border: 1px solid grey;
+	cursor: pointer;
+	display: none;
+}
+
+.statscellcolor {
+	padding: 0px;
+	width: 22px;
+	height: 20px;
+	border: none;
+}
+
+.statscellname {
+	height: 20px;
+	border: none;
+	cursor: default;
+	text-align: left;
+	min-width: 172px;
+}
+
+.statsplayername {
+	font-weight: bold;
+	font-size: 24px;
+}
+
+.statscell {
+	border: 2px solid black;
+	padding: 8px;
+	vertical-align: top;
+	width: 202px;
+	min-width: 115px;
+}
+
+.trade-cell {
+	border: none;
+	border-radius: 3px;
+	width: 308px;
+	height: 26px;
+	vertical-align: middle;
+}
+
+.cell-anchor {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	bottom: 0px;
+	left: 0px;
+}
+
+.cell-name {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	text-align: center;
+	width: 100%;
+}
+
+.cell-position-holder {
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	position: relative;
+}
+
+.cell-position {
+	height: 12px;
+	width: 12px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.cell-owner {
+	background-size: cover;
+	display: none;
+	position: absolute;
+}
+
+.board-top .cell-owner {
+	height: 15px;
+	left: 0px;
+	top: -25px;
+	width: 72px;
+
+}
+
+.board-bottom .cell-owner {
+	bottom: -25px;
+	height: 15px;
+	left: 0px;
+	width: 72px;
+}
+
+.board-left .cell-owner {
+	height: 68px;
+	left: -25px;
+	top: 0px;
+	width: 15px;
+
+}
+
+.board-right .cell-owner {
+	height: 68px;
+	right: -25px;
+	top: 0px;
+	width: 15px;
+
+}
+
+
+#player_wrapper{
+  width: 100%;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+
+.player_status_wrapper{
+    width:25%;
+}
+
+.player_status{
+   width: 100%;
+}

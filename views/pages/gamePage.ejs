@@ -1,0 +1,171 @@
+<html>
+
+<head>
+    <title>Monopoly Vancouver</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+</head>
+
+<body>
+    <secion class="player_info">
+        <table id="player_wrapper">
+            <tr>
+                <td class="player_status_wrapper">
+                    <table class="player_status">
+
+                        <!-- First row -->
+
+                        <tr>
+                            <td><b>Player:</b>&nbsp;
+                                <%= player.username %>
+                            </td>
+                            <td colspan="3" style="background-color:blue;"></td>
+
+                        </tr>
+
+                        <!-- Second row -->
+
+                        <tr>
+                            <td rowspan="4"><img src="/images/1character.png"></td>
+                            <td colspan="3"><b>Money:</b>&nbsp; 345$</td>
+                        </tr>
+
+                        <!-- Third row -->
+
+                        <tr>
+                            <td colspan="3"><b>Porperties:</b>&nbsp; 2</td>
+                            <td></td>
+                        </tr>
+
+                        <!-- Fourth row -->
+
+                        <tr>
+                            <td colspan="3"><b>Estate Value:</b>&nbsp; 1248$</td>
+                        </tr>
+
+                    </table>
+
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </secion>
+
+    <table id="board">
+        <tr>
+            <td class="cell board-corner" id="cell20"></td>
+            <td class="cell board-top" id="cell21"></td>
+            <td class="cell board-top" id="cell22"></td>
+            <td class="cell board-top" id="cell23"></td>
+            <td class="cell board-top" id="cell24"></td>
+            <td class="cell board-top" id="cell25"></td>
+            <td class="cell board-top" id="cell26"></td>
+            <td class="cell board-top" id="cell27"></td>
+            <td class="cell board-top" id="cell28"></td>
+            <td class="cell board-top" id="cell29"></td>
+            <td class="cell board-corner" id="cell30"></td>
+        </tr>
+        <tr>
+            <td class="cell board-left" id="cell19"></td>
+            <td colspan="9" class="board-center"></td>
+            <td class="cell board-right" id="cell31"></td>
+        </tr>
+        <tr>
+            <td class="cell board-left" id="cell18"></td>
+            <td colspan="9" class="board-center"></td>
+            <td class="cell board-right" id="cell32"></td>
+        </tr>
+        <tr>
+            <td class="cell board-left" id="cell17"></td>
+            <td colspan="9" class="board-center"></td>
+            <td class="cell board-right" id="cell33"></td>
+        </tr>
+        <tr>
+            <td class="cell board-left" id="cell16"></td>
+            <td colspan="9" class="board-center"></td>
+            <td class="cell board-right" id="cell34"></td>
+        </tr>
+        <tr>
+            <td class="cell board-left" id="cell15"></td>
+            <td colspan="9" class="board-center"></td>
+            <td class="cell board-right" id="cell35"></td>
+        </tr>
+        <tr>
+            <td class="cell board-left" id="cell14"></td>
+            <td colspan="5" class="board-center"></td>
+            <td style="border:none;" rowspan="4" colspan="4">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <img src="images/f0.png" class="dice" id="d0" class="rounded" alt="...">
+                                <img src="images/f0.png" class="dice" id="d1" class="rounded" alt="...">
+                            </div>
+                        </div>
+                        <div class="col">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center py-2">
+                                <button type="button" id="throw" class="btn-primary" onclick="throwDice()">Throw!</button>
+                            </div>
+                        </div>
+                        <div class="col">
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="cell board-right" id="cell36"></td>
+        </tr>
+        <tr>
+            <td class="cell board-left" id="cell13"></td>
+            <td colspan="9" class="board-center"></td>
+            <td class="cell board-right" id="cell37"></td>
+        </tr>
+        <tr>
+            <td class="cell board-left" id="cell12"></td>
+            <td colspan="9" class="board-center"></td>
+            <td class="cell board-right" id="cell38"></td>
+        </tr>
+        <tr>
+            <td class="cell board-left" id="cell11"></td>
+            <td colspan="9" class="board-center">
+                <div id="jail"></div>
+            </td>
+            <td class="cell board-right" id="cell39"></td>
+        </tr>
+        <tr>
+            <td class="cell board-corner" id="cell10"></td>
+            <td class="cell board-bottom" id="cell9"></td>
+            <td class="cell board-bottom" id="cell8"></td>
+            <td class="cell board-bottom" id="cell7"></td>
+            <td class="cell board-bottom" id="cell6"></td>
+            <td class="cell board-bottom" id="cell5"></td>
+            <td class="cell board-bottom" id="cell4"></td>
+            <td class="cell board-bottom" id="cell3"></td>
+            <td class="cell board-bottom" id="cell2"></td>
+            <td class="cell board-bottom" id="cell1"></td>
+            <td class="cell board-corner" id="cell0"></td>
+        </tr>
+    </table>
+
+</body>
+
+<footer>
+    <link rel="stylesheet" href="/stylesheets/dice.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="/js/dice.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/js/game_logics.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/gameboard.css" />
+    
+</footer>
+
+</html>

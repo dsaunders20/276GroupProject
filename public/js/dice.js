@@ -18,13 +18,23 @@ var doubleCount = 0
 var double = 0
 
 // Animate the dice when user throws them
+//var throw_obj = document.getElementById("throw");
+//var dice = document.getElementsByClassName("dice");
+//throw_obj.onclick = function(){
+//    for(var i=0; i<dice.length; i++){
+//        dice[i].classList.add('shake');
+////        setTimeout(function() {
+////            dice[i].classList.remove('shake')
+////        }, 1800)    
+//    } 
+//}
+
 $("#throw").click(function() {
     $(".dice").addClass('shake')
     setTimeout(function() {
         $(".dice").removeClass('shake')
     }, 1800)
 })
-
 
 async function throwDice() {
     // Disable the button so user can't keep pressing it
