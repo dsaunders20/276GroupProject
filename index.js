@@ -5,11 +5,14 @@ const PORT = process.env.PORT || 5000
 const app = express()
 
 const { Pool } = require('pg');
-const pool = new Pool({
-
-  connectionString: process.env.DATABASE_URL
-
+var pool = new Pool({
+  host: 'localhost',
+  database: 'postgres'
 });
+
+//const pool = new Pool({
+//  connectionString: process.env.DATABASE_URL
+//});
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
@@ -32,13 +35,16 @@ app.post('/signup', function(req, res){
 
   pool.query(query1, (error, result) => {
     var found = false;
-    for( var i = 0; i < result.rows.length; i++) {
-      if (result.rows[i].username === req_username) 
-      {
-          // username is taken
-          found = true;
-          break;
-      }
+    
+    if(result != null){
+        for( var i = 0; i < result.rows.length; i++) {
+          if (result.rows[i].username === req_username) 
+          {
+              // username is taken
+              found = true;
+              break;
+          }
+        }
     }
     if (found === true)
     {
@@ -63,8 +69,9 @@ app.post('/login', function(req, res, next){
   var req_username = req.body.username;
   var req_password = req.body.password;
 
-  var query1 = "SELECT username, password, type from users";
-
+//  var query1 = "SELECT username, password, type from users";
+  var query1 = "SELECT username, password from users";
+  var player;
   pool.query(query1, (error, result) => {
     var found = false;
     for( var i = 0; i < result.rows.length; i++) {
@@ -72,7 +79,8 @@ app.post('/login', function(req, res, next){
       {
           // valid account is found
           found = true;
-          var userType = result.rows[i].type;
+          player = result.rows[i];
+//          var userType = result.rows[i].type;
           break;
       }
     }
@@ -84,15 +92,16 @@ app.post('/login', function(req, res, next){
     // determine whether account is user or admin
     if (found === true)
     {
-      if (userType === 'admin')
-      {
-        var results = { 'results': (result.rows[0].username) ? result.rows : [] };
-        res.render('pages/adminPage', results);
-      }
-      if (userType === 'user')
-      {
-        res.render('pages/openingPage');
-      }
+//      if (userType === 'admin')
+//      {
+//        var results = { 'results': (result.rows[0].username) ? result.rows : [] };
+//        res.render('pages/adminPage', results);
+//      }
+//      if (userType === 'user')
+//      {
+//        res.render('pages/openingPage');
+//      }
+        res.render('pages/gamePage',{player});
     }
   });
 });
