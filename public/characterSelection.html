@@ -12,16 +12,24 @@
               padding: 30px;
           }
           h2{
-              Margin-left: 60px;
+             position: absolute;
+            left: 45%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%)
               
           }
-          body{
+          table{
                 position: absolute;
         top: 40%;
         left: 45%;
         margin-right: -50%;
         transform: translate(-50%, -50%) }
+        
+          #ButtonTd{
+              position:absolute;
+               right:30%
           }
+          
        
            
       </style>
@@ -33,6 +41,7 @@
 
 <body>
     <h2>Character Select</h2>
+
     <div class="Characters">
         <table id="CharTable">
         <tr id="FRow">
@@ -59,51 +68,67 @@
             <img  id = "C6" src="images/6character.png" alt="Character6" style="width:100px;height:100px;">
             </Td>
         </tr>
+        <tr>
+            <td id="ButtonTd" colspan="2"><Button id="StartButton">Start Game</Button></td>
+            </tr>
     </table>
     
     
     
     </div>
+
     
     
 </body>
 <script>
-    
+var NumberOfCharacterChosen=0;
+document.getElementById("StartButton").onclick = function(e){
+    if(NumberOfCharacterChosen >1){
+        console.log("Starting the Game now");
+    }
+}
 
 document.getElementById("C1").onclick = function(e) {
-    e.target.style.transition='0.8s';
+    e.target.style.transition='0.3s';
    e.target.style.opacity = 0;
   e.target.style.visibility = 'hidden';
+    NumberOfCharacterChosen++;
     console.log("C1");
+
 }
 document.getElementById("C2").onclick = function(e) {
-  e.target.style.transition='0.8s';
+  e.target.style.transition='0.3s';
   e.target.style.opacity = 0;
   e.target.style.visibility = 'hidden';
+    NumberOfCharacterChosen++;
      console.log("C2");
 }
 document.getElementById("C3").onclick = function(e) {
-      e.target.style.transition='0.8s';
+      e.target.style.transition='0.3s';
    e.target.style.opacity = 0;
   e.target.style.visibility = 'hidden';
+        NumberOfCharacterChosen++;
      console.log("C3");
 }
 document.getElementById("C4").onclick = function(e) {
-      e.target.style.transition='0.8s';
+      e.target.style.transition='0.3s';
    e.target.style.opacity = 0;
   e.target.style.visibility = 'hidden';
+        NumberOfCharacterChosen++;
      console.log("C4");
 }
  document.getElementById("C5").onclick = function(e) {
-       e.target.style.transition='0.8s';
+       e.target.style.transition='0.3s';
    e.target.style.opacity = 0;
   e.target.style.visibility = 'hidden';
+         NumberOfCharacterChosen++;
       console.log("C5");
 }
  document.getElementById("C6").onclick = function(e) {
-       e.target.style.transition='0.8s';
+       e.target.style.transition='0.3s';
    e.target.style.opacity = 0;
   e.target.style.visibility = 'hidden';
+         NumberOfCharacterChosen++;
       console.log("C6");
 }   
 </script>
