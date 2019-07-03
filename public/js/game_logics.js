@@ -122,7 +122,12 @@ function set_up_game_board(){
 		document.getElementById("enlarge" + i + "color").style.backgroundColor = s.color;
 		document.getElementById("enlarge" + i + "name").textContent = s.name;
 		document.getElementById("enlarge" + i + "price").textContent = s.pricetext;
-	}
+    }
+    
+    // add character image to first square on the board
+    var img = '<img style="width: 25%; height: auto; padding-top: 10px;" src="/images/1character.png">';
+    document.getElementById('cell0positionholder').innerHTML = img;
+
     
     // Create enlarge card
 	var drag, dragX, dragY, dragObj, dragTop, dragLeft;
