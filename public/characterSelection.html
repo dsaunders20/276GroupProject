@@ -86,46 +86,56 @@ document.getElementById("StartButton").onclick = function(e){
     if(NumberOfCharacterChosen >1){
         console.log("Starting the Game now");
     }
+    else{
+        alert("Require At Least 2 Characters ")
+    }
 }
 
 document.getElementById("C1").onclick = function(e) {
+   e.target.onclick=null;
     e.target.style.transition='0.3s';
    e.target.style.opacity = 0;
   e.target.style.visibility = 'hidden';
+   
     NumberOfCharacterChosen++;
     console.log("C1");
 
 }
 document.getElementById("C2").onclick = function(e) {
-  e.target.style.transition='0.3s';
+    e.target.onclick=null;
+  e.target.style.transition='0.8s';
   e.target.style.opacity = 0;
   e.target.style.visibility = 'hidden';
     NumberOfCharacterChosen++;
      console.log("C2");
 }
 document.getElementById("C3").onclick = function(e) {
-      e.target.style.transition='0.3s';
+    e.target.onclick=null;
+      e.target.style.transition='0.8s';
    e.target.style.opacity = 0;
   e.target.style.visibility = 'hidden';
         NumberOfCharacterChosen++;
      console.log("C3");
 }
 document.getElementById("C4").onclick = function(e) {
-      e.target.style.transition='0.3s';
+    e.target.onclick=null;
+      e.target.style.transition='0.8s';
    e.target.style.opacity = 0;
   e.target.style.visibility = 'hidden';
         NumberOfCharacterChosen++;
      console.log("C4");
 }
  document.getElementById("C5").onclick = function(e) {
-       e.target.style.transition='0.3s';
+      e.target.onclick=null;
+       e.target.style.transition='0.8s';
    e.target.style.opacity = 0;
   e.target.style.visibility = 'hidden';
          NumberOfCharacterChosen++;
       console.log("C5");
 }
  document.getElementById("C6").onclick = function(e) {
-       e.target.style.transition='0.3s';
+      e.target.onclick=null;
+       e.target.style.transition='0.8s';
    e.target.style.opacity = 0;
   e.target.style.visibility = 'hidden';
          NumberOfCharacterChosen++;
