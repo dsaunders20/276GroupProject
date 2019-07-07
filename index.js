@@ -34,6 +34,7 @@ app.post('/signup', function(req, res){
   var query1 = "SELECT username from users";
 
   pool.query(query1, (error, result) => {
+    if (error) {throw error}
     var found = false;
     
     if(result != null){
@@ -73,6 +74,7 @@ var query1 = "SELECT username, password, type from users";
   // var query1 = "SELECT username, password from users";
   var player;
   pool.query(query1, (error, result) => {
+    if (error) {throw error}
     var found = false;
     for( var i = 0; i < result.rows.length; i++) {
       if (result.rows[i].username === req_username && result.rows[i].password === req_password) 
