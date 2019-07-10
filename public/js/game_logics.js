@@ -68,6 +68,7 @@ async function throwDice() {
     addToGameLog('You rolled a ' + (randomd0+randomd1) + '!');
     // Re-enable the button
     document.getElementById("throw").disabled = false
+    return (random0 + random1);
 }
 
 // Roll the dice with visual representation and return whether we rolled a double
