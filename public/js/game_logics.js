@@ -215,7 +215,10 @@ function set_up_game_board(){
 		currentCellPositionHolder = currentCellAnchor.appendChild(document.createElement("div"));
 		currentCellPositionHolder.id = "cell" + i + "positionholder";
 		currentCellPositionHolder.className = "cell-position-holder";
-		currentCellPositionHolder.enlargeId = "enlarge" + i;
+        currentCellPositionHolder.enlargeId = "enlarge" + i;
+        
+        document.getElementById('cell' + i + 'positionholder').innerHTML = 
+        '<table class="grid"><tr><td id="\'cell\'+i\'griditem\'"></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></table>';
 
 		currentCellName = currentCellAnchor.appendChild(document.createElement("div"));
 		currentCellName.id = "cell" + i + "name";

@@ -287,3 +287,12 @@ td {
 .player_status{
    width: 100%;
 }
+
+.grid {
+	height: 60%;
+	width: 100%;
+	border-color: white;
+}
+/* tr, td {
+	border-color: white;
+} */
