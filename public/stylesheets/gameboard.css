@@ -292,7 +292,12 @@ td {
 	height: 60%;
 	width: 100%;
 	border-color: white;
+	border-collapse: collapse;
 }
-/* tr, td {
-	border-color: white;
-} */
+
+.grid-col {
+	/* border-color: white; // Uncomment to remove borders
+	*/
+	width: 33%;
+	height: 50%;
+}

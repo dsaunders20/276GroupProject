@@ -217,8 +217,19 @@ function set_up_game_board(){
 		currentCellPositionHolder.className = "cell-position-holder";
         currentCellPositionHolder.enlargeId = "enlarge" + i;
         
+        var cellNumGrid0 = 'cell' + i + 'grid0';
+        var cellNumGrid1 = 'cell' + i + 'grid1';
+        var cellNumGrid2 = 'cell' + i + 'grid2';
+        var cellNumGrid3 = 'cell' + i + 'grid3';
+        var cellNumGrid4 = 'cell' + i + 'grid4';
+        var cellNumGrid5 = 'cell' + i + 'grid5';
+
         document.getElementById('cell' + i + 'positionholder').innerHTML = 
-        '<table class="grid"><tr><td id="\'cell\'+i\'griditem\'"></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></table>';
+        '<table class="grid"><tr class="grid-row"><td class ="grid-col" id='+cellNumGrid0+
+        '></td><td class ="grid-col" id='+cellNumGrid1+'></td><td class ="grid-col" id='+cellNumGrid2+
+        '></td></tr><tr class="grid-row"><td class ="grid-col" id='+cellNumGrid3+
+        '></td><td class ="grid-col" id='+cellNumGrid4+'></td><td class ="grid-col" id='+cellNumGrid5+
+        '></td></tr></table>';
 
 		currentCellName = currentCellAnchor.appendChild(document.createElement("div"));
 		currentCellName.id = "cell" + i + "name";
@@ -236,9 +247,9 @@ function set_up_game_board(){
 		document.getElementById("enlarge" + i + "price").textContent = s.pricetext;
     }
     
-    // add character image to first square on the board
-    var img = '<img style="width: 25%; height: auto; padding-top: 10px;" src="/images/1character.png">';
-    document.getElementById('cell0positionholder').innerHTML = img;
+    // add character image to P0 of first square on the board
+    var img = '<img style="max-width: 100%; height: auto" src="/images/1character.png">';
+    document.getElementById('cell0grid0').innerHTML = img;
 
     
     // Create enlarge card
