@@ -62,18 +62,18 @@
         <table>
             <tr>
                 <td id="P1">
-                    <p>Player1</p>
+                    <p><%= player.username %></p>
                 </td>
             </tr>
             <tr>
                 <td>
-                     <p>Player3</p>
+                     <p><%= player.username %></p>
                 </td>        
 
             </tr>
             <tr>
                 <td>
-                    <p>Player5</p>
+                    <p><%= player.username %></p>
                 </td>
             </tr>
         </table>
@@ -113,7 +113,7 @@
         </tr>
         <tr>
                 <td id="ButtonTd" colspan="2">
-                        <form method="POST">
+                        <form action="/characterSelection" method="POST">
         
                                 <input onclick="myFunction()" class="StartButton" type="submit" value="Start Game"/>
                         </form>
@@ -128,18 +128,18 @@
             <table>
                     <tr>
                         <td>
-                            <p>Player2</p>
+                            <p><%= player.username %></p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                             <p>Player4</p>
+                             <p><%= player.username %></p>
                         </td>        
         
                     </tr>
                     <tr>
                         <td>
-                            <p>Player6</p>
+                            <p><%= player.username %></p>
                         </td>
                     </tr>
                 </table>
