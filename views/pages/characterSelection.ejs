@@ -1,0 +1,190 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <title>Character Selection</title>
+    
+      <style>
+           td{
+              padding: 30px;
+          }
+          h2{
+              margin-left:25%;
+              
+          }
+      
+        .Characters{
+                position: absolute;
+        top: 40%;
+        left: 45%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%) }
+        
+          #ButtonTd{
+              text-align: center;
+               
+          }
+         .OddPlayer{
+                position:absolute;
+              top: 10%;
+             left: 20%;
+             
+             
+
+      }
+          .EvenPlayer{
+               position:absolute;
+              top: 10%;
+              left:60%;
+              
+          }
+          .OddPlayer td{
+              padding: 60px;
+              
+              
+          }
+          .EvenPlayer td{
+              padding: 60px;
+          }
+           
+      </style>
+
+
+
+
+    </head>
+
+
+
+<body>
+    <div class="OddPlayer">
+        <table>
+            <tr>
+                <td id="P1">
+                    <p><%= player.username %></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                     <p><%= player.username %></p>
+                </td>        
+
+            </tr>
+            <tr>
+                <td>
+                    <p><%= player.username %></p>
+                </td>
+            </tr>
+        </table>
+
+
+
+
+    </div>
+    <div class="Characters">
+    <h2>Character Select</h2>
+
+    
+        <table id="CharTable">
+        <tr id="FRow">
+            <td id="FRowFD">
+                <img id = "C1" onclick="javascript:Check(this.id)" src="images/1character.png" alt="Character1" style="width:100px;height:100px;">
+            </td>
+            <td id = "FRowSD">
+                <img id = "C2" onclick="javascript:Check(this.id)" src="images/2character.png" alt="Character2" style="width:100px;height:100px;">
+            </td>
+        </tr>
+        <tr id = "SRow">
+            <td id = "SRowFD">
+                <img id = "C3" onclick="javascript:Check(this.id)" src="images/3character.png" alt="Character3" style="width:100px;height:100px;">
+            </td>
+            <td id = "SRowSD">
+                <img id = "C4"  onclick="javascript:Check(this.id)"src="images/4character.png" alt="Character4" style="width:100px;height:100px;">
+            </td>
+        </tr>
+        <tr id = "TRow">
+            <td id = "TRowFD">
+                <img id = "C5" onclick="javascript:Check(this.id)" src="images/5character.png" alt="Character5" style="width:100px;height:100px;">
+            </td>
+            <Td id = "TrowSD">
+            <img  id = "C6"  onclick="javascript:Check(this.id)"  src="images/6character.png" alt="Character6" style="width:100px;height:100px;">
+            </Td> 
+        </tr>
+        <tr>
+                <td id="ButtonTd" colspan="2">
+                        <form action="/characterSelection" method="POST">
+        
+                                <input onclick="myFunction()" class="StartButton" type="submit" value="Start Game"/>
+                        </form>
+                       
+                    </td>
+            </tr>
+    </table>
+    
+    
+    </div>
+    <div class = "EvenPlayer">
+            <table>
+                    <tr>
+                        <td>
+                            <p><%= player.username %></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                             <p><%= player.username %></p>
+                        </td>        
+        
+                    </tr>
+                    <tr>
+                        <td>
+                            <p><%= player.username %></p>
+                        </td>
+                    </tr>
+                </table>
+        
+
+
+
+
+    </div>
+
+    
+    
+</body>
+<script>
+    
+    var NumberOfCharacterChosen=0;
+    var C1 = document.getElementById("C1").value; var C2 = document.getElementById("C2").value;
+    var C3 = document.getElementById("C3").value; var C4 = document.getElementById("C4").value;
+    var C5 = document.getElementById("C5").value; var C6 = document.getElementById("C5").value;
+    
+
+function Check(id) {
+           document.getElementById(id).onclick=function(event){
+               event.target.onclick=null;
+               event.target.style.transition='0.8s';
+               event.target.style.opacity = 0;
+               event.target.style.visibility = 'hidden';
+               NumberOfCharacterChosen++;
+               console.log(id, NumberOfCharacterChosen);
+
+           }
+ }
+
+ function myFunction() {
+     if(NumberOfCharacterChosen>1){
+         console.log("More than 1 player found. Starting the game now");
+         
+
+     }
+     else{
+         alert("Require at least 2 Players");
+     }
+
+}
+    
+
+</script>
+</html>

@@ -53,21 +53,23 @@ async function throwDice() {
     document.getElementById("throw").disabled = true
 
     var double = await rollDice()
-
+    
+    addToGameLog('You rolled a ' + (randomd0+randomd1) + '!');
+    
     if ((double == 1) && (doubleCount < 2)) {
         doubleCount++
-        alert('Doubles!  Roll again!')
+        addToGameLog('Doubles!  Roll again!')
     } else {
         doubleCount = 0
     }
 
     if (doubleCount == 3)
     {
-        alert('You rolled doubles 3 times!  To jail you go!')
+        addToGameLog('You rolled doubles 3 times!  To jail you go!')
     }
-    addToGameLog('You rolled a ' + (randomd0+randomd1) + '!');
     // Re-enable the button
     document.getElementById("throw").disabled = false
+    return (randomd0 + randomd1);
 }
 
 // Roll the dice with visual representation and return whether we rolled a double
