@@ -33,6 +33,34 @@ td {
 	font-style: italic;
 }
 
+#weather {
+	padding-right: 10px;
+	padding-left: 10px;
+	font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: .1em .1em 0 rgba(0,0,0,0.3);
+	font-size: 1.3em;
+	height: 80px;
+	width: 500px;
+	border: 2px black solid;
+	/* background-image: url('http://bestanimations.com/Nature/Water/rain/rain-nature-animated-gif-21.gif'); */
+	/* background-image: url('https://i.pinimg.com/originals/20/e6/03/20e60377fb5710a7335be9bec1884877.gif'); */
+}
+#weather-text {
+	color: grey;
+	font-style: italic;
+}
+h1 {
+    margin: 0 auto;
+    text-align: center;
+    color: #fff;
+    font-size: 3em;
+}
+
 #enlarge-wrap {
 	border: none;
 	z-index: 0;
@@ -287,3 +315,4 @@ td {
 .player_status{
    width: 100%;
 }
+
