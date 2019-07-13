@@ -1,11 +1,15 @@
+var boardLength = 39;
+
 // creating player class
 class Player {
-  constructor(name, cash, picture, id) {
+  constructor(name, picture) {
     this.name = name;
-    this.cash = cash;
-    this.picture = picture; //is this needed?
-    this.id = id; 
+    this.cash = 1500;
+    this.picture = picture;
+    this.position = 0;
+    // what other attributes we need?
   }
+
   movePlayer(stepsToMove = 0) {
     // get current player location
     let currentPlayerPosition = this.id.position;
