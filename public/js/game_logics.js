@@ -1,3 +1,18 @@
+const buyButton = document.getElementById('buyButton');
+const sellButton = document.getElementById('sellButton');
+
+buyButton.addEventListener('click', function(e){
+  //buy funcion
+  // console.log('button was clicked');
+//   alert("Unable to buy the property");
+    confirm("Are you sure you want to buy this property?");
+});
+
+sellButton.addEventListener('click', function(e){
+  //sell funcion
+});
+
+
 // adding messages to the game log
 function addToGameLog(message)
 {

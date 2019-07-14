@@ -1,11 +1,42 @@
+// need to migrate everything to game_logics eventually
+var boardLength = 39;
+
+const buyButton = document.getElementById('buyButton');
+const sellButton = document.getElementById('sellButton');
+
+buyButton.addEventListener('click', function(e){
+  //buy funcion
+  // console.log('button was clicked');
+  if (property.owner != 0) {
+    alert("This property is already owned"); //add this to gamelog
+  }
+  if (Player.cash >= property.price) {
+    var confirmed = confirm("Are you sure you want to buy this property?");
+    if (confirmed) {
+      //attempt to buy the property
+      Player.buyProperty();
+    }
+  } else {
+    alert("You do not have the funds to buy the property"); //add to gamelog
+  }
+  
+  
+});
+
+sellButton.addEventListener('click', function(e){
+  //sell funcion
+});
+
 // creating player class
 class Player {
-  constructor(name, cash, picture, id) {
+  constructor(name, picture) {
     this.name = name;
-    this.cash = cash;
-    this.picture = picture; //is this needed?
-    this.id = id; 
+    this.cash = 1500;
+    this.picture = picture;
+    this.position = 0;
+    // what other attributes we need?
   }
+
   movePlayer(stepsToMove = 0) {
     // get current player location
     let currentPlayerPosition = this.id.position;
@@ -20,16 +51,33 @@ class Player {
   }
   
   // logic not complete
-  buy(square) {
-    if (this.id.position === square.id) {
-      // check owner
-      // if no owner buy the field
-      square.owner = this;
-      this.cash -= square.cost; //assuming there is a class called square with these properties
+  buyProperty(property) {
+    if (property.owner === 0) {
+      // update the square owner property to this player
+      property.owner = this;
+      // subtract the cash from player
+      this.cash -= property.price; 
       // else if this is already owned by another player
       // continue
+    } else {
+      alert("Unable to buy the property");
     }
   }
+
+  sellProperty(property) {
+    //check if this player owns the property
+    if (property.owner === this) {
+      // update the owner to null/no one
+      property.owner = 0; 
+      // add half the cash to player
+      this.cash += (property.price)*0.50; 
+      // else if this is already owned by another player
+      // continue
+    } else {
+      alert("Unable to sell the property");
+    }
+  }
+
   // todo
   // trade
   // tax
@@ -37,4 +85,4 @@ class Player {
 
 }
 
-module.exports = PlayerControl;
+// module.exports = PlayerControl;
