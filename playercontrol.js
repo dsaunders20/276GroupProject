@@ -38,14 +38,42 @@ class Player {
     var m = oldCellNum;
 
     var interval = setInterval(() => {
-      if (m != newCellNum) {
-        document.getElementById('cell'+m+'grid'+this.playerNumber).innerHTML = '';
-        m = ((m+1) % boardLength);
-        document.getElementById('cell'+m+'grid'+this.playerNumber).innerHTML = pic;
-      } else {
-        clearInterval(interval);
+      // Re-enable the button
+      if (m == newCellNum) {
+        document.getElementById("throw").disabled = false;
       }
-    }, 500);
+      // Move character one square at a time from old position to new position
+      if (lap == false) {
+        if ((m % boardLength) < newCellNum) {
+            document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+            m = ((m+1) % boardLength);
+            document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+        } else {
+            oldCellNum = newCellNum;
+            clearInterval(int);
+        }
+      } else {
+          if ((m % boardLength) < newCellNum) {
+              document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+              m = ((m+1) % boardLength);
+              document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+              lap = false;
+          } else if (m == boardLength-1) { 
+              document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+              m = 0; 
+              document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+              lap = false;
+          } else if (m < boardLength) {
+              document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+              m = ((m+1) % boardLength);
+              document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+          } else {
+              lap = false;
+              oldCellNum = newCellNum;
+              clearInterval(int);
+          }
+        }
+      }, 500);
     
     // I think below code needs players' avatars as Image objects
 
