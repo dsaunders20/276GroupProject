@@ -1,5 +1,5 @@
 // adding messages to the game log
-function addToGameLog(message)
+window.addToGameLog = function(message)
 {
     $gameLog = $("#gameLog");
     $(document.createElement("div")).text(message).appendTo($gameLog);
@@ -39,16 +39,90 @@ var double = 0
 ////            dice[i].classList.remove('shake')
 ////        }, 1800)    
 //    } 
-//}
+//}\
+
+var stepsToMove;
+var boardLength = 40;
+var newCellNum = 0;
+var oldCellNum = 39;
+var m;
+var pic;
+var lap = false;
 
 $("#throw").click(function() {
     $(".dice").addClass('shake')
     setTimeout(function() {
         $(".dice").removeClass('shake')
     }, 1800)
+    setTimeout(() => {
+        // Calculate the new position with stepsToMove obtained from dice roll
+        if (oldCellNum + stepsToMove >= boardLength) {
+            lap = true;
+            newCellNum = ((oldCellNum + stepsToMove) % boardLength);
+        } else {
+            newCellNum = oldCellNum + stepsToMove;
+        }
+    }, 1850);
+    setTimeout(() => {
+        pic = document.getElementById('cell'+oldCellNum+'grid0').innerHTML;
+        m = oldCellNum;
+        var int = setInterval(() => {
+            // Re-enable the button
+            if (m == newCellNum) {
+                document.getElementById("throw").disabled = false;
+            }
+            // Move character one square at a time from old position to new position
+            if (lap == false) {
+                if ((m % boardLength) < newCellNum) {
+                    document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+                    m = ((m+1) % boardLength);
+                    document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+                } else {
+                    oldCellNum = newCellNum;
+                    clearInterval(int);
+                }
+            } else {
+                if ((m % boardLength) < newCellNum) {
+                    document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+                    m = ((m+1) % boardLength);
+                    document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+                    lap = false;
+                } else if (m == boardLength-1) { 
+                    document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+                    m = 0; 
+                    document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+                    lap = false;
+                } else if (m < boardLength) {
+                    document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+                    m = ((m+1) % boardLength);
+                    document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+                } else {
+                    lap = false;
+                    oldCellNum = newCellNum;
+                    clearInterval(int);
+                }
+            }
+        }, 400);
+    }, 2000);
 })
 
-async function throwDice() {
+// window.interval = function() {
+//     var int = setInterval(() => {
+//         if ((m % boardLength) <= newCellNum) {
+//             addToGameLog('m is '+m);
+//             addToGameLog('steps to move '+stepsToMove);
+//             addToGameLog('new cell num is ' + newCellNum);
+//             document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+//             m = ((m+1) % boardLength);
+//             document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+//         } else {
+//             clearInterval(int);
+//         }
+//     }, 400);
+// }
+
+
+window.throwDice = async function() {
     // Disable the button so user can't keep pressing it
     document.getElementById("throw").disabled = true
 
@@ -68,8 +142,8 @@ async function throwDice() {
         addToGameLog('You rolled doubles 3 times!  To jail you go!')
     }
     // Re-enable the button
-    document.getElementById("throw").disabled = false
-    return (randomd0 + randomd1);
+    // document.getElementById("throw").disabled = false
+    stepsToMove = (randomd0+randomd1);
 }
 
 // Roll the dice with visual representation and return whether we rolled a double
@@ -249,7 +323,21 @@ function set_up_game_board(){
     
     // add character image to P0 of first square on the board
     var img = '<img style="max-width: 100%; height: auto" src="/images/1character.png">';
-    document.getElementById('cell0grid0').innerHTML = img;
+    document.getElementById('cell39grid0').innerHTML = img;
+
+    // $("#throw").click(function() {
+    //     stepToMove = throwdice();
+    //     $(".dice").addClass('shake')
+    //     setTimeout(function() {
+    //         $(".dice").removeClass('shake')
+    //     }, 1800)
+    //     setTimeout(interval(), 1900);
+    // })
+
+    
+
+    
+
 
     
     // Create enlarge card
