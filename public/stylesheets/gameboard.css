@@ -19,11 +19,23 @@ td {
     /* float: left; */
     width: 95%;
 }
+/* for buy/sell/trade box */
+#control {
+	position: relative;
+	top: -650px;
+	left: 450px;
+	border: 2px solid black;
+	padding: 10px;
+	width: 400px;
+	height: 149px;
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	font-style: italic;
+}
 
 #gameLog {
 	position: absolute;
-	top: 550px;
-	left: 550px;
+	/* top: 550px; */
+	/* left: 550px; */
 	border: 2px solid black;
 	padding-left: 1px;
 	width: 300px;
@@ -65,6 +77,13 @@ h1 {
 	border: none;
 	z-index: 0;
 }
+
+/* button color */
+.playerOptions-btn-group button {
+	background-color: #6b5b95; /* purple background */
+	color: white; /* White text */
+	cursor: pointer; /* Pointer/hand icon */
+  }
 
 .cell {
 	position: relative;
@@ -316,3 +335,27 @@ h1 {
    width: 100%;
 }
 
+.grid {
+	height: 60%;
+	width: 100%;
+	border-color: white;
+	border-collapse: collapse;
+}
+
+.grid-col {
+	border-color: white;
+	width: 33%;
+	height: 50%;
+}
+
+.blinking{
+    animation:blinkingText 1.8s infinite;
+}
+
+@keyframes blinkingText{
+    0%{     color: #000;    }
+    49%{    color: transparent; }
+    50%{    color: transparent; }
+    99%{    color:transparent;  }
+    100%{   color: #000;    }
+}
