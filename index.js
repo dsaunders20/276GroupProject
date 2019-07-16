@@ -7,16 +7,16 @@ const app = express()
 
 const { Pool } = require('pg');
 
-//// use this for testing
-var pool = new Pool({
-  host: 'localhost',
-  database: 'postgres'
-});
-
-//// use this block for heroku app
-// const pool = new Pool({
-//  connectionString: process.env.DATABASE_URL
+// //// use this for testing
+// var pool = new Pool({
+//   host: 'localhost',
+//   database: 'postgres'
 // });
+
+// use this block for heroku app
+const pool = new Pool({
+ connectionString: process.env.DATABASE_URL
+});
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
@@ -118,9 +118,9 @@ var query1 = "SELECT username, password, type from users";
 app.get('/failedLogin', (req, res) => res.render('pages/failedLogin'))
 
 
+// handles errors
 app.use(function(error, req, res, next) {
-    // Any request to this server will get here, and will send an HTTP
-    // response with the error message 'woops'
+
     res.json({ message: error.message });
   });
 
