@@ -330,7 +330,7 @@ function set_up_game_board(){
     }
     
     // add character image to P0 of first square on the board
-    var img = '<img style="max-width: 100%; height: auto" src="/images/1character.png">';
+    var img = '<img style="max-width: 25px; height: auto" src="/images/1character.png">';
     document.getElementById('cell0grid0').innerHTML = img;
     
     /* Need to remove this hard coding when we have players class done
