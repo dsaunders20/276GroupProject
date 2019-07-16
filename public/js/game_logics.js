@@ -318,14 +318,13 @@ class Player {
         
         var interval = setInterval(() => {
                 // Re-enable the button
-                if (m == newPositionAfterRoll) {
+                if (m == (newPositionAfterRoll % boardLength)) {
                     document.getElementById("throw").disabled = false;
                 }
         
                  
                 if(lap == false){
                         if((m % boardLength) < newPositionAfterRoll){
-                            console.log("wrong");
                             document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
                             m = ((m + 1) % boardLength);
                             document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
@@ -354,8 +353,8 @@ class Player {
                                 m = ((m + 1) % boardLength);
                                 document.getElementById('cell' + m + 'positionholder').appendChild(character_img);   
                           }else{
-                            m = newPositionAfterRoll;
-                            this.curCell = newPositionAfterRoll;
+                            m = (newPositionAfterRoll % boardLength)
+                            this.curCell = (newPositionAfterRoll % boardLength);
                             clearInterval(interval); 
                          }
                     }
@@ -458,7 +457,7 @@ window.onload = function () {
         var character_img2 = document.createElement("img");
         character_img.src = "/images/" + (players[i].picture) + "character.png";
         character_img2.src = "/images/" + (players[i].picture) + "character.png";
-        player_picture.appendChild(character_img2);
+        player_picture.appendChild(character_img2   );
         
         // add character image to first square on the board
         character_img.setAttribute("height", "auto");
