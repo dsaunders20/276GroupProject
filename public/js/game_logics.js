@@ -43,9 +43,9 @@ var double = 0
 
 var stepsToMove;
 var boardLength = 40;
-var newCellNum = 0;
-var oldCellNum = 39;
-var m;
+var newCellNum;
+var oldCellNum;
+var counter;
 var pic;
 var lap = false;
 
@@ -64,38 +64,40 @@ $("#throw").click(function() {
         }
     }, 1850);
     setTimeout(() => {
+
+        // Hard coded the image.  Need to fix when have players class
         pic = document.getElementById('cell'+oldCellNum+'grid0').innerHTML;
-        m = oldCellNum;
+        counter = oldCellNum;
         var int = setInterval(() => {
             // Re-enable the button
-            if (m == newCellNum) {
+            if (counter == newCellNum) {
                 document.getElementById("throw").disabled = false;
             }
             // Move character one square at a time from old position to new position
             if (lap == false) {
-                if ((m % boardLength) < newCellNum) {
-                    document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-                    m = ((m+1) % boardLength);
-                    document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+                if ((counter % boardLength) < newCellNum) {
+                    document.getElementById('cell'+counter+'grid'+0).innerHTML = '';
+                    counter = ((counter+1) % boardLength);
+                    document.getElementById('cell'+counter+'grid'+0).innerHTML = pic;
                 } else {
                     oldCellNum = newCellNum;
                     clearInterval(int);
                 }
             } else {
-                if ((m % boardLength) < newCellNum) {
-                    document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-                    m = ((m+1) % boardLength);
-                    document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+                if ((counter % boardLength) < newCellNum) {
+                    document.getElementById('cell'+counter+'grid'+0).innerHTML = '';
+                    counter = ((counter+1) % boardLength);
+                    document.getElementById('cell'+counter+'grid'+0).innerHTML = pic;
                     lap = false;
-                } else if (m == boardLength-1) { 
-                    document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-                    m = 0; 
-                    document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+                } else if (counter == boardLength-1) { 
+                    document.getElementById('cell'+counter+'grid'+0).innerHTML = '';
+                    counter = 0; 
+                    document.getElementById('cell'+counter+'grid'+0).innerHTML = pic;
                     lap = false;
-                } else if (m < boardLength) {
-                    document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-                    m = ((m+1) % boardLength);
-                    document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+                } else if (counter < boardLength) {
+                    document.getElementById('cell'+counter+'grid'+0).innerHTML = '';
+                    counter = ((counter+1) % boardLength);
+                    document.getElementById('cell'+counter+'grid'+0).innerHTML = pic;
                 } else {
                     lap = false;
                     oldCellNum = newCellNum;
@@ -112,9 +114,9 @@ $("#throw").click(function() {
 //             addToGameLog('m is '+m);
 //             addToGameLog('steps to move '+stepsToMove);
 //             addToGameLog('new cell num is ' + newCellNum);
-//             document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-//             m = ((m+1) % boardLength);
-//             document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+//             document.getElementById('cell'+counter+'grid'+0).innerHTML = '';
+//             counter = ((counter+1) % boardLength);
+//             document.getElementById('cell'+counter+'grid'+0).innerHTML = pic;
 //         } else {
 //             clearInterval(int);
 //         }
@@ -323,22 +325,11 @@ function set_up_game_board(){
     
     // add character image to P0 of first square on the board
     var img = '<img style="max-width: 100%; height: auto" src="/images/1character.png">';
-    document.getElementById('cell39grid0').innerHTML = img;
-
-    // $("#throw").click(function() {
-    //     stepToMove = throwdice();
-    //     $(".dice").addClass('shake')
-    //     setTimeout(function() {
-    //         $(".dice").removeClass('shake')
-    //     }, 1800)
-    //     setTimeout(interval(), 1900);
-    // })
-
+    document.getElementById('cell0grid0').innerHTML = img;
     
-
-    
-
-
+    /* Need to remove this hard coding when we have players class done
+    and can keep track of positioning on game board */
+    oldCellNum = 0;
     
     // Create enlarge card
 	var drag, dragX, dragY, dragObj, dragTop, dragLeft;

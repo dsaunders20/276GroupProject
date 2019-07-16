@@ -296,8 +296,7 @@ td {
 }
 
 .grid-col {
-	/* border-color: white; // Uncomment to remove borders
-	*/
+	border-color: white;
 	width: 33%;
 	height: 50%;
 }
