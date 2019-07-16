@@ -1,151 +1,128 @@
-// adding messages to the game log
-function addToGameLog(message)
-{
-    $gameLog = $("#gameLog");
-    $(document.createElement("div")).text(message).appendTo($gameLog);
-    // ensure that scroll bar moves down automatically
-    var Log = document.getElementById('gameLog');
-    Log.scrollTop = Log.scrollHeight;
-}
+//Global Variables
+let players = [];
+let boardLength = 40;
 
-// DICE ROLLING
-
+// ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
-var face1=new Image()
-face1.src="images/f1.png"
-var face2=new Image()
-face2.src="images/f2.png"
-var face3=new Image()
-face3.src="images/f3.png"
-var face4=new Image()
-face4.src="images/f4.png"
-var face5=new Image()
-face5.src="images/f5.png"
-var face6=new Image()
-face6.src="images/f6.png"
-
+var face1 = new Image()
+face1.src = "images/f1.png"
+var face2 = new Image()
+face2.src = "images/f2.png"
+var face3 = new Image()
+face3.src = "images/f3.png"
+var face4 = new Image()
+face4.src = "images/f4.png"
+var face5 = new Image()
+face5.src = "images/f5.png"
+var face6 = new Image()
+face6.src = "images/f6.png"
 var randomd0 = 0
 var randomd1 = 1
 var doubleCount = 0
 var double = 0
 
-// Animate the dice when user throws them
-//var throw_obj = document.getElementById("throw");
-//var dice = document.getElementsByClassName("dice");
-//throw_obj.onclick = function(){
-//    for(var i=0; i<dice.length; i++){
-//        dice[i].classList.add('shake');
-////        setTimeout(function() {
-////            dice[i].classList.remove('shake')
-////        }, 1800)    
-//    } 
-//}
-
-$("#throw").click(function() {
+$("#throw").click(function () {
     $(".dice").addClass('shake')
-    setTimeout(function() {
+    setTimeout(function () {
         $(".dice").removeClass('shake')
     }, 1800)
 })
-
 async function throwDice() {
+    let current_player_num = getCurrentPlayer();
+    let player = players[current_player_num - 1];
+    
     // Disable the button so user can't keep pressing it
     document.getElementById("throw").disabled = true
-
     var double = await rollDice()
-    
-    addToGameLog('You rolled a ' + (randomd0+randomd1) + '!');
-    
+    addToGameLog("[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
     if ((double == 1) && (doubleCount < 2)) {
         doubleCount++
         addToGameLog('Doubles!  Roll again!')
-    } else {
+    }
+    else {
         doubleCount = 0
     }
-
-    if (doubleCount == 3)
-    {
-        addToGameLog('You rolled doubles 3 times!  To jail you go!')
+    if (doubleCount == 3) {
+        addToGameLog(player.name + ' rolled doubles 3 times!  You are sent to jail!')
     }
     // Re-enable the button
-    document.getElementById("throw").disabled = false
-    return (randomd0 + randomd1);
+    //document.getElementById("throw").disabled = false
+    player.updatePosition(randomd0 + randomd1);
 }
 
 // Roll the dice with visual representation and return whether we rolled a double
 function rollDice() {
     var num = 0
-    // Display dice rolling and return whether we rolled doubles
-    var roll = setInterval(function() {
-        if (num == 15) {
-            clearInterval(roll)
-        }
-        // Create a random integer between 0 and 5
-        randomd0 = Math.floor(Math.random() * 6) + 1
-        randomd1 = Math.floor(Math.random() * 6) + 1
-
-        // Display result
-        updateDice()
-        
-        num++
-    }, 100)
-
-    // Return whether we rolled a double
-    return new Promise (function(resolve, reject) {
-        setTimeout(function() {
+        // Display dice rolling and return whether we rolled doubles
+    var roll = setInterval(function () {
+            if (num == 15) {
+                clearInterval(roll)
+            }
+            // Create a random integer between 0 and 5
+            randomd0 = Math.floor(Math.random() * 6) + 1
+            randomd1 = Math.floor(Math.random() * 6) + 1
+                // Display result
+            updateDice()
+            num++
+        }, 100)
+        // Return whether we rolled a double
+    return new Promise(function (resolve, reject) {
+        setTimeout(function () {
             resolve(randomd0 == randomd1);
         }, 1650)
     })
 }
-
 // Display the corresponding die face for randomly generated values
 function updateDice() {
-    document.getElementById("d0").src=eval("face"+randomd0+".src")
-    document.getElementById("d1").src=eval("face"+randomd1+".src")
+    document.getElementById("d0").src = eval("face" + randomd0 + ".src")
+    document.getElementById("d1").src = eval("face" + randomd1 + ".src")
 }
 
+// ----------------------------------- DICE ROLLING ------------------------------------------
 
 
+// ----------------------------------- Properties ------------------------------------------
 function Property(name, pricetext, color, price, groupNumber, baserent, level1, level2, level3, level4) {
-	this.name = name;
-	this.color = color;
-	this.owner = 0;
-	this.mortgage = false;
-	this.house = 0;
-	this.hotel = 0;
-	this.groupNumber = groupNumber || 0;
+    this.name = name;
+    this.color = color;
+    this.owner = 0;
+    this.mortgage = false;
+    this.house = 0;
+    this.hotel = 0;
+    this.groupNumber = groupNumber || 0;
     this.pricetext = pricetext;
-	this.price = (price || 0);
-	this.baserent = (baserent || 0);
-	this.level1 = (level1 || 0);
-	this.level2 = (level2 || 0);
-	this.level3 = (level3 || 0);
-	this.level4 = (level4 || 0);
-	this.landcount = 0;
-
-	if (groupNumber === 3 || groupNumber === 4) {
-		this.houseprice = 50;
-	} else if (groupNumber === 5 || groupNumber === 6) {
-		this.houseprice = 100;
-	} else if (groupNumber === 7 || groupNumber === 8) {
-		this.houseprice = 150;
-	} else if (groupNumber === 9 || groupNumber === 10) {
-		this.houseprice = 200;
-	} else {
-		this.houseprice = 0;
-	}
+    this.price = (price || 0);
+    this.baserent = (baserent || 0);
+    this.level1 = (level1 || 0);
+    this.level2 = (level2 || 0);
+    this.level3 = (level3 || 0);
+    this.level4 = (level4 || 0);
+    this.landcount = 0;
+    if (groupNumber === 3 || groupNumber === 4) {
+        this.houseprice = 50;
+    }
+    else if (groupNumber === 5 || groupNumber === 6) {
+        this.houseprice = 100;
+    }
+    else if (groupNumber === 7 || groupNumber === 8) {
+        this.houseprice = 150;
+    }
+    else if (groupNumber === 9 || groupNumber === 10) {
+        this.houseprice = 200;
+    }
+    else {
+        this.houseprice = 0;
+    }
 }
-
 // making property a global variable so it can be used to buy/sell/trade
 var property = [];
 // set up the board game
-function set_up_game_board(){
+function set_up_game_board() {
     // var property = [];
-    
     //initialize properties on the board
     property[0] = new Property("Start", "COLLECT $200 TRAVEL SUBSIDY AS YOU PASS.", "#FFFFFF");
     property[1] = new Property("Pacific Center", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
-    property[2] = new Property("Daive St.", "$80", "#8B4513",60, 3, 2, 10, 30, 90, 160, 250);
+    property[2] = new Property("Daive St.", "$80", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
     property[3] = new Property("Top Of Vancouver Restaurant", "$60", "#8B4513", 60, 3, 4, 20, 60, 180, 320, 450);
     property[4] = new Property("Car Ticket", "Pay $200", "#FFFFFF");
     property[5] = new Property("Coal Habour", "$200", "#FFFFFF", 200, 1);
@@ -183,273 +160,315 @@ function set_up_game_board(){
     property[37] = new Property("Robson Street", "$350", "#0000FF", 350, 10, 35, 175, 500, 1100, 1300, 1500);
     property[38] = new Property("Parq Casino", "Pay $100", "#FFFFFF");
     property[39] = new Property("Canada Place", "$400", "#0000FF", 400, 10, 50, 200, 600, 1400, 1700, 2000);
-    
     //apply property on the game board 
     var board_text = document.body.appendChild(document.createElement("div"));
-
-	board_text.id = "enlarge-wrap";
-
-	var HTML = "";
-	for (var i = 0; i < 40; i++) {
-		HTML += "<div id='enlarge" + i + "' class='enlarge'>";
-		HTML += "<div id='enlarge" + i + "color' class='enlarge-color'></div><br /><div id='enlarge" + i + "name' class='enlarge-name'></div>";
-		HTML += "<br /><div id='enlarge" + i + "price' class='enlarge-price'></div>";
-		HTML += "<br /><div id='enlarge" + i + "token' class='enlarge-token'></div></div>";
-	}
-
-	board_text.innerHTML = HTML;
-
-	var currentCell;
-	var currentCellAnchor;
-	var currentCellPositionHolder;
-	var currentCellName;
-	var currentCellOwner;
-
-	for (var i = 0; i < 40; i++) {
-		s = property[i];
-
-		currentCell = document.getElementById("cell" + i);
-
-		currentCellAnchor = currentCell.appendChild(document.createElement("div"));
-		currentCellAnchor.id = "cell" + i + "anchor";
-		currentCellAnchor.className = "cell-anchor";
-
-		currentCellPositionHolder = currentCellAnchor.appendChild(document.createElement("div"));
-		currentCellPositionHolder.id = "cell" + i + "positionholder";
-		currentCellPositionHolder.className = "cell-position-holder";
-		currentCellPositionHolder.enlargeId = "enlarge" + i;
-
-		currentCellName = currentCellAnchor.appendChild(document.createElement("div"));
-		currentCellName.id = "cell" + i + "name";
-		currentCellName.className = "cell-name";
-		currentCellName.textContent = s.name;
-
-		if (property[i].groupNumber) {
-			currentCellOwner = currentCellAnchor.appendChild(document.createElement("div"));
-			currentCellOwner.id = "cell" + i + "owner";
-			currentCellOwner.className = "cell-owner";
-		}
-
-		document.getElementById("enlarge" + i + "color").style.backgroundColor = s.color;
-		document.getElementById("enlarge" + i + "name").textContent = s.name;
-		document.getElementById("enlarge" + i + "price").textContent = s.pricetext;
+    board_text.id = "enlarge-wrap";
+    var HTML = "";
+    for (var i = 0; i < 40; i++) {
+        HTML += "<div id='enlarge" + i + "' class='enlarge'>";
+        HTML += "<div id='enlarge" + i + "color' class='enlarge-color'></div><br /><div id='enlarge" + i + "name' class='enlarge-name'></div>";
+        HTML += "<br /><div id='enlarge" + i + "price' class='enlarge-price'></div>";
+        HTML += "<br /><div id='enlarge" + i + "token' class='enlarge-token'></div></div>";
     }
-    
-    // add character image to first square on the board
-    var img = '<img style="width: 25%; height: auto; padding-top: 10px;" src="/images/1character.png">';
-    document.getElementById('cell0positionholder').innerHTML = img;
+    board_text.innerHTML = HTML;
+    var currentCell;
+    var currentCellAnchor;
+    var currentCellPositionHolder;
+    var currentCellName;
+    var currentCellOwner;
+    for (var i = 0; i < 40; i++) {
+        s = property[i];
+        currentCell = document.getElementById("cell" + i);
+        currentCellAnchor = currentCell.appendChild(document.createElement("div"));
+        currentCellAnchor.id = "cell" + i + "anchor";
+        currentCellAnchor.className = "cell-anchor";
+        currentCellPositionHolder = currentCellAnchor.appendChild(document.createElement("div"));
+        currentCellPositionHolder.id = "cell" + i + "positionholder";
+        currentCellPositionHolder.className = "cell-position-holder";
+        currentCellPositionHolder.enlargeId = "enlarge" + i;
+        currentCellName = currentCellAnchor.appendChild(document.createElement("div"));
+        currentCellName.id = "cell" + i + "name";
+        currentCellName.className = "cell-name";
+        currentCellName.textContent = s.name;
+        if (property[i].groupNumber) {
+            currentCellOwner = currentCellAnchor.appendChild(document.createElement("div"));
+            currentCellOwner.id = "cell" + i + "owner";
+            currentCellOwner.className = "cell-owner";
+        }
+        document.getElementById("enlarge" + i + "color").style.backgroundColor = s.color;
+        document.getElementById("enlarge" + i + "name").textContent = s.name;
+        document.getElementById("enlarge" + i + "price").textContent = s.pricetext;
+    }
 
-    
     // Create enlarge card
-	var drag, dragX, dragY, dragObj, dragTop, dragLeft;
+    var drag, dragX, dragY, dragObj, dragTop, dragLeft;
     var cells = document.getElementsByClassName("cell-position-holder");
-    
-    for (var i=0; i < cells.length;i++){
-        cells[i].addEventListener("mouseover", function(){
+    for (var i = 0; i < cells.length; i++) {
+        cells[i].addEventListener("mouseover", function () {
             $("#" + this.enlargeId).show();
-        },false);
-        cells[i].addEventListener("mouseout", function() {
+        }, false);
+        cells[i].addEventListener("mouseout", function () {
             $("#" + this.enlargeId).hide();
-        },false);
-        cells[i].addEventListener("mousemove", function(e) {
-
+        }, false);
+        cells[i].addEventListener("mousemove", function (e) {
             var element = document.getElementById(this.enlargeId);
-
             if (e.clientY + 20 > window.innerHeight - 204) {
                 element.style.top = (window.innerHeight - 204) + "px";
-            } else {
+            }
+            else {
                 element.style.top = (e.clientY + 20) + "px";
             }
-
             element.style.left = (e.clientX + 10) + "px";
-        },false);
+        }, false);
     }
-        
-//	$(".cell-position-holder, #jail").on("mouseover", function(){
-//		$("#" + this.enlargeId).show();
-//
-//	}).on("mouseout", function() {
-//		$("#" + this.enlargeId).hide();
-//
-//	}).on("mousemove", function(e) {
-//		var element = document.getElementById(this.enlargeId);
-//
-//		if (e.clientY + 20 > window.innerHeight - 204) {
-//			element.style.top = (window.innerHeight - 204) + "px";
-//		} else {
-//			element.style.top = (e.clientY + 20) + "px";
-//		}
-//
-//		element.style.left = (e.clientX + 10) + "px";
-//	});
+
 }
 
+//Buy and Sell
+const buyButton = document.getElementById('buyButton');
+const sellButton = document.getElementById('sellButton');
 
+buyButton.addEventListener('click', function (e) {
+    var currentPlayer = getCurrentPlayer();
+    //   console.log("current cell is: " + currentPlayer.curCell);
+    var playerPosition = currentPlayer.curCell; // should return int
+    // this is hard coded currently, change 2 to playerPosition
+    var currentSquare = property[2]; //this will get the property
+    //   console.log("squre name is: " + currentSquare.name);
+    // already owned
+    if (currentSquare.owner != 0) {
+        alert("This property is already owned");
+    }
+    //make sure they have enough cash
+    if (currentPlayer.cash >= currentSquare.price) {
+        var confirmed = confirm("Are you sure you want to buy this property?");
+        if (confirmed) {
+            currentPlayer.buyProperty(currentSquare);
+        }
+    }
+    else {
+        alert("You do not have the funds to buy the property"); //add to gamelog
+        addToGameLog("You do not have the funds to buy the property");
+    }
+});
+
+sellButton.addEventListener('click', function (e) {
+    var currentPlayer = getCurrentPlayer();
+    var playerPosition = currentPlayer.curCell;
+    // this is hard coded currently, change 2 to playerPosition
+    var currentSquare = property[2];
+    //   console.log("squre name is: " + currentSquare.name);
+    if (currentSquare.owner != currentPlayer) {
+        alert("This property is not owned by you");
+    }
+    currentPlayer.sellProperty(currentSquare);
+    //make sure they have enough cash
+    console.log("player cash after selling: " + currentPlayer.cash);
+});
+// ----------------------------------- PROPERTIES ------------------------------------------
+
+
+// ----------------------------------- Player ------------------------------------------
 class Player {
     constructor(name, picture, playerNumber) {
-      this.name = name;
-      this.cash = 1500;
-      this.picture = picture;
-      this.curCell = 0;
-      this.playerNumber = playerNumber;
-      // what other attributes we need?
+        this.name = name;
+        this.cash = 1500;
+        this.picture = picture;
+        this.curCell = 0;
+        this.estate_value = 0;
+        this.properties = 0;
+        this.playerNumber = playerNumber;
+        // what other attributes we need?
     }
-  
     updatePosition(stepsToMove) {
         // get current player location
         let currentPlayerPosition = this.curCell;
         // get newPosition after roll
-        let newPositionAfterRoll = (currentPlayerPosition + stepsToMove); 
+        let newPositionAfterRoll = (currentPlayerPosition + stepsToMove);
         //update cash if the player completes one lap around the board
         if (newPositionAfterRoll >= boardLength) { //makes full revolution
-          this.cash += 200;
-          addToGameLog('You made it around the board! Collect $200!');
+            this.cash += 200;
+            addToGameLog(this.name + ' made it around the board! Collect $200!');
         }
-        // update player current position
-        return (newPositionAfterRoll % boardLength);
-      }
+        
+        
+        
+        var m = this.curCell;
+        
+        let lap, if_calculate_lap, reset;
     
-      movePlayer() {
-        // get the cell numbers
-        var oldCellNum = this.curCell;
-        var newCellNum = this.updatePosition();
-    
-        // get the innerHTML of the table inside the cell
-        var pic = document.getElementById('cell'+m+'grid'+this.playerNumber).innerHTML;
-    
-        // move the innerHTML of the table inside the cell to the same table in the next cell
-        var m = oldCellNum;
-    
+        if(m < boardLength && newPositionAfterRoll > boardLength){
+            lap = true
+            if_calculate_lap = false
+            reset = true
+        }else{
+            lap = false
+            if_calculate_lap = true
+            reset = false
+        }
+        
+        var character_img = document.createElement("img");
+                character_img.src = "/images/" + this.picture + "character.png";
+                character_img.setAttribute("height", "auto");
+                character_img.setAttribute("width", "25%");
+                character_img.setAttribute("padding-top", "10px");
+        
         var interval = setInterval(() => {
-          // Re-enable the button
-          if (m == newCellNum) {
-            document.getElementById("throw").disabled = false;
-          }
-          // Move character one square at a time from old position to new position
-          if (lap == false) {
-            if ((m % boardLength) < newCellNum) {
-                document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-                m = ((m+1) % boardLength);
-                document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
-            } else {
-                oldCellNum = newCellNum;
-                clearInterval(int);
-            }
-          } else {
-              if ((m % boardLength) < newCellNum) {
-                  document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-                  m = ((m+1) % boardLength);
-                  document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
-                  lap = false;
-              } else if (m == boardLength-1) { 
-                  document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-                  m = 0; 
-                  document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
-                  lap = false;
-              } else if (m < boardLength) {
-                  document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-                  m = ((m+1) % boardLength);
-                  document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
-              } else {
-                  lap = false;
-                  oldCellNum = newCellNum;
-                  clearInterval(int);
-              }
-            }
-          }, 500);
+                // Re-enable the button
+                if (m == newPositionAfterRoll) {
+                    document.getElementById("throw").disabled = false;
+                }
+        
+                 
+                if(lap == false){
+                        if((m % boardLength) < newPositionAfterRoll){
+                            console.log("wrong");
+                            document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
+                            m = ((m + 1) % boardLength);
+                            document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
+                        }else{
+                            m = newPositionAfterRoll;
+                            this.curCell = newPositionAfterRoll;
+                            clearInterval(interval);
+                        }
+                }else {
+                    if ( m < boardLength - 1 && if_calculate_lap == false) {
+                            document.getElementById('cell' + m + 'positionholder').innerHTML = '';
+                            m = ((m + 1) % boardLength);
+                            document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
+                        
+                    }else if( m == boardLength - 1){
+                            document.getElementById('cell' + m + 'positionholder').innerHTML = '';
+                                if_calculate_lap = true;
+                                if(reset == true){
+                                    m = 0;
+                                    reset = false;
+                                }
+                            document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
+                    }else{
+                          if( m < (newPositionAfterRoll % boardLength)){
+                                document.getElementById('cell' + m + 'positionholder').innerHTML = '';
+                                m = ((m + 1) % boardLength);
+                                document.getElementById('cell' + m + 'positionholder').appendChild(character_img);   
+                          }else{
+                            m = newPositionAfterRoll;
+                            this.curCell = newPositionAfterRoll;
+                            clearInterval(interval); 
+                         }
+                    }
+                }
 
-        this.curCell = newCellNum;
-      }
+
+            }, 500);
+    }
     
-    // logic not complete
+        // logic not complete
     buyProperty(square) {
         console.log("player cash before purchase is: " + this.cash);
         if (square.owner === 0) {
-        // update the square owner square to this player
+            // update the square owner square to this player
             square.owner = this;
-        // subtract the cash from player
-            this.cash -= square.price; 
-        // else if this is already owned by another player
-        // continue
+            // subtract the cash from player
+            this.cash -= square.price;
+            // else if this is already owned by another player
+            // continue
             console.log("player cash after purchase is: " + this.cash);
             addToGameLog(this.name + " has bought " + square.name);
-        } else {
+        }
+        else {
             alert("Unable to buy the property");
         }
     }
-  
     sellProperty(square) {
-      //check if this player owns the square
-      if (square.owner === this) {
-        // update the owner to null/no one
-        square.owner = 0; 
-        // add half the cash to player
-        this.cash += (square.price)*0.50; 
-        // else if this is already owned by another player
-        // continue
-        addToGameLog(this.name + " has sold " + square.name);
-      } else {
-        alert("Unable to sell the property");
-      }
+        //check if this player owns the square
+        if (square.owner === this) {
+            // update the owner to null/no one
+            square.owner = 0;
+            // add half the cash to player
+            this.cash += (square.price) * 0.50;
+            // else if this is already owned by another player
+            // continue
+            addToGameLog(this.name + " has sold " + square.name);
+        }
+        else {
+            alert("Unable to sell the property");
+        }
     }
-  
     getPlayerPosition() {
-      return this.curCell;
+        return this.curCell;
     }
-  }
+}
 
-  // creating a player
-  let p1 = new Player("pee", "pic", 1);
-  
-  // returning the current player, this code needs to be changed to be more dynamic
-  function getCurrentPlayer() {
-    return p1; // how to do this?
-  }
+function getCurrentPlayer() {
+    let current_player_num = 1
+    return current_player_num; // how to do this?
+}
 
-  const buyButton = document.getElementById('buyButton');
-  const sellButton = document.getElementById('sellButton');
-  
-  buyButton.addEventListener('click', function(e){
-      var currentPlayer = getCurrentPlayer();
-    //   console.log("current cell is: " + currentPlayer.curCell);
-      var playerPosition = currentPlayer.curCell; // should return int
-      // this is hard coded currently, change 2 to playerPosition
-      var currentSquare = property[2]; //this will get the property
-    //   console.log("squre name is: " + currentSquare.name);
-      // already owned
-      if (currentSquare.owner != 0) {
-          alert("This property is already owned");
-      } 
-      //make sure they have enough cash
-      if (currentPlayer.cash >= currentSquare.price) {
-          var confirmed = confirm("Are you sure you want to buy this property?");
-          if (confirmed) {
-              currentPlayer.buyProperty(currentSquare);
-          }
-      } else {
-          alert("You do not have the funds to buy the property"); //add to gamelog
-          addToGameLog("You do not have the funds to buy the property");
-      }
-     
-  });
-  
-  sellButton.addEventListener('click', function(e){
-    var currentPlayer = getCurrentPlayer();
+
+// adding messages to the game log
+function addToGameLog(message) {
+    $gameLog = $("#gameLog");
+    $(document.createElement("div")).text(message).appendTo($gameLog);
+    // ensure that scroll bar moves down automatically
+    var Log = document.getElementById('gameLog');
+    Log.scrollTop = Log.scrollHeight;
+}
+
+window.onload = function () {
+
+    let ajax_data;
+    let player_num = 1;
     
-    var playerPosition = currentPlayer.curCell; 
-    // this is hard coded currently, change 2 to playerPosition
-    var currentSquare = property[2]; 
-  //   console.log("squre name is: " + currentSquare.name);
-
-    if (currentSquare.owner != currentPlayer) {
-        alert("This property is not owned by you");
-    }
-    currentPlayer.sellProperty(currentSquare); 
-    //make sure they have enough cash
-    console.log("player cash after selling: " + currentPlayer.cash);
-  });
-  
-
-window.onload = function() {
     set_up_game_board()
+    
+    //retrieve players info
+    $.ajax({
+        url: "/fetch_players_info"
+        , context: this
+        , async: false
+        , success: function (result) {
+            ajax_data = result;
+
+        }
+    });
+    
+    ajax_data.forEach(function(element){
+        let player = new Player(element.username, element.picture, player_num);
+        players.push(player);
+        player_num ++;
+    });
+    
+    // creating players
+    for(let i = 0; i < players.length; i++){
+        player_num = i+1
+        player_name = document.getElementById("player_name_" + player_num);
+        player_name.innerHTML = players[i].playerNumber;
+        
+        
+        player_picture = document.getElementById("player_picture_" + player_num);
+        var character_img = document.createElement("img");
+        var character_img2 = document.createElement("img");
+        character_img.src = "/images/" + (players[i].picture) + "character.png";
+        character_img2.src = "/images/" + (players[i].picture) + "character.png";
+        player_picture.appendChild(character_img2);
+        
+        // add character image to first square on the board
+        character_img.setAttribute("height", "auto");
+        character_img.setAttribute("width", "25%");
+        character_img.setAttribute("padding-top", "10px");
+        document.getElementById('cell0positionholder').appendChild(character_img);
+        
+        
+        player_money = document.getElementById("player_money_" + player_num);
+        player_money.innerHTML = players[i].cash;
+        
+        player_properties = document.getElementById("player_property_" + player_num);
+        player_properties.innerHTML = players[i].properties;
+        
+        player_estate_value = document.getElementById("player_estate_value_" + player_num);
+        player_estate_value.innerHTML = players[i].estate_value;
+    } 
+    
+    document.getElementById("throw").disabled = false
+
 }

@@ -117,6 +117,24 @@ var query1 = "SELECT username, password, type from users";
 
 app.get('/failedLogin', (req, res) => res.render('pages/failedLogin'))
 
+app.get('/fetch_players_info',function(req,res,next){
+    let query = "SELECT * FROM users WHERE TYPE ='user' ";
+    pool.query(query,(error, result)=>{
+        if(error) {throw error}  
+        let results = [];
+        for( i = 0; i< result.rows.length; i++){
+            var obj = {};
+            obj.username = result.rows[i].username
+            //player's avatar, will change later
+            obj.picture = i + 1
+            results.push(obj)
+        }
+        //json_obj = JSON.stringify(results);
+        res.send(results)
+    });
+
+});
+
 
 app.use(function(error, req, res, next) {
     // Any request to this server will get here, and will send an HTTP
