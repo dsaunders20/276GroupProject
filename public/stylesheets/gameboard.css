@@ -24,7 +24,8 @@ td {
 	position: relative;
 	top: -650px;
 	left: 450px;
-	border: 2px solid black;
+	/* border: 2px solid black; */
+	border: transparent;
 	padding: 10px;
 	width: 400px;
 	height: 149px;

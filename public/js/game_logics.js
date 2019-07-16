@@ -365,7 +365,7 @@ class Player {
             }, 500);
     }
     
-        // logic not complete
+
     buyProperty(square) {
         // console.log("player cash before purchase is: " + this.cash);
         if (square.owner === 0) {
@@ -384,19 +384,22 @@ class Player {
             alert("Unable to buy the property");
         }
     }
+    // sell == mortgage - fix this for the next iteration
     sellProperty(square) {
         //check if this player owns the square
         if (square.owner === this) {
             // update the owner to null/no one
-            square.owner = 0;
+            // square.owner = 0; -- dont want to update the owner since its mortgage
             // add half the cash to player
-            this.cash += (square.price) * 0.50;
-            // else if this is already owned by another player
-            // continue
-            addToGameLog(this.name + " has sold " + square.name);
+            let mortgageValue = square.price * 0.50;
+            this.cash += mortgageValue;
+            var playerMoney = parseInt(document.getElementById('player_money_1').innerHTML);
+            playerMoney += mortgageValue;
+            document.getElementById('player_money_1').innerHTML = playerMoney;
+            addToGameLog(this.name + " has mortgaged " + square.name);
         }
         else {
-            alert("Unable to sell the property");
+            alert("Unable to mortgage the property");
         }
     }
     getPlayerPosition() {
