@@ -413,6 +413,7 @@ class Player {
       var currentPlayer = getCurrentPlayer();
     //   console.log("current cell is: " + currentPlayer.curCell);
       var playerPosition = currentPlayer.curCell; // should return int
+      // this is hard coded currently, change 2 to playerPosition
       var currentSquare = property[2]; //this will get the property
     //   console.log("squre name is: " + currentSquare.name);
       // already owned
@@ -436,6 +437,7 @@ class Player {
     var currentPlayer = getCurrentPlayer();
     
     var playerPosition = currentPlayer.curCell; 
+    // this is hard coded currently, change 2 to playerPosition
     var currentSquare = property[2]; 
   //   console.log("squre name is: " + currentSquare.name);
 
