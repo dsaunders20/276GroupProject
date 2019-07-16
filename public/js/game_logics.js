@@ -229,11 +229,12 @@ const buyButton = document.getElementById('buyButton');
 const sellButton = document.getElementById('sellButton');
 
 buyButton.addEventListener('click', function (e) {
-    var currentPlayer = getCurrentPlayer();
+    var currentPlayerNum = getCurrentPlayer();
+    var currentPlayer = players[currentPlayerNum-1];
     //   console.log("current cell is: " + currentPlayer.curCell);
     var playerPosition = currentPlayer.curCell; // should return int
     // this is hard coded currently, change 2 to playerPosition
-    var currentSquare = property[2]; //this will get the property
+    var currentSquare = property[playerPosition]; //this will get the property
     //   console.log("squre name is: " + currentSquare.name);
     // already owned
     if (currentSquare.owner != 0) {
@@ -253,10 +254,12 @@ buyButton.addEventListener('click', function (e) {
 });
 
 sellButton.addEventListener('click', function (e) {
-    var currentPlayer = getCurrentPlayer();
+    var currentPlayerNum = getCurrentPlayer();
+    var currentPlayer = players[currentPlayerNum-1];
     var playerPosition = currentPlayer.curCell;
+    console.log("player position is: " + playerPosition);
     // this is hard coded currently, change 2 to playerPosition
-    var currentSquare = property[2];
+    var currentSquare = property[playerPosition];
     //   console.log("squre name is: " + currentSquare.name);
     if (currentSquare.owner != currentPlayer) {
         alert("This property is not owned by you");
@@ -364,7 +367,7 @@ class Player {
     
         // logic not complete
     buyProperty(square) {
-        console.log("player cash before purchase is: " + this.cash);
+        // console.log("player cash before purchase is: " + this.cash);
         if (square.owner === 0) {
             // update the square owner square to this player
             square.owner = this;
@@ -372,7 +375,9 @@ class Player {
             this.cash -= square.price;
             // else if this is already owned by another player
             // continue
-            console.log("player cash after purchase is: " + this.cash);
+            // console.log("player cash after purchase is: " + this.cash);
+            // updating innerHTML
+            document.getElementById('player_money_1').innerHTML -= square.price;
             addToGameLog(this.name + " has bought " + square.name);
         }
         else {
