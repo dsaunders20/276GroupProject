@@ -1,5 +1,5 @@
 // adding messages to the game log
-window.addToGameLog = function(message)
+function addToGameLog(message)
 {
     $gameLog = $("#gameLog");
     $(document.createElement("div")).text(message).appendTo($gameLog);
@@ -39,103 +39,22 @@ var double = 0
 ////            dice[i].classList.remove('shake')
 ////        }, 1800)    
 //    } 
-//}\
-
-var stepsToMove;
-var boardLength = 40;
-var newCellNum;
-var oldCellNum;
-var counter;
-var pic;
-var lap = false;
+//}
 
 $("#throw").click(function() {
     $(".dice").addClass('shake')
     setTimeout(function() {
         $(".dice").removeClass('shake')
     }, 1800)
-    setTimeout(() => {
-        // Calculate the new position with stepsToMove obtained from dice roll
-        if (oldCellNum + stepsToMove >= boardLength) {
-            lap = true;
-            newCellNum = ((oldCellNum + stepsToMove) % boardLength);
-        } else {
-            newCellNum = oldCellNum + stepsToMove;
-        }
-    }, 1850);
-    setTimeout(() => {
-
-        // Hard coded the image.  Need to fix when have players class
-        pic = document.getElementById('cell'+oldCellNum+'grid0').innerHTML;
-        counter = oldCellNum;
-        var int = setInterval(() => {
-            // Re-enable the button
-            if (counter == newCellNum) {
-                document.getElementById("throw").disabled = false;
-            }
-            // Move character one square at a time from old position to new position
-            if (lap == false) {
-                if ((counter % boardLength) < newCellNum) {
-                    document.getElementById('cell'+counter+'grid'+0).innerHTML = '';
-                    counter = ((counter+1) % boardLength);
-                    document.getElementById('cell'+counter+'grid'+0).innerHTML = pic;
-                } else {
-                    oldCellNum = newCellNum;
-                    clearInterval(int);
-                }
-            } else {
-                if ((counter % boardLength) < newCellNum) {
-                    document.getElementById('cell'+counter+'grid'+0).innerHTML = '';
-                    counter = ((counter+1) % boardLength);
-                    document.getElementById('cell'+counter+'grid'+0).innerHTML = pic;
-                    lap = false;
-                } else if (counter == boardLength-1) { 
-                    document.getElementById('cell'+counter+'grid'+0).innerHTML = '';
-                    counter = 0; 
-                    document.getElementById('cell'+counter+'grid'+0).innerHTML = pic;
-                    lap = false;
-                } else if (counter < boardLength) {
-                    document.getElementById('cell'+counter+'grid'+0).innerHTML = '';
-                    counter = ((counter+1) % boardLength);
-                    document.getElementById('cell'+counter+'grid'+0).innerHTML = pic;
-                } else {
-                    lap = false;
-                    oldCellNum = newCellNum;
-                    clearInterval(int);
-                }
-            }
-        }, 400);
-    }, 2000);
 })
 
-// window.interval = function() {
-//     var int = setInterval(() => {
-//         if ((m % boardLength) <= newCellNum) {
-//             addToGameLog('m is '+m);
-//             addToGameLog('steps to move '+stepsToMove);
-//             addToGameLog('new cell num is ' + newCellNum);
-//             document.getElementById('cell'+counter+'grid'+0).innerHTML = '';
-//             counter = ((counter+1) % boardLength);
-//             document.getElementById('cell'+counter+'grid'+0).innerHTML = pic;
-//         } else {
-//             clearInterval(int);
-//         }
-//     }, 400);
-// }
-
-
-window.throwDice = async function() {
+async function throwDice() {
     // Disable the button so user can't keep pressing it
     document.getElementById("throw").disabled = true
 
     var double = await rollDice()
     
-    var rollTotal = randomd0+randomd1;
-    if (rollTotal == 8 || rollTotal == 11)
-    {
-        addToGameLog('You rolled an ' + (randomd0+randomd1) + '!');
-    }
-    else addToGameLog('You rolled a ' + (randomd0+randomd1) + '!');
+    addToGameLog('You rolled a ' + (randomd0+randomd1) + '!');
     
     if ((double == 1) && (doubleCount < 2)) {
         doubleCount++
@@ -149,8 +68,8 @@ window.throwDice = async function() {
         addToGameLog('You rolled doubles 3 times!  To jail you go!')
     }
     // Re-enable the button
-    // document.getElementById("throw").disabled = false
-    stepsToMove = (randomd0+randomd1);
+    document.getElementById("throw").disabled = false
+    return (randomd0 + randomd1);
 }
 
 // Roll the dice with visual representation and return whether we rolled a double
@@ -217,14 +136,16 @@ function Property(name, pricetext, color, price, groupNumber, baserent, level1, 
 	}
 }
 
+// making property a global variable so it can be used to buy/sell/trade
+var property = [];
 // set up the board game
 function set_up_game_board(){
-    var property = [];
+    // var property = [];
     
     //initialize properties on the board
     property[0] = new Property("Start", "COLLECT $200 TRAVEL SUBSIDY AS YOU PASS.", "#FFFFFF");
     property[1] = new Property("Pacific Center", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
-    property[2] = new Property("Davie St.", "$80", "#8B4513",60, 3, 2, 10, 30, 90, 160, 250);
+    property[2] = new Property("Daive St.", "$80", "#8B4513",60, 3, 2, 10, 30, 90, 160, 250);
     property[3] = new Property("Top Of Vancouver Restaurant", "$60", "#8B4513", 60, 3, 4, 20, 60, 180, 320, 450);
     property[4] = new Property("Car Ticket", "Pay $200", "#FFFFFF");
     property[5] = new Property("Coal Habour", "$200", "#FFFFFF", 200, 1);
@@ -249,11 +170,11 @@ function set_up_game_board(){
     property[24] = new Property("Lynn Creek", "$240", "#FF0000", 240, 7, 20, 100, 300, 750, 925, 1100);
     property[25] = new Property("Deer Lake", "$200", "#FFFFFF", 200, 1);
     property[26] = new Property("Chinatown", "$260", "#FFFF00", 260, 8, 22, 110, 330, 800, 975, 1150);
-    property[27] = new Property("Steveston Wharf", "$260", "#FFFF00", 260, 8, 22, 110, 330, 800, 975, 1150);
-    property[28] = new Property("ScotiaBank Theatre", "$150", "#FFFFFF", 150, 2);
+    property[27] = new Property("Steveston Fisherman’s Wharf", "$260", "#FFFF00", 260, 8, 22, 110, 330, 800, 975, 1150);
+    property[28] = new Property("Scotia Bank Theatre", "$150", "#FFFFFF", 150, 2);
     property[29] = new Property("St. Paul's Hospital", "$280", "#FFFF00", 280, 8, 24, 120, 360, 850, 1025, 1200);
     property[30] = new Property("YVR Airport", "Travel to any destination you want in next turn.", "#FFFFFF");
-    property[31] = new Property("Granville St.", "$300", "#008000", 300, 9, 26, 130, 390, 900, 110, 1275);
+    property[31] = new Property("Granvile St.", "$300", "#008000", 300, 9, 26, 130, 390, 900, 110, 1275);
     property[32] = new Property("Waterfront", "$300", "#008000", 300, 9, 26, 130, 390, 900, 110, 1275);
     property[33] = new Property("Rogers Arena", "FOLLOW INSTRUCTIONS ON TOP CARD", "#FFFFFF");
     property[34] = new Property("BC Place", "$320", "#008000", 320, 9, 28, 150, 450, 1000, 1200, 1400);
@@ -296,21 +217,7 @@ function set_up_game_board(){
 		currentCellPositionHolder = currentCellAnchor.appendChild(document.createElement("div"));
 		currentCellPositionHolder.id = "cell" + i + "positionholder";
 		currentCellPositionHolder.className = "cell-position-holder";
-        currentCellPositionHolder.enlargeId = "enlarge" + i;
-        
-        var cellNumGrid0 = 'cell' + i + 'grid0';
-        var cellNumGrid1 = 'cell' + i + 'grid1';
-        var cellNumGrid2 = 'cell' + i + 'grid2';
-        var cellNumGrid3 = 'cell' + i + 'grid3';
-        var cellNumGrid4 = 'cell' + i + 'grid4';
-        var cellNumGrid5 = 'cell' + i + 'grid5';
-
-        document.getElementById('cell' + i + 'positionholder').innerHTML = 
-        '<table class="grid"><tr class="grid-row"><td class ="grid-col" id='+cellNumGrid0+
-        '></td><td class ="grid-col" id='+cellNumGrid1+'></td><td class ="grid-col" id='+cellNumGrid2+
-        '></td></tr><tr class="grid-row"><td class ="grid-col" id='+cellNumGrid3+
-        '></td><td class ="grid-col" id='+cellNumGrid4+'></td><td class ="grid-col" id='+cellNumGrid5+
-        '></td></tr></table>';
+		currentCellPositionHolder.enlargeId = "enlarge" + i;
 
 		currentCellName = currentCellAnchor.appendChild(document.createElement("div"));
 		currentCellName.id = "cell" + i + "name";
@@ -325,17 +232,13 @@ function set_up_game_board(){
 
 		document.getElementById("enlarge" + i + "color").style.backgroundColor = s.color;
 		document.getElementById("enlarge" + i + "name").textContent = s.name;
-        document.getElementById("enlarge" + i + "price").textContent = s.pricetext;
-        //document.getElementById("enlarge" + i + "token").innerHTML = '<img style="width: 120px; height: 50px; position: relative; top: -20px; z-index: -5;"src="' + searchTerm + '"' + ">";
+		document.getElementById("enlarge" + i + "price").textContent = s.pricetext;
     }
     
-    // add character image to P0 of first square on the board
-    var img = '<img style="max-width: 25px; height: auto" src="/images/1character.png">';
-    document.getElementById('cell0grid0').innerHTML = img;
-    
-    /* Need to remove this hard coding when we have players class done
-    and can keep track of positioning on game board */
-    oldCellNum = 0;
+    // add character image to first square on the board
+    var img = '<img style="width: 25%; height: auto; padding-top: 10px;" src="/images/1character.png">';
+    document.getElementById('cell0positionholder').innerHTML = img;
+
     
     // Create enlarge card
 	var drag, dragX, dragY, dragObj, dragTop, dragLeft;
@@ -379,11 +282,172 @@ function set_up_game_board(){
 //
 //		element.style.left = (e.clientX + 10) + "px";
 //	});
-    getWeather();
 }
 
 
+class Player {
+    constructor(name, picture, playerNumber) {
+      this.name = name;
+      this.cash = 1500;
+      this.picture = picture;
+      this.curCell = 0;
+      this.playerNumber = playerNumber;
+      // what other attributes we need?
+    }
+  
+    updatePosition(stepsToMove) {
+        // get current player location
+        let currentPlayerPosition = this.curCell;
+        // get newPosition after roll
+        let newPositionAfterRoll = (currentPlayerPosition + stepsToMove); 
+        //update cash if the player completes one lap around the board
+        if (newPositionAfterRoll >= boardLength) { //makes full revolution
+          this.cash += 200;
+          addToGameLog('You made it around the board! Collect $200!');
+        }
+        // update player current position
+        return (newPositionAfterRoll % boardLength);
+      }
+    
+      movePlayer() {
+        // get the cell numbers
+        var oldCellNum = this.curCell;
+        var newCellNum = this.updatePosition();
+    
+        // get the innerHTML of the table inside the cell
+        var pic = document.getElementById('cell'+m+'grid'+this.playerNumber).innerHTML;
+    
+        // move the innerHTML of the table inside the cell to the same table in the next cell
+        var m = oldCellNum;
+    
+        var interval = setInterval(() => {
+          // Re-enable the button
+          if (m == newCellNum) {
+            document.getElementById("throw").disabled = false;
+          }
+          // Move character one square at a time from old position to new position
+          if (lap == false) {
+            if ((m % boardLength) < newCellNum) {
+                document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+                m = ((m+1) % boardLength);
+                document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+            } else {
+                oldCellNum = newCellNum;
+                clearInterval(int);
+            }
+          } else {
+              if ((m % boardLength) < newCellNum) {
+                  document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+                  m = ((m+1) % boardLength);
+                  document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+                  lap = false;
+              } else if (m == boardLength-1) { 
+                  document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+                  m = 0; 
+                  document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+                  lap = false;
+              } else if (m < boardLength) {
+                  document.getElementById('cell'+m+'grid'+0).innerHTML = '';
+                  m = ((m+1) % boardLength);
+                  document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
+              } else {
+                  lap = false;
+                  oldCellNum = newCellNum;
+                  clearInterval(int);
+              }
+            }
+          }, 500);
+
+        this.curCell = newCellNum;
+      }
+    
+    // logic not complete
+    buyProperty(square) {
+        console.log("player cash before purchase is: " + this.cash);
+        if (square.owner === 0) {
+        // update the square owner square to this player
+            square.owner = this;
+        // subtract the cash from player
+            this.cash -= square.price; 
+        // else if this is already owned by another player
+        // continue
+            console.log("player cash after purchase is: " + this.cash);
+            addToGameLog(this.name + " has bought " + square.name);
+        } else {
+            alert("Unable to buy the property");
+        }
+    }
+  
+    sellProperty(square) {
+      //check if this player owns the square
+      if (square.owner === this) {
+        // update the owner to null/no one
+        square.owner = 0; 
+        // add half the cash to player
+        this.cash += (square.price)*0.50; 
+        // else if this is already owned by another player
+        // continue
+        addToGameLog(this.name + " has sold " + square.name);
+      } else {
+        alert("Unable to sell the property");
+      }
+    }
+  
+    getPlayerPosition() {
+      return this.curCell;
+    }
+  }
+
+  // creating a player
+  let p1 = new Player("pee", "pic", 1);
+  
+  // returning the current player, this code needs to be changed to be more dynamic
+  function getCurrentPlayer() {
+    return p1; // how to do this?
+  }
+
+  const buyButton = document.getElementById('buyButton');
+  const sellButton = document.getElementById('sellButton');
+  
+  buyButton.addEventListener('click', function(e){
+      var currentPlayer = getCurrentPlayer();
+    //   console.log("current cell is: " + currentPlayer.curCell);
+      var playerPosition = currentPlayer.curCell; // should return int
+      var currentSquare = property[2]; //this will get the property
+    //   console.log("squre name is: " + currentSquare.name);
+      // already owned
+      if (currentSquare.owner != 0) {
+          alert("This property is already owned");
+      } 
+      //make sure they have enough cash
+      if (currentPlayer.cash >= currentSquare.price) {
+          var confirmed = confirm("Are you sure you want to buy this property?");
+          if (confirmed) {
+              currentPlayer.buyProperty(currentSquare);
+          }
+      } else {
+          alert("You do not have the funds to buy the property"); //add to gamelog
+          addToGameLog("You do not have the funds to buy the property");
+      }
+     
+  });
+  
+  sellButton.addEventListener('click', function(e){
+    var currentPlayer = getCurrentPlayer();
+    
+    var playerPosition = currentPlayer.curCell; 
+    var currentSquare = property[2]; 
+  //   console.log("squre name is: " + currentSquare.name);
+
+    if (currentSquare.owner != currentPlayer) {
+        alert("This property is not owned by you");
+    }
+    currentPlayer.sellProperty(currentSquare); 
+    //make sure they have enough cash
+    console.log("player cash after selling: " + currentPlayer.cash);
+  });
+  
+
 window.onload = function() {
     set_up_game_board()
-    addToGameLog('Welcome to Monopoly Vancouver! Throw the dice to begin.');
 }

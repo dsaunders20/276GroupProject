@@ -1,114 +1,97 @@
-var boardLength = 39;
+// // need to migrate everything to game_logics eventually
+// var boardLength = 39;
 
-// creating player class
-class Player {
-  constructor(name, picture, playerNumber) {
-    this.name = name;
-    this.cash = 1500;
-    this.picture = picture;
-    // this.prevCell = 0;
-    this.curCell = 0;
-    this.playerNumber = playerNumber;
-    // what other attributes we need?
-  }
+// const buyButton = document.getElementById('buyButton');
+// const sellButton = document.getElementById('sellButton');
 
-  updatePosition(stepsToMove) {
-    // get current player location
-    let currentPlayerPosition = this.curCell;
-    // get newPosition after roll
-    let newPositionAfterRoll = (currentPlayerPosition + stepsToMove); 
-    //update cash if the player completes one lap around the board
-    if (newPositionAfterRoll >= boardLength) { //makes full revolution
-      this.cash += 200;
-      addToGameLog('You made it around the board! Collect $200!');
-    }
-    // update player current position
-    return (newPositionAfterRoll % boardLength);
-  }
+// buyButton.addEventListener('click', function(e){
+//   //buy funcion
+//   // console.log('button was clicked');
+//   // how to get this property 
+//   var playerPosition = getPlayerPosition();
+//   var square = property[playerPosition];
+//   if (property.owner != 0) {
+//     alert("This property is already owned"); //add this to gamelog
+//   }
+//   if (Player.cash >= property.price) {
+//     var confirmed = confirm("Are you sure you want to buy this property?");
+//     if (confirmed) {
+//       //attempt to buy the property
+//       Player.buyProperty();
+//     }
+//   } else {
+//     alert("You do not have the funds to buy the property"); //add to gamelog
+//     addToGameLog("You do not have the funds to buy the property");
+//   }
+  
+  
+// });
 
-  movePlayer() {
-    // get the cell numbers
-    var oldCellNum = this.curCell;
-    var newCellNum = this.updatePosition();
+// sellButton.addEventListener('click', function(e){
+//   //sell funcion
+// });
 
-    // get the innerHTML of the table inside the cell
-    var pic = document.getElementById('cell'+m+'grid'+this.playerNumber).innerHTML;
+// // creating player class
+// class Player {
+//   constructor(name, picture) {
+//     this.name = name;
+//     this.cash = 1500;
+//     this.picture = picture;
+//     this.position = 0;
+//     // what other attributes we need?
+//   }
 
-    // move the innerHTML of the table inside the cell to the same table in the next cell
-    var m = oldCellNum;
-
-    var interval = setInterval(() => {
-      // Re-enable the button
-      if (m == newCellNum) {
-        document.getElementById("throw").disabled = false;
-      }
-      // Move character one square at a time from old position to new position
-      if (lap == false) {
-        if ((m % boardLength) < newCellNum) {
-            document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-            m = ((m+1) % boardLength);
-            document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
-        } else {
-            oldCellNum = newCellNum;
-            clearInterval(int);
-        }
-      } else {
-          if ((m % boardLength) < newCellNum) {
-              document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-              m = ((m+1) % boardLength);
-              document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
-              lap = false;
-          } else if (m == boardLength-1) { 
-              document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-              m = 0; 
-              document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
-              lap = false;
-          } else if (m < boardLength) {
-              document.getElementById('cell'+m+'grid'+0).innerHTML = '';
-              m = ((m+1) % boardLength);
-              document.getElementById('cell'+m+'grid'+0).innerHTML = pic;
-          } else {
-              lap = false;
-              oldCellNum = newCellNum;
-              clearInterval(int);
-          }
-        }
-      }, 500);
-    
-    // I think below code needs players' avatars as Image objects
-
-    /* 
-    // get the old cell and new cell objects
-    var oldCell = document.getElementById('cell' + oldCellNum + 'grid' + this.playerNumber);
-    var newCell = document.getElementById('cell' + newCellNum + 'grid' + this.playerNumber);
-
-    // get the positions of the old and new cell
-    var oldCellLeft = oldCell.getBoundingClientRect().left;
-    var OldCellTop = oldCell.getBoundingClientRect().top;
-    var newCellLeft = newCell.getBoundingClientRect().left;
-    var newCellTop = newCell.getBoundingClientRect().top;
-    */
-    
-
-    this.curCell = newCellNum;
-  }
+//   movePlayer(stepsToMove = 0) {
+//     // get current player location
+//     let currentPlayerPosition = this.id.position;
+//     // get newPosition after roll
+//     let newPositionAfterRoll = currentPlayerPosition + stepsToMove; 
+//     //update cash if the player completes one lap around the board
+//     if (newPositionAfterRoll >= boardLength) { //makes full revolution
+//       this.cash += 200;
+//     }
+//     // update player current position
+//     this.id.position = newPositionAfterRoll;
+//   }
   
   // logic not complete
-  buy(square) {
-    if (this.id.position === square.id) {
-      // check owner
-      // if no owner buy the field
-      square.owner = this;
-      this.cash -= square.cost; //assuming there is a class called square with these properties
-      // else if this is already owned by another player
-      // continue
-    }
-  }
-  // todo
-  // trade
-  // tax
-  // jail
+  // buyProperty(property) {
+  //   // double check, the if statement should be redundent
+  //   if (property.owner === 0) {
+  //     // update the square owner property to this player, is this doable in js?
+  //     property.owner = this;
+  //     // subtract the cash from player
+  //     this.cash -= property.price; 
+  //     // else if this is already owned by another player
+  //     // continue
+  //   } else {
+  //     alert("Unable to buy the property");
+  //   }
+//   }
 
-}
+  // sellProperty(property) {
+  //   //check if this player owns the property
+  //   if (property.owner === this) {
+  //     // update the owner to null/no one
+  //     property.owner = 0; 
+  //     // add half the cash to player
+  //     this.cash += (property.price)*0.50; 
+  //     // else if this is already owned by another player
+  //     // continue
+  //   } else {
+  //     alert("Unable to sell the property");
+  //   }
+  // }
 
-module.exports = PlayerControl;
+//   getPlayerPosition() {
+//     return this.position;
+//   }
+
+//   // todo
+//   // trade
+//   // tax
+//   // jail
+
+// }
+
+// // module.exports = PlayerControl;
