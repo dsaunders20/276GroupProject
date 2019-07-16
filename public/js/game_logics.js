@@ -54,7 +54,12 @@ async function throwDice() {
 
     var double = await rollDice()
     
-    addToGameLog('You rolled a ' + (randomd0+randomd1) + '!');
+    var rollTotal = randomd0+randomd1;
+    if (rollTotal == 8 || rollTotal == 11)
+    {
+        addToGameLog('You rolled an ' + (randomd0+randomd1) + '!');
+    }
+    else addToGameLog('You rolled a ' + (randomd0+randomd1) + '!');
     
     if ((double == 1) && (doubleCount < 2)) {
         doubleCount++

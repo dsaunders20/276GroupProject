@@ -14,20 +14,19 @@ function getWeather() {
 		designWeather(data);
 	})
 	.catch(function() {
-        
-		// catch any errors
+        document.getElementById('temp').innerHTML = ('Response Error');
 	});
 }
 function designWeather( d ) {
-  var celcius = Math.round(parseFloat(d.main.temp)-273.15);
-	var fahrenheit = Math.round(((parseFloat(d.main.temp)-273.15)*1.8)+32);
-  var description = d.weather[0].description; 
+    var celcius = Math.round(parseFloat(d.main.temp)-273.15);
+    //var fahrenheit = Math.round(((parseFloat(d.main.temp)-273.15)*1.8)+32);
+    var description = d.weather[0].description; 
 	
 	document.getElementById('description').innerHTML = description;
 	document.getElementById('temp').innerHTML = celcius + '&deg;';
 	document.getElementById('location').innerHTML = d.name;
   
-  if( description.indexOf('rain') > 0 ) {
+  if( description.indexOf('rain') > 0 || description.indexOf('storm') > 0) {
       document.getElementById('weather').style.backgroundImage = "url(http://bestanimations.com/Nature/Water/rain/rain-nature-animated-gif-21.gif)";
   }
   else {
