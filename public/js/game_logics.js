@@ -130,7 +130,12 @@ window.throwDice = async function() {
 
     var double = await rollDice()
     
-    addToGameLog('You rolled a ' + (randomd0+randomd1) + '!');
+    var rollTotal = randomd0+randomd1;
+    if (rollTotal == 8 || rollTotal == 11)
+    {
+        addToGameLog('You rolled an ' + (randomd0+randomd1) + '!');
+    }
+    else addToGameLog('You rolled a ' + (randomd0+randomd1) + '!');
     
     if ((double == 1) && (doubleCount < 2)) {
         doubleCount++
@@ -219,7 +224,7 @@ function set_up_game_board(){
     //initialize properties on the board
     property[0] = new Property("Start", "COLLECT $200 TRAVEL SUBSIDY AS YOU PASS.", "#FFFFFF");
     property[1] = new Property("Pacific Center", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
-    property[2] = new Property("Daive St.", "$80", "#8B4513",60, 3, 2, 10, 30, 90, 160, 250);
+    property[2] = new Property("Davie St.", "$80", "#8B4513",60, 3, 2, 10, 30, 90, 160, 250);
     property[3] = new Property("Top Of Vancouver Restaurant", "$60", "#8B4513", 60, 3, 4, 20, 60, 180, 320, 450);
     property[4] = new Property("Car Ticket", "Pay $200", "#FFFFFF");
     property[5] = new Property("Coal Habour", "$200", "#FFFFFF", 200, 1);
@@ -244,11 +249,11 @@ function set_up_game_board(){
     property[24] = new Property("Lynn Creek", "$240", "#FF0000", 240, 7, 20, 100, 300, 750, 925, 1100);
     property[25] = new Property("Deer Lake", "$200", "#FFFFFF", 200, 1);
     property[26] = new Property("Chinatown", "$260", "#FFFF00", 260, 8, 22, 110, 330, 800, 975, 1150);
-    property[27] = new Property("Steveston Fisherman’s Wharf", "$260", "#FFFF00", 260, 8, 22, 110, 330, 800, 975, 1150);
-    property[28] = new Property("Scotia Bank Theatre", "$150", "#FFFFFF", 150, 2);
+    property[27] = new Property("Steveston Wharf", "$260", "#FFFF00", 260, 8, 22, 110, 330, 800, 975, 1150);
+    property[28] = new Property("ScotiaBank Theatre", "$150", "#FFFFFF", 150, 2);
     property[29] = new Property("St. Paul's Hospital", "$280", "#FFFF00", 280, 8, 24, 120, 360, 850, 1025, 1200);
     property[30] = new Property("YVR Airport", "Travel to any destination you want in next turn.", "#FFFFFF");
-    property[31] = new Property("Granvile St.", "$300", "#008000", 300, 9, 26, 130, 390, 900, 110, 1275);
+    property[31] = new Property("Granville St.", "$300", "#008000", 300, 9, 26, 130, 390, 900, 110, 1275);
     property[32] = new Property("Waterfront", "$300", "#008000", 300, 9, 26, 130, 390, 900, 110, 1275);
     property[33] = new Property("Rogers Arena", "FOLLOW INSTRUCTIONS ON TOP CARD", "#FFFFFF");
     property[34] = new Property("BC Place", "$320", "#008000", 320, 9, 28, 150, 450, 1000, 1200, 1400);
@@ -320,7 +325,8 @@ function set_up_game_board(){
 
 		document.getElementById("enlarge" + i + "color").style.backgroundColor = s.color;
 		document.getElementById("enlarge" + i + "name").textContent = s.name;
-		document.getElementById("enlarge" + i + "price").textContent = s.pricetext;
+        document.getElementById("enlarge" + i + "price").textContent = s.pricetext;
+        //document.getElementById("enlarge" + i + "token").innerHTML = '<img style="width: 120px; height: 50px; position: relative; top: -20px; z-index: -5;"src="' + searchTerm + '"' + ">";
     }
     
     // add character image to P0 of first square on the board
@@ -373,9 +379,11 @@ function set_up_game_board(){
 //
 //		element.style.left = (e.clientX + 10) + "px";
 //	});
+    getWeather();
 }
 
 
 window.onload = function() {
     set_up_game_board()
+    addToGameLog('Welcome to Monopoly Vancouver! Throw the dice to begin.');
 }

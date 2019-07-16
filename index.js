@@ -1,22 +1,27 @@
 const express = require('express')
+var cors = require('cors')
 const path = require('path')
 const PORT = process.env.PORT || 5000
 
 const app = express()
 
 const { Pool } = require('pg');
-// var pool = new Pool({
-//   host: 'localhost',
-//   database: 'postgres'
-// });
 
-const pool = new Pool({
- connectionString: process.env.DATABASE_URL
+//// use this for testing
+var pool = new Pool({
+  host: 'localhost',
+  database: 'postgres'
 });
+
+//// use this block for heroku app
+// const pool = new Pool({
+//  connectionString: process.env.DATABASE_URL
+// });
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
+app.use('/', cors());
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
@@ -120,3 +125,5 @@ app.use(function(error, req, res, next) {
   });
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
+
+module.exports = app;
