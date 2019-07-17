@@ -291,6 +291,9 @@ class Player {
         //update cash if the player completes one lap around the board
         if (newPositionAfterRoll >= boardLength) { //makes full revolution
             this.cash += 200;
+            var playerMoney = parseInt(document.getElementById('player_money_'+getCurrentPlayer()).innerHTML);
+            playerMoney += 200;
+            document.getElementById('player_money_'+getCurrentPlayer()).innerHTML = playerMoney;
             addToGameLog(this.name + ' made it around the board! Collect $200!');
         }
         
