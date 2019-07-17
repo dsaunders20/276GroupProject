@@ -92,7 +92,16 @@
             <td class="cell board-right" id="cell35"></td>
         </tr>
         <tr>
-            <td class="cell board-left" id="cell14"></td>
+            <td class="cell board-left" id="cell14">
+                <section class="container">
+                    <div class="card" onclick="flip()">
+                      <div  class="front"><img  onclick="changeImage();" src="images/chanceCard.jpeg"></div>
+                       <div class="back"><img  id="cardImage"  name="canvas" src="images/end.jpg"></div>
+                    </div>
+                  </section>
+
+
+            </td>
             <td colspan="5" class="board-center"></td>
             <td style="border:none;" rowspan="4" colspan="4">
                 <div class="container">
@@ -186,7 +195,8 @@
     <script type="text/javascript" src="/js/BingSearch.js"></script>
     <script type="text/javascript" src="/js/Weather.js"></script>
     <link rel="stylesheet" type="text/css" href="/stylesheets/gameboard.css" />
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,900" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,900" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/chance.css" />
     
 </footer>
 

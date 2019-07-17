@@ -482,3 +482,35 @@ window.onload = function () {
     document.getElementById("throw").disabled = false
 
 }
+
+function flip() {
+    $('.card').toggleClass('flipped');
+}
+
+
+var imagearray = ["/images/c1.png", "/images/c2.png","/images/c3.png", "/images/c4.png", 
+                 "/images/c5.png", "/images/c6.png", "/images/c7.png", "/images/c8.png" , 
+                 "/images/c9.png", "/images/c10.png", "/images/c11.png", "/images/c12.png", 
+                 "/images/c13.png", "/images/c14.png", "/images/c15.png", "/images/c16.png", 
+                 "/images/c17.png", "/images/c18.png", "/images/c19.png", "/images/c20.png"];
+
+function changeImage()
+{
+if(imagearray.length != 0){
+    var element=document.getElementById('cardImage');
+    var x = Math.floor((Math.random() * imagearray.length));
+    console.log(x);
+
+
+
+
+      element.src=imagearray[x];
+    imagearray.splice(x, 1);  
+        console.log(imagearray);
+}
+    else{
+         var element=document.getElementById('cardImage');
+        element.src="/images/end.jpg"
+    }
+}
+
