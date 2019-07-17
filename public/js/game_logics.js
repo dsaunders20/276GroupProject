@@ -508,7 +508,7 @@ var imagearray = ["/images/c1.png", "/images/c2.png","/images/c3.png", "/images/
                  "/images/c5.png", "/images/c6.png", "/images/c7.png", "/images/c8.png" , 
                  "/images/c9.png", "/images/c10.png", "/images/c11.png", "/images/c12.png", 
                  "/images/c13.png", "/images/c14.png", "/images/c15.png", "/images/c16.png", 
-                 "/images/c17.png", "/images/c18.png", "/images/c19.png", "/images/c20.png"];
+                 "/images/c17.png", "/images/c18.png", "/images/c19.png", "/images/c20.png", "/images/c21.png"];
 
 function changeImage()
 {
