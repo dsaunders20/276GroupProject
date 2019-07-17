@@ -355,6 +355,7 @@ class Player {
                                 document.getElementById('cell' + m + 'positionholder').innerHTML = '';
                                 m = ((m + 1) % boardLength);
                                 document.getElementById('cell' + m + 'positionholder').appendChild(character_img);   
+
                           }else{
                             m = (newPositionAfterRoll % boardLength)
                             this.curCell = (newPositionAfterRoll % boardLength);
@@ -364,7 +365,8 @@ class Player {
                 }
 
 
-            }, 500);
+
+            }, 500); 
     }
     
 
@@ -423,6 +425,11 @@ function addToGameLog(message) {
     var Log = document.getElementById('gameLog');
     Log.scrollTop = Log.scrollHeight;
 }
+function updateCash(player){
+    player_money = document.getElementById("player_money_" + player.playerNumber);
+    player_money.innerHTML = player.cash;
+    return;
+};
 
 window.onload = function () {
 
@@ -430,6 +437,9 @@ window.onload = function () {
     let player_num = 1;
     
     set_up_game_board()
+    
+    // retrieve current weather and display
+    getWeather();
     
     //retrieve players info
     $.ajax({
