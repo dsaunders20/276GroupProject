@@ -9,7 +9,7 @@
     perspective: 800px;
 }
 .card {
-    left:200px;
+    left:300px;
     width: 30%;
     height: 35%;
     position: absolute;
@@ -54,5 +54,5 @@
 
 #cardImage{
     width:250px;
-    height:220px;
+    height:243px;
 }
