@@ -229,11 +229,12 @@ const buyButton = document.getElementById('buyButton');
 const sellButton = document.getElementById('sellButton');
 
 buyButton.addEventListener('click', function (e) {
-    var currentPlayer = getCurrentPlayer();
+    var currentPlayerNum = getCurrentPlayer();
+    var currentPlayer = players[currentPlayerNum-1];
     //   console.log("current cell is: " + currentPlayer.curCell);
     var playerPosition = currentPlayer.curCell; // should return int
     // this is hard coded currently, change 2 to playerPosition
-    var currentSquare = property[2]; //this will get the property
+    var currentSquare = property[playerPosition]; //this will get the property
     //   console.log("squre name is: " + currentSquare.name);
     // already owned
     if (currentSquare.owner != 0) {
@@ -253,10 +254,12 @@ buyButton.addEventListener('click', function (e) {
 });
 
 sellButton.addEventListener('click', function (e) {
-    var currentPlayer = getCurrentPlayer();
+    var currentPlayerNum = getCurrentPlayer();
+    var currentPlayer = players[currentPlayerNum-1];
     var playerPosition = currentPlayer.curCell;
+    console.log("player position is: " + playerPosition);
     // this is hard coded currently, change 2 to playerPosition
-    var currentSquare = property[2];
+    var currentSquare = property[playerPosition];
     //   console.log("squre name is: " + currentSquare.name);
     if (currentSquare.owner != currentPlayer) {
         alert("This property is not owned by you");
@@ -288,6 +291,9 @@ class Player {
         //update cash if the player completes one lap around the board
         if (newPositionAfterRoll >= boardLength) { //makes full revolution
             this.cash += 200;
+            var playerMoney = parseInt(document.getElementById('player_money_'+getCurrentPlayer()).innerHTML);
+            playerMoney += 200;
+            document.getElementById('player_money_'+getCurrentPlayer()).innerHTML = playerMoney;
             addToGameLog(this.name + ' made it around the board! Collect $200!');
         }
         
@@ -315,14 +321,13 @@ class Player {
         
         var interval = setInterval(() => {
                 // Re-enable the button
-                if (m == newPositionAfterRoll) {
+                if (m == (newPositionAfterRoll % boardLength)) {
                     document.getElementById("throw").disabled = false;
                 }
         
                  
                 if(lap == false){
                         if((m % boardLength) < newPositionAfterRoll){
-                            console.log("wrong");
                             document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
                             m = ((m + 1) % boardLength);
                             document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
@@ -351,8 +356,8 @@ class Player {
                                 m = ((m + 1) % boardLength);
                                 document.getElementById('cell' + m + 'positionholder').appendChild(character_img);   
                           }else{
-                            m = newPositionAfterRoll;
-                            this.curCell = newPositionAfterRoll;
+                            m = (newPositionAfterRoll % boardLength)
+                            this.curCell = (newPositionAfterRoll % boardLength);
                             clearInterval(interval); 
                          }
                     }
@@ -362,9 +367,9 @@ class Player {
             }, 500);
     }
     
-        // logic not complete
+
     buyProperty(square) {
-        console.log("player cash before purchase is: " + this.cash);
+        // console.log("player cash before purchase is: " + this.cash);
         if (square.owner === 0) {
             // update the square owner square to this player
             square.owner = this;
@@ -372,26 +377,31 @@ class Player {
             this.cash -= square.price;
             // else if this is already owned by another player
             // continue
-            console.log("player cash after purchase is: " + this.cash);
+            // console.log("player cash after purchase is: " + this.cash);
+            // updating innerHTML
+            document.getElementById('player_money_1').innerHTML -= square.price;
             addToGameLog(this.name + " has bought " + square.name);
         }
         else {
             alert("Unable to buy the property");
         }
     }
+    // sell == mortgage - fix this for the next iteration
     sellProperty(square) {
         //check if this player owns the square
         if (square.owner === this) {
             // update the owner to null/no one
-            square.owner = 0;
+            // square.owner = 0; -- dont want to update the owner since its mortgage
             // add half the cash to player
-            this.cash += (square.price) * 0.50;
-            // else if this is already owned by another player
-            // continue
-            addToGameLog(this.name + " has sold " + square.name);
+            let mortgageValue = square.price * 0.50;
+            this.cash += mortgageValue;
+            var playerMoney = parseInt(document.getElementById('player_money_1').innerHTML);
+            playerMoney += mortgageValue;
+            document.getElementById('player_money_1').innerHTML = playerMoney;
+            addToGameLog(this.name + " has mortgaged " + square.name);
         }
         else {
-            alert("Unable to sell the property");
+            alert("Unable to mortgage the property");
         }
     }
     getPlayerPosition() {
@@ -450,7 +460,7 @@ window.onload = function () {
         var character_img2 = document.createElement("img");
         character_img.src = "/images/" + (players[i].picture) + "character.png";
         character_img2.src = "/images/" + (players[i].picture) + "character.png";
-        player_picture.appendChild(character_img2);
+        player_picture.appendChild(character_img2   );
         
         // add character image to first square on the board
         character_img.setAttribute("height", "auto");
