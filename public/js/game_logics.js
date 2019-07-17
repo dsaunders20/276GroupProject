@@ -122,8 +122,8 @@ function set_up_game_board() {
     //initialize properties on the board
     property[0] = new Property("Start", "COLLECT $200 TRAVEL SUBSIDY AS YOU PASS.", "#FFFFFF");
     property[1] = new Property("Pacific Center", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
-    property[2] = new Property("Daive St.", "$80", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
-    property[3] = new Property("Top Of Vancouver Restaurant", "$60", "#8B4513", 60, 3, 4, 20, 60, 180, 320, 450);
+    property[2] = new Property("Daive St.", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
+    property[3] = new Property("Top Of Vancouver Restaurant", "$80", "#8B4513", 80, 3, 4, 20, 60, 180, 320, 450);
     property[4] = new Property("Car Ticket", "Pay $200", "#FFFFFF");
     property[5] = new Property("Coal Habour", "$200", "#FFFFFF", 200, 1);
     property[6] = new Property("Granville Island", "$100", "#87CEEB", 100, 4, 6, 30, 90, 270, 400, 550);
@@ -291,9 +291,10 @@ class Player {
         //update cash if the player completes one lap around the board
         if (newPositionAfterRoll >= boardLength) { //makes full revolution
             this.cash += 200;
-            var playerMoney = parseInt(document.getElementById('player_money_'+getCurrentPlayer()).innerHTML);
-            playerMoney += 200;
-            document.getElementById('player_money_'+getCurrentPlayer()).innerHTML = playerMoney;
+            // var playerMoney = parseInt(document.getElementById('player_money_'+getCurrentPlayer()).innerHTML);
+            // playerMoney += 200;
+            // document.getElementById('player_money_'+getCurrentPlayer()).innerHTML = playerMoney;
+            updateCash(this);
             addToGameLog(this.name + ' made it around the board! Collect $200!');
         }
         
@@ -397,9 +398,10 @@ class Player {
             // add half the cash to player
             let mortgageValue = square.price * 0.50;
             this.cash += mortgageValue;
-            var playerMoney = parseInt(document.getElementById('player_money_1').innerHTML);
-            playerMoney += mortgageValue;
-            document.getElementById('player_money_1').innerHTML = playerMoney;
+            // var playerMoney = parseInt(document.getElementById('player_money_1').innerHTML);
+            // playerMoney += mortgageValue;
+            // document.getElementById('player_money_1').innerHTML = playerMoney;
+            updateCash(this);
             square.mortgage = true; 
             addToGameLog(this.name + " has mortgaged " + square.name);
         }
