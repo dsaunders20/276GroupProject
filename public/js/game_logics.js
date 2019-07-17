@@ -470,7 +470,9 @@ window.onload = function () {
         var character_img2 = document.createElement("img");
         character_img.src = "/images/" + (players[i].picture) + "character.png";
         character_img2.src = "/images/" + (players[i].picture) + "character.png";
-        player_picture.appendChild(character_img2   );
+        character_img2.setAttribute("width","120px");
+        character_img2.setAttribute("height","160px");
+        player_picture.appendChild(character_img2);
         
         // add character image to first square on the board
         character_img.setAttribute("height", "auto");
@@ -487,8 +489,43 @@ window.onload = function () {
         
         player_estate_value = document.getElementById("player_estate_value_" + player_num);
         player_estate_value.innerHTML = players[i].estate_value;
+        
+        document.getElementById("player_" + player_num).style.display="inline-table";
+        document.getElementById("player_holder" +player_num).style.display="none";
     } 
     
     document.getElementById("throw").disabled = false
 
 }
+
+function flip() {
+    $('.card').toggleClass('flipped');
+}
+
+
+var imagearray = ["/images/c1.png", "/images/c2.png","/images/c3.png", "/images/c4.png", 
+                 "/images/c5.png", "/images/c6.png", "/images/c7.png", "/images/c8.png" , 
+                 "/images/c9.png", "/images/c10.png", "/images/c11.png", "/images/c12.png", 
+                 "/images/c13.png", "/images/c14.png", "/images/c15.png", "/images/c16.png", 
+                 "/images/c17.png", "/images/c18.png", "/images/c19.png", "/images/c20.png"];
+
+function changeImage()
+{
+if(imagearray.length != 0){
+    var element=document.getElementById('cardImage');
+    var x = Math.floor((Math.random() * imagearray.length));
+    console.log(x);
+
+
+
+
+      element.src=imagearray[x];
+    imagearray.splice(x, 1);  
+        console.log(imagearray);
+}
+    else{
+         var element=document.getElementById('cardImage');
+        element.src="/images/end.jpg"
+    }
+}
+
