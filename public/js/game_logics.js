@@ -291,6 +291,9 @@ class Player {
         //update cash if the player completes one lap around the board
         if (newPositionAfterRoll >= boardLength) { //makes full revolution
             this.cash += 200;
+            var playerMoney = parseInt(document.getElementById('player_money_'+getCurrentPlayer()).innerHTML);
+            playerMoney += 200;
+            document.getElementById('player_money_'+getCurrentPlayer()).innerHTML = playerMoney;
             addToGameLog(this.name + ' made it around the board! Collect $200!');
         }
         
@@ -364,7 +367,7 @@ class Player {
             }, 500);
     }
     
-        // logic not complete
+
     buyProperty(square) {
         // console.log("player cash before purchase is: " + this.cash);
         if (square.owner === 0) {
@@ -383,19 +386,22 @@ class Player {
             alert("Unable to buy the property");
         }
     }
+    // sell == mortgage - fix this for the next iteration
     sellProperty(square) {
         //check if this player owns the square
         if (square.owner === this) {
             // update the owner to null/no one
-            square.owner = 0;
+            // square.owner = 0; -- dont want to update the owner since its mortgage
             // add half the cash to player
-            this.cash += (square.price) * 0.50;
-            // else if this is already owned by another player
-            // continue
-            addToGameLog(this.name + " has sold " + square.name);
+            let mortgageValue = square.price * 0.50;
+            this.cash += mortgageValue;
+            var playerMoney = parseInt(document.getElementById('player_money_1').innerHTML);
+            playerMoney += mortgageValue;
+            document.getElementById('player_money_1').innerHTML = playerMoney;
+            addToGameLog(this.name + " has mortgaged " + square.name);
         }
         else {
-            alert("Unable to sell the property");
+            alert("Unable to mortgage the property");
         }
     }
     getPlayerPosition() {
@@ -481,3 +487,35 @@ window.onload = function () {
     document.getElementById("throw").disabled = false
 
 }
+
+function flip() {
+    $('.card').toggleClass('flipped');
+}
+
+
+var imagearray = ["/images/c1.png", "/images/c2.png","/images/c3.png", "/images/c4.png", 
+                 "/images/c5.png", "/images/c6.png", "/images/c7.png", "/images/c8.png" , 
+                 "/images/c9.png", "/images/c10.png", "/images/c11.png", "/images/c12.png", 
+                 "/images/c13.png", "/images/c14.png", "/images/c15.png", "/images/c16.png", 
+                 "/images/c17.png", "/images/c18.png", "/images/c19.png", "/images/c20.png"];
+
+function changeImage()
+{
+if(imagearray.length != 0){
+    var element=document.getElementById('cardImage');
+    var x = Math.floor((Math.random() * imagearray.length));
+    console.log(x);
+
+
+
+
+      element.src=imagearray[x];
+    imagearray.splice(x, 1);  
+        console.log(imagearray);
+}
+    else{
+         var element=document.getElementById('cardImage');
+        element.src="/images/end.jpg"
+    }
+}
+
