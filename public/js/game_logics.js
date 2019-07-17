@@ -391,7 +391,7 @@ class Player {
     // sell == mortgage - fix this for the next iteration
     sellProperty(square) {
         //check if this player owns the square
-        if (square.owner === this) {
+        if (square.owner === this && square.mortgage === false) {
             // update the owner to null/no one
             // square.owner = 0; -- dont want to update the owner since its mortgage
             // add half the cash to player
@@ -400,6 +400,7 @@ class Player {
             var playerMoney = parseInt(document.getElementById('player_money_1').innerHTML);
             playerMoney += mortgageValue;
             document.getElementById('player_money_1').innerHTML = playerMoney;
+            square.mortgage = true; 
             addToGameLog(this.name + " has mortgaged " + square.name);
         }
         else {
