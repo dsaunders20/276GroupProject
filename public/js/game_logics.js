@@ -454,7 +454,9 @@ window.onload = function () {
         var character_img2 = document.createElement("img");
         character_img.src = "/images/" + (players[i].picture) + "character.png";
         character_img2.src = "/images/" + (players[i].picture) + "character.png";
-        player_picture.appendChild(character_img2   );
+        character_img2.setAttribute("width","120px");
+        character_img2.setAttribute("height","160px");
+        player_picture.appendChild(character_img2);
         
         // add character image to first square on the board
         character_img.setAttribute("height", "auto");
@@ -471,6 +473,9 @@ window.onload = function () {
         
         player_estate_value = document.getElementById("player_estate_value_" + player_num);
         player_estate_value.innerHTML = players[i].estate_value;
+        
+        document.getElementById("player_" + player_num).style.display="inline-table";
+        document.getElementById("player_holder" +player_num).style.display="none";
     } 
     
     document.getElementById("throw").disabled = false

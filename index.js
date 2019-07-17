@@ -58,7 +58,7 @@ app.post('/signup', function(req, res){
     }
     if (found === false)
     {
-      var query = "INSERT INTO users (username, password) VALUES ($1, $2)";
+      var query = "INSERT INTO users (username, password,type) VALUES ($1, $2,'user')";
 
       pool.query(query, [req_username, req_password], (error, result) => {
           if (error) {throw error}
