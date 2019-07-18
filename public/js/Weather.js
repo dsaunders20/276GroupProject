@@ -1,6 +1,10 @@
 const key = '4240f00cca3ecdaea7524a862117c079';
 const cityID = 6173331  // id for Vancouver
 
+window.onload = function() {
+    getWeather();
+};
+
 function getWeather() {
     if(key.length != 32) 
     {

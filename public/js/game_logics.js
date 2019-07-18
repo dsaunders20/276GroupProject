@@ -484,7 +484,7 @@ window.onload = function () {
     set_up_game_board()
     
     // retrieve current weather and display
-    getWeather();
+    //getWeather();
     
     //retrieve players info
     $.ajax({
