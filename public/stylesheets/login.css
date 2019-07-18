@@ -1,0 +1,30 @@
+#weather {
+	padding-right: 10px;
+	padding-left: 10px;
+	font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: .1em .1em 0 rgba(0,0,0,0.3);
+	font-size: 1.3em;
+	height: 80px;
+	width: 500px;
+    border: 2px black solid;
+}
+#weather-text {
+	color: grey;
+	font-style: italic;
+}
+h1 {
+    margin: 0 auto;
+    text-align: center;
+    color: #fff;
+    font-size: 3em;
+}
+#weather-wrapper {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
