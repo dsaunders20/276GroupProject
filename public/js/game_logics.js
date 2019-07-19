@@ -442,7 +442,7 @@ window.onload = function () {
     set_up_game_board()
     
     // retrieve current weather and display
-    //getWeather();
+    bingImageSearch('granville island');
     
     //retrieve players info
     $.ajax({
