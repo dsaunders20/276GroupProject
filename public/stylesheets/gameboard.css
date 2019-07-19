@@ -86,6 +86,14 @@ h1 {
 	cursor: pointer; /* Pointer/hand icon */
   }
 
+/* disabling buttons */
+.playerOptions-btn-group button:disabled {
+	background-color: #6b5b69; /* different purple background */
+	color: white; /* White text */
+	cursor: not-allowed; /* Pointer/hand icon */
+	pointer-events: none; 
+}
+
 .cell {
 	position: relative;
 	top: 0px;

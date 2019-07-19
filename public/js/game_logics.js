@@ -1,6 +1,8 @@
 //Global Variables
 let players = [];
 let boardLength = 40;
+// making property a global variable so it can be used to buy/sell/trade
+var property = [];
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
@@ -114,8 +116,7 @@ function Property(name, pricetext, color, price, groupNumber, baserent, level1, 
         this.houseprice = 0;
     }
 }
-// making property a global variable so it can be used to buy/sell/trade
-var property = [];
+
 // set up the board game
 function set_up_game_board() {
     // var property = [];
@@ -226,7 +227,9 @@ function set_up_game_board() {
 
 //Buy and Sell
 const buyButton = document.getElementById('buyButton');
-const sellButton = document.getElementById('sellButton');
+const sellButton = document.getElementById('sellButton'); //mortgage
+buyButton.disabled = true;
+sellButton.disabled = true;
 
 buyButton.addEventListener('click', function (e) {
     var currentPlayerNum = getCurrentPlayer();
@@ -241,7 +244,7 @@ buyButton.addEventListener('click', function (e) {
         alert("This property is already owned");
     }
     //make sure they have enough cash
-    if (currentPlayer.cash >= currentSquare.price) {
+    if (currentPlayer.cash >= currentSquare.price && currentSquare.owner == 0) {
         var confirmed = confirm("Are you sure you want to buy this property?");
         if (confirmed) {
             currentPlayer.buyProperty(currentSquare);
@@ -297,8 +300,7 @@ class Player {
             updateCash(this);
             addToGameLog(this.name + ' made it around the board! Collect $200!');
         }
-        
-        
+        checkValidSquareBuy(property[newPositionAfterRoll]);
         
         var m = this.curCell;
         
@@ -378,12 +380,17 @@ class Player {
             square.owner = this;
             // subtract the cash from player
             this.cash -= square.price;
+            this.properties++;
             // else if this is already owned by another player
             // continue
             // console.log("player cash after purchase is: " + this.cash);
             // updating innerHTML
-            document.getElementById('player_money_1').innerHTML -= square.price;
-            addToGameLog(this.name + " has bought " + square.name);
+            // document.getElementById('player_money_1').innerHTML -= square.price;
+            updateCash(this);
+            updatePlayerPropertyOwned(this);
+            addToGameLog(this.name + " has bought " + square.name + " for $" + square.price + " (-)");
+            buyButton.disabled = true; 
+            checkValidSquareMortgage(property[this.curCell], this);
         }
         else {
             alert("Unable to buy the property");
@@ -402,8 +409,18 @@ class Player {
             // playerMoney += mortgageValue;
             // document.getElementById('player_money_1').innerHTML = playerMoney;
             updateCash(this);
-            square.mortgage = true; 
-            addToGameLog(this.name + " has mortgaged " + square.name);
+            square.mortgage = true;
+            document.getElementById('sellButton').innerHTML = "Unmortgage"; 
+            addToGameLog(this.name + " has mortgaged " + square.name + " for $" + mortgageValue + " (+)");
+        } else if (square.owner === this && square.mortgage === true) { 
+            var confirmed = confirm("Are you sure you want to unmortgage this property?");
+            if (confirmed) {
+                var unmortgageValue = square.price * 0.60;
+                this.cash -= unmortgageValue;
+                updateCash(this);
+                document.getElementById('sellButton').innerHTML = "Mortgage";
+                addToGameLog(this.name + " has unmortgaged " + square.name + " for $" + unmortgageValue + " (-)");
+            }
         }
         else {
             alert("Unable to mortgage the property");
@@ -419,6 +436,25 @@ function getCurrentPlayer() {
     return current_player_num; // how to do this?
 }
 
+// to allow for buy/mortage
+function checkValidSquareBuy(square) {
+    if (square.price != 0) {
+        buyButton.disabled = false; 
+    } else if (square.owner != 0) {
+        buyButton.disabled = true; 
+    }
+    else {
+        buyButton.disabled = true; 
+    }
+}
+
+function checkValidSquareMortgage(square, player) {
+    if (square.owner === player) {
+        sellButton.disabled = false; 
+    } else {
+        sellButton.disabled = true;
+    }
+}
 
 // adding messages to the game log
 function addToGameLog(message) {
@@ -431,6 +467,12 @@ function addToGameLog(message) {
 function updateCash(player){
     player_money = document.getElementById("player_money_" + player.playerNumber);
     player_money.innerHTML = player.cash;
+    return;
+};
+
+function updatePlayerPropertyOwned(player) {
+    player_properties = document.getElementById("player_property_" + player.playerNumber);
+    player_properties.innerHTML = player.properties;
     return;
 };
 
