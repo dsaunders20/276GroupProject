@@ -8,15 +8,15 @@ const app = express()
 const { Pool } = require('pg');
 
 // use this for testing
-var pool = new Pool({
-  host: 'localhost',
-  database: 'postgres'
-});
+// var pool = new Pool({
+//   host: 'localhost',
+//   database: 'postgres'
+// });
 
 // use this block for heroku app
-// const pool = new Pool({
-//  connectionString: process.env.DATABASE_URL
-// });
+const pool = new Pool({
+ connectionString: process.env.DATABASE_URL
+});
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());

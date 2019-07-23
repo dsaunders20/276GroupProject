@@ -127,7 +127,7 @@ function renderSearchResults(results) {
 // handle Bing search request results
 function handleBingResponse() {
     //hideDivs("noresults");
-
+    //console.log(id);
     var json = this.responseText.trim();
     var jsobj = {};
 
@@ -137,20 +137,16 @@ function handleBingResponse() {
     } catch(e) {
         console.log("invalid json response")
     }
-
-    // show raw JSON and HTTP request
-    // showDiv("json", preFormat(JSON.stringify(jsobj, null, 2)));
-    // showDiv("http", preFormat("GET " + this.responseURL + "\n\nStatus: " + this.status + " " + 
-    //     this.statusText + "\n" + this.getAllResponseHeaders()));
-
     // if HTTP response is 200 OK, try to render search results
     if (this.status === 200) {
-        //var clientid = this.getResponseHeader("X-MSEdge-ClientID");
-        //if (clientid) retrieveValue(CLIENT_ID_COOKIE, clientid);
+
         if (json.length) {
             if (jsobj._type === "Images") {
-                //if (jsobj.nextOffset) document.forms.bing.nextoffset.value = jsobj.nextOffset;
-                console.log(jsobj.value[0].contentUrl);
+                var image = jsobj.value[0].contentUrl;
+                imagePlace = document.getElementById("enlarge" + 21 + "token");
+                imagePlace.style.backgroundImage = "url("+image+")";
+                
+                console.log(image);
             } else {
                 console.log("No search results in JSON response");
             }
@@ -165,8 +161,8 @@ function handleBingResponse() {
     }
 }
 
-// perform a search given query, options string, and API key
-function bingImageSearch(query) {
+// perform a search given query and cell id
+function bingImageSearch(query, id) {
 
     var request = new XMLHttpRequest();
     var searchQuery = query + ' Vancouver';
@@ -188,7 +184,41 @@ function bingImageSearch(query) {
     // if (clientid) request.setRequestHeader("X-MSEdge-ClientID", clientid);
     
     // event handler for successful response
-    request.addEventListener("load", handleBingResponse);
+    request.addEventListener("load", function(){
+        var json = this.responseText.trim();
+        var jsobj = {};
+
+        // try to parse JSON results
+        try {
+            if (json.length) jsobj = JSON.parse(json);
+        } catch(e) {
+            console.log("invalid json response")
+        }
+        // if HTTP response is 200 OK, try to render search results
+        if (this.status === 200) {
+
+            if (json.length) {
+                if (jsobj._type === "Images") {
+                    var image = jsobj.value[0].contentUrl;
+                    imagePlace = document.getElementById("enlarge" + id + "token");
+                    imagePlace.style.backgroundImage = "url("+image+")";
+                    
+                    
+                    // console.log(image);
+                } else {
+                    console.log("No search results in JSON response");
+                }
+            } else {
+                console.log("Empty response (are you sending too many requests too quickly?)");
+            }
+        }
+
+        // Any other HTTP response is an error
+        else {
+            console.log('error');
+        }
+    });
+
     
     // event handler for erorrs
     request.addEventListener("error", function() {

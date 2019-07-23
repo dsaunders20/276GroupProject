@@ -3,6 +3,7 @@
 <head>
     <title>Monopoly Vancouver</title>
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="/js/BingSearch.js"></script>
 </head>
 
 <body>
@@ -166,48 +167,48 @@
     <table id="board">
         <tr>
             <td class="cell board-corner" id="cell20"></td>
-            <td class="cell board-top" id="cell21"></td>
+            <td class="cell board-top" id="cell21" onclick="bingImageSearch('Capilano Bridge', 21)"></td>
             <td class="cell board-top" id="cell22"></td>
-            <td class="cell board-top" id="cell23"></td>
-            <td class="cell board-top" id="cell24"></td>
-            <td class="cell board-top" id="cell25"></td>
-            <td class="cell board-top" id="cell26"></td>
-            <td class="cell board-top" id="cell27"></td>
-            <td class="cell board-top" id="cell28"></td>
-            <td class="cell board-top" id="cell29"></td>
-            <td class="cell board-corner" id="cell30"></td>
+            <td class="cell board-top" id="cell23" onclick="bingImageSearch('Burnaby Public Library', 23)"></td>
+            <td class="cell board-top" id="cell24" onclick="bingImageSearch('Lynn Creek', 24)"></td>
+            <td class="cell board-top" id="cell25" onclick="bingImageSearch('Deer Lake', 25)"></td>
+            <td class="cell board-top" id="cell26" onclick="bingImageSearch('China Town', 26)"></td>
+            <td class="cell board-top" id="cell27" onclick="bingImageSearch('Steveston Wharf', 27)"></td>
+            <td class="cell board-top" id="cell28" onclick="bingImageSearch('ScotiaBank Theatre', 28)"></td>
+            <td class="cell board-top" id="cell29" onclick="bingImageSearch('St. Pauls Hospital', 29)"></td>
+            <td class="cell board-corner" id="cell30" onclick="bingImageSearch('YVR Airport', 30)"></td>
         </tr>
         <tr>
-            <td class="cell board-left" id="cell19"></td>
-            <td colspan="9" class="board-center"></td>
+            <td class="cell board-left" id="cell19" onclick="bingImageSearch('English Bay', 19)"></td>
+            <td colspan="9" class="board-center" onclick="bingImageSearch('Granville St.', 31)"></td>
             <td class="cell board-right" id="cell31"></td>
         </tr>
         <tr>
-            <td class="cell board-left" id="cell18"></td>
+            <td class="cell board-left" id="cell18" onclick="bingImageSearch('Kitsilano Beach', 18)"></td>
             <td colspan="9" class="board-center"></td>
-            <td class="cell board-right" id="cell32"></td>
+            <td class="cell board-right" id="cell32" onclick="bingImageSearch('Waterfront Station', 32)"></td>
         </tr>
         <tr>
-            <td class="cell board-left" id="cell17"></td>
+            <td class="cell board-left" id="cell17" onclick="bingImageSearch('Playland', 17)"></td>
             <td colspan="9" class="board-center"></td>
-            <td class="cell board-right" id="cell33"></td>
+            <td class="cell board-right" id="cell33" onclick="bingImageSearch('Rogers Arena', 33)"></td>
         </tr>
         <tr>
-            <td class="cell board-left" id="cell16"></td>
+            <td class="cell board-left" id="cell16" onclick="bingImageSearch('Grouse Mountain', 16)"></td>
             <td colspan="9" class="board-center"></td>
-            <td class="cell board-right" id="cell34"></td>
+            <td class="cell board-right" id="cell34" onclick="bingImageSearch('BC Place', 34)"></td>
         </tr>
         <tr>
-            <td class="cell board-left" id="cell15"></td>
+            <td class="cell board-left" id="cell15" onclick="bingImageSearch('Metropolis Metrotown', 15)"></td>
             <td colspan="9" class="board-center"></td>
-            <td class="cell board-right" id="cell35"></td>
+            <td class="cell board-right" id="cell35" onclick="bingImageSearch('Science World', 35)"></td>
         </tr>
         <tr>
-            <td class="cell board-left" id="cell14">
+            <td class="cell board-left" id="cell14" onclick="bingImageSearch('Vancouver Aquarium', 14)">
                 <section class="container">
                     <div class="card" onclick="flip()">
                       <div  class="front"><img  onclick="changeImage();" src="images/chanceCard.jpeg"></div>
-                       <div class="back"><img  id="cardImage"  name="canvas" src="images/end.jpg"></div>
+                       <!-- <div class="back"><img  id="cardImage"  name="canvas" src="images/end.jpg"></div> -->
                     </div>
                   </section>
 
@@ -244,33 +245,33 @@
             <td class="cell board-right" id="cell36"></td>
         </tr>
         <tr>
-            <td class="cell board-left" id="cell13"></td>
+            <td class="cell board-left" id="cell13" onclick="bingImageSearch('Queen Elizabeth Park', 13)"></td>
             <td colspan="9" class="board-center"></td>
-            <td class="cell board-right" id="cell37"></td>
+            <td class="cell board-right" id="cell37" onclick="bingImageSearch('Robson Street', 37)"></td>
         </tr>
         <tr>
-            <td class="cell board-left" id="cell12"></td>
+            <td class="cell board-left" id="cell12" onclick="bingImageSearch('White Rock', 12)"></td>
             <td colspan="9" class="board-center"></td>
-            <td class="cell board-right" id="cell38"></td>
+            <td class="cell board-right" id="cell38" onclick="bingImageSearch('Parq Casino', 38)"></td>
         </tr>
         <tr>
-            <td class="cell board-left" id="cell11"></td>
+            <td class="cell board-left" id="cell11" onclick="bingImageSearch('Simon Fraser University', 11)"></td>
             <td colspan="9" class="board-center">
                 <div id="jail"></div>
             </td>
-            <td class="cell board-right" id="cell39"></td>
+            <td class="cell board-right" id="cell39" onclick="bingImageSearch('Canada Place', 39)"></td>
         </tr>
         <tr>
             <td class="cell board-corner" id="cell10"></td>
-            <td class="cell board-bottom" id="cell9"></td>
-            <td class="cell board-bottom" id="cell8"></td>
-            <td class="cell board-bottom" id="cell7"></td>
-            <td class="cell board-bottom" id="cell6"></td>
-            <td class="cell board-bottom" id="cell5"></td>
+            <td class="cell board-bottom" id="cell9" onclick="bingImageSearch('Stanley Park', 9)"></td>
+            <td class="cell board-bottom" id="cell8" onclick="bingImageSearch('Gastown', 8)"></td>
+            <td class="cell board-bottom" id="cell7" onclick="bingImageSearch('Vancouver Art Gallery', 7)"></td>
+            <td class="cell board-bottom" id="cell6" onclick="bingImageSearch('Granville Island', 6)"></td>
+            <td class="cell board-bottom" id="cell5" onclick="bingImageSearch('Coal Harbour', 5)"></td>
             <td class="cell board-bottom" id="cell4"></td>
-            <td class="cell board-bottom" id="cell3"></td>
-            <td class="cell board-bottom" id="cell2"></td>
-            <td class="cell board-bottom" id="cell1"></td>
+            <td class="cell board-bottom" id="cell3" onclick="bingImageSearch('Top of Vancouver Restaurant', 3)"></td>
+            <td class="cell board-bottom" id="cell2" onclick="bingImageSearch('Davie Street', 2)"></td>
+            <td class="cell board-bottom" id="cell1" onclick="bingImageSearch('Pacific Center', 1)"></td>
             <td class="cell board-corner" id="cell0"></td>
         </tr>
     </table>
@@ -281,6 +282,7 @@
                 <button id="buyButton">Buy</button>
                 <button id="sellButton">Mortgage</button>
                 <button id="tradeButton">Trade</button>
+                <button id="endTurn">End Turn</button>
             </div>
     
             <div id="gameLog">
@@ -303,7 +305,6 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/js/game_logics.js"></script>
-    <script type="text/javascript" src="/js/BingSearch.js"></script>
     <link rel="stylesheet" type="text/css" href="/stylesheets/gameboard.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,900" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/stylesheets/chance.css" />

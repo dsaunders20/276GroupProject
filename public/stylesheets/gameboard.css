@@ -172,6 +172,11 @@ h1 {
 .enlarge-token {
 	height: 45px;
 	width: 150px;
+	background-size: 100% 100%;
+	position:relative; 
+	left: -2px;
+	top: -12px;
+	/* background-image: url('http://2.bp.blogspot.com/-lqgdvvK5pPM/TjqzswOyM_I/AAAAAAAADs8/T5wEBb36jmY/s1600/Capilano-Suspension-Bridge-Vancouver.jpg') */
 }
 
 .moneybarcell {

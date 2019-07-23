@@ -123,7 +123,7 @@ function set_up_game_board() {
     //initialize properties on the board
     property[0] = new Property("Start", "COLLECT $200 TRAVEL SUBSIDY AS YOU PASS.", "#FFFFFF");
     property[1] = new Property("Pacific Center", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
-    property[2] = new Property("Daive St.", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
+    property[2] = new Property("Davie St.", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
     property[3] = new Property("Top Of Vancouver Restaurant", "$80", "#8B4513", 80, 3, 4, 20, 60, 180, 320, 450);
     property[4] = new Property("Car Ticket", "Pay $200", "#FFFFFF");
     property[5] = new Property("Coal Habour", "$200", "#FFFFFF", 200, 1);
@@ -148,7 +148,7 @@ function set_up_game_board() {
     property[24] = new Property("Lynn Creek", "$240", "#FF0000", 240, 7, 20, 100, 300, 750, 925, 1100);
     property[25] = new Property("Deer Lake", "$200", "#FFFFFF", 200, 1);
     property[26] = new Property("Chinatown", "$260", "#FFFF00", 260, 8, 22, 110, 330, 800, 975, 1150);
-    property[27] = new Property("Steveston Fisherman’s Wharf", "$260", "#FFFF00", 260, 8, 22, 110, 330, 800, 975, 1150);
+    property[27] = new Property("Steveston Wharf", "$260", "#FFFF00", 260, 8, 22, 110, 330, 800, 975, 1150);
     property[28] = new Property("Scotia Bank Theatre", "$150", "#FFFFFF", 150, 2);
     property[29] = new Property("St. Paul's Hospital", "$280", "#FFFF00", 280, 8, 24, 120, 360, 850, 1025, 1200);
     property[30] = new Property("YVR Airport", "Travel to any destination you want in next turn.", "#FFFFFF");
@@ -300,7 +300,7 @@ class Player {
             updateCash(this);
             addToGameLog(this.name + ' made it around the board! Collect $200!');
         }
-        checkValidSquareBuy(property[newPositionAfterRoll]);
+        
         
         var m = this.curCell;
         
@@ -370,6 +370,7 @@ class Player {
 
 
             }, 500); 
+            checkValidSquareBuy(property[newPositionAfterRoll]);
     }
     
 
@@ -482,9 +483,6 @@ window.onload = function () {
     let player_num = 1;
     
     set_up_game_board()
-    
-    // retrieve current weather and display
-    bingImageSearch('granville island');
     
     //retrieve players info
     $.ajax({
