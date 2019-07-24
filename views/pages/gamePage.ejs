@@ -173,7 +173,7 @@
             <td class="cell board-top" id="cell24" onclick="bingImageSearch('Lynn Creek', 24)"></td>
             <td class="cell board-top" id="cell25" onclick="bingImageSearch('Deer Lake', 25)"></td>
             <td class="cell board-top" id="cell26" onclick="bingImageSearch('China Town', 26)"></td>
-            <td class="cell board-top" id="cell27" onclick="bingImageSearch('Steveston Wharf', 27)"></td>
+            <td class="cell board-top" id="cell27" onclick="bingImageSearch('Fishermans Wharf', 27)"></td>
             <td class="cell board-top" id="cell28" onclick="bingImageSearch('ScotiaBank Theatre', 28)"></td>
             <td class="cell board-top" id="cell29" onclick="bingImageSearch('St. Pauls Hospital', 29)"></td>
             <td class="cell board-corner" id="cell30" onclick="bingImageSearch('YVR Airport', 30)"></td>
@@ -205,12 +205,12 @@
         </tr>
         <tr>
             <td class="cell board-left" id="cell14" onclick="bingImageSearch('Vancouver Aquarium', 14)">
-                <section class="container">
+                <!-- <section class="container">
                     <div class="card" onclick="flip()">
                       <div  class="front"><img  onclick="changeImage();" src="images/chanceCard.jpeg"></div>
-                       <!-- <div class="back"><img  id="cardImage"  name="canvas" src="images/end.jpg"></div> -->
+                       <div class="back"><img  id="cardImage"  name="canvas" src="images/end.jpg"></div>
                     </div>
-                  </section>
+                  </section> -->
 
 
             </td>
@@ -265,7 +265,7 @@
             <td class="cell board-corner" id="cell10"></td>
             <td class="cell board-bottom" id="cell9" onclick="bingImageSearch('Stanley Park', 9)"></td>
             <td class="cell board-bottom" id="cell8" onclick="bingImageSearch('Gastown', 8)"></td>
-            <td class="cell board-bottom" id="cell7" onclick="bingImageSearch('Vancouver Art Gallery', 7)"></td>
+            <td class="cell board-bottom" id="cell7"></td>
             <td class="cell board-bottom" id="cell6" onclick="bingImageSearch('Granville Island', 6)"></td>
             <td class="cell board-bottom" id="cell5" onclick="bingImageSearch('Coal Harbour', 5)"></td>
             <td class="cell board-bottom" id="cell4"></td>
@@ -282,21 +282,44 @@
                 <button id="buyButton">Buy</button>
                 <button id="sellButton">Mortgage</button>
                 <button id="tradeButton">Trade</button>
-                <button id="endTurn">End Turn</button>
             </div>
     
             <div id="gameLog">
             
             </div>
+    </div>
+
+    <div id='chanceCards'>
+            <div class="card" onclick="flip()">
+              <div  class="front"><img  onclick="changeImage();" src="images/chanceCard.jpeg"></div>
+               <div class="back"><img  id="cardImage"  name="canvas" src="images/end.jpg"></div>
+            </div>
+    </div>
+
+    <section id="propertyListSection">
+        <div class="playerOptions-btn-group">
+                <button id = "ShowPropertyList" onclick="displayOwnedProperties()">Toggle Owned Properties</button>
         </div>
-        
-    <!-- weather api  -->
-    <!-- <p id="weather-text">Current Weather via OpenWeatherMap.org</p>
-    <div id="weather">
-        <div id="description">raining</div>
-        <h1 id="temp">10</h1>
-        <div id="location">Vancouver</div>
-    </div> -->
+        <Table id="propertyList">
+            <tr>
+                <td>Player 1</td>
+                <td>Player 2</td>
+            </tr>
+
+            <tr>
+                <td style="width: 200px;">
+                    <ul id="player1Properties">
+
+                    </ul>
+                </td>
+                <td style="width: 200px;">
+                    <ul id ="player2properties">
+
+                    </ul>
+                </td>
+            </tr>
+        </Table>
+    </section>
 </body>
 
 <footer>

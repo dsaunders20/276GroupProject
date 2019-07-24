@@ -3,6 +3,8 @@ let players = [];
 let boardLength = 40;
 // making property a global variable so it can be used to buy/sell/trade
 var property = [];
+// global turn property
+var turn = 0;
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
@@ -31,7 +33,7 @@ $("#throw").click(function () {
 })
 async function throwDice() {
     let current_player_num = getCurrentPlayer();
-    let player = players[current_player_num - 1];
+    let player = players[current_player_num];
     
     // Disable the button so user can't keep pressing it
     document.getElementById("throw").disabled = true
@@ -39,7 +41,7 @@ async function throwDice() {
     addToGameLog("[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
     if ((double == 1) && (doubleCount < 2)) {
         doubleCount++
-        addToGameLog('Doubles!  Roll again!')
+        addToGameLog('Doubles! Roll again!')
     }
     else {
         doubleCount = 0
@@ -49,7 +51,7 @@ async function throwDice() {
     }
     // Re-enable the button
     //document.getElementById("throw").disabled = false
-    player.updatePosition(randomd0 + randomd1);
+    player.updatePosition(randomd0+randomd1);
 }
 
 // Roll the dice with visual representation and return whether we rolled a double
@@ -119,16 +121,16 @@ function Property(name, pricetext, color, price, groupNumber, baserent, level1, 
 
 // set up the board game
 function set_up_game_board() {
-    // var property = [];
+
     //initialize properties on the board
     property[0] = new Property("Start", "COLLECT $200 TRAVEL SUBSIDY AS YOU PASS.", "#FFFFFF");
     property[1] = new Property("Pacific Center", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
     property[2] = new Property("Davie St.", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
     property[3] = new Property("Top Of Vancouver Restaurant", "$80", "#8B4513", 80, 3, 4, 20, 60, 180, 320, 450);
-    property[4] = new Property("Car Ticket", "Pay $200", "#FFFFFF");
+    property[4] = new Property("Parking Ticket", "Pay $200", "#FFFFFF");
     property[5] = new Property("Coal Habour", "$200", "#FFFFFF", 200, 1);
     property[6] = new Property("Granville Island", "$100", "#87CEEB", 100, 4, 6, 30, 90, 270, 400, 550);
-    property[7] = new Property("Vancouver Art Gallery", "FOLLOW INSTRUCTIONS ON TOP CARD", "#FFFFFF");
+    property[7] = new Property("Chance", "FOLLOW INSTRUCTIONS ON TOP CARD", "#FFFFFF");
     property[8] = new Property("GasTown", "$100", "#87CEEB", 100, 4, 6, 30, 90, 270, 400, 550);
     property[9] = new Property("Stanley Park", "$120", "#87CEEB", 120, 4, 8, 40, 100, 300, 450, 600);
     property[10] = new Property("Arrested", "Never overspeed in Vancouver", "#FFFFFF");
@@ -138,7 +140,7 @@ function set_up_game_board() {
     property[14] = new Property("Vancouver Aquarium", "$160", "#FF0080", 160, 5, 12, 60, 180, 500, 700, 900);
     property[15] = new Property("Metrotown", "$200", "#FFFFFF", 200, 1);
     property[16] = new Property("Grouse Mountain", "$180", "#FFA500", 180, 6, 14, 70, 200, 550, 750, 950);
-    property[17] = new Property("Play Land", "FOLLOW INSTRUCTIONS ON TOP CARD", "#FFFFFF");
+    property[17] = new Property("PlayLand", "$150", "#FFFFFF", 150, 2);
     property[18] = new Property("Kitsilano Beach", "$180", "#FFA500", 180, 6, 14, 70, 200, 550, 750, 950);
     property[19] = new Property("English Bay", "$200", "#FFA500", 200, 6, 16, 80, 220, 600, 800, 1000);
     property[20] = new Property("Parking Lot", "", "#FFFFFF");
@@ -154,12 +156,12 @@ function set_up_game_board() {
     property[30] = new Property("YVR Airport", "Travel to any destination you want in next turn.", "#FFFFFF");
     property[31] = new Property("Granvile St.", "$300", "#008000", 300, 9, 26, 130, 390, 900, 110, 1275);
     property[32] = new Property("Waterfront", "$300", "#008000", 300, 9, 26, 130, 390, 900, 110, 1275);
-    property[33] = new Property("Rogers Arena", "FOLLOW INSTRUCTIONS ON TOP CARD", "#FFFFFF");
+    property[33] = new Property("Rogers Arena", "$150", "#FFFFFF", 150, 2);
     property[34] = new Property("BC Place", "$320", "#008000", 320, 9, 28, 150, 450, 1000, 1200, 1400);
     property[35] = new Property("Science World", "$200", "#FFFFFF", 200, 1);
     property[36] = new Property("Chance", "FOLLOW INSTRUCTIONS ON TOP CARD", "#FFFFFF");
     property[37] = new Property("Robson Street", "$350", "#0000FF", 350, 10, 35, 175, 500, 1100, 1300, 1500);
-    property[38] = new Property("Parq Casino", "Pay $100", "#FFFFFF");
+    property[38] = new Property("Parq Casino Gambling", "Pay $100", "#FFFFFF");
     property[39] = new Property("Canada Place", "$400", "#0000FF", 400, 10, 50, 200, 600, 1400, 1700, 2000);
     //apply property on the game board 
     var board_text = document.body.appendChild(document.createElement("div"));
@@ -233,7 +235,7 @@ sellButton.disabled = true;
 
 buyButton.addEventListener('click', function (e) {
     var currentPlayerNum = getCurrentPlayer();
-    var currentPlayer = players[currentPlayerNum-1];
+    var currentPlayer = players[currentPlayerNum];
     //   console.log("current cell is: " + currentPlayer.curCell);
     var playerPosition = currentPlayer.curCell; // should return int
     // this is hard coded currently, change 2 to playerPosition
@@ -258,7 +260,7 @@ buyButton.addEventListener('click', function (e) {
 
 sellButton.addEventListener('click', function (e) {
     var currentPlayerNum = getCurrentPlayer();
-    var currentPlayer = players[currentPlayerNum-1];
+    var currentPlayer = players[currentPlayerNum];
     var playerPosition = currentPlayer.curCell;
     console.log("player position is: " + playerPosition);
     // this is hard coded currently, change 2 to playerPosition
@@ -291,6 +293,9 @@ class Player {
         let currentPlayerPosition = this.curCell;
         // get newPosition after roll
         let newPositionAfterRoll = (currentPlayerPosition + stepsToMove);
+
+        // used for checking if user is on a 'penalty square'
+        let newPositionAfterRoll2 = (currentPlayerPosition + stepsToMove) % boardLength;
         //update cash if the player completes one lap around the board
         if (newPositionAfterRoll >= boardLength) { //makes full revolution
             this.cash += 200;
@@ -369,10 +374,35 @@ class Player {
 
 
 
-            }, 500); 
-            checkValidSquareBuy(property[newPositionAfterRoll]);
+            }, 100); 
+            // enable or disable the buy button depending on the property
+            if (property[newPositionAfterRoll2].groupNumber == 0)
+            {
+                buyButton.disabled = true;
+            }
+            else {
+                buyButton.disabled = false;
+            }
+            //checkValidSquareBuy(property[newPositionAfterRoll]);
+
+            if (newPositionAfterRoll2 === 4)
+            {
+                this.cash -= 200
+                updateCash(this);
+                addToGameLog(this.name + ' paid $200 for a Parking Ticket!');
+            } 
+            if (newPositionAfterRoll2 === 38)
+            {
+                this.cash -= 100
+                updateCash(this);
+                addToGameLog(this.name + ' lost $100 gambling.. Unlucky!');
+            }
+    //         // landing at the airport
+    //         if (newPositionAfterRoll2 === 30)
+    //         {
+    //             airport(this);
+    //         }
     }
-    
 
     buyProperty(square) {
         // console.log("player cash before purchase is: " + this.cash);
@@ -406,6 +436,9 @@ class Player {
             // add half the cash to player
             let mortgageValue = square.price * 0.50;
             this.cash += mortgageValue;
+            // reset the houses and hotels to 0??
+            square.house = 0;
+            square.hotel = 0;
             // var playerMoney = parseInt(document.getElementById('player_money_1').innerHTML);
             // playerMoney += mortgageValue;
             // document.getElementById('player_money_1').innerHTML = playerMoney;
@@ -433,8 +466,7 @@ class Player {
 }
 
 function getCurrentPlayer() {
-    let current_player_num = 1
-    return current_player_num; // how to do this?
+    return turn;
 }
 
 // to allow for buy/mortage
@@ -470,12 +502,80 @@ function updateCash(player){
     player_money.innerHTML = player.cash;
     return;
 };
+function updateTurn()
+{
+    turn = (turn + 1) % players.length;
+}
+
+function sendTo(position, player)
+{
+    player.updatePosition(position);
+}
 
 function updatePlayerPropertyOwned(player) {
     player_properties = document.getElementById("player_property_" + player.playerNumber);
     player_properties.innerHTML = player.properties;
     return;
 };
+
+// properties that each player currently owns
+var player1Owns = [];
+var player2Owns = [];
+
+function displayOwnedProperties(){
+ 
+    var player1Cell = document.getElementById("player1Properties");
+    for (var i = 0; i < 40; i++)
+    {
+        if (property[i].owner.playerNumber == 1){
+            if (player1Owns.indexOf(property[i].name) == -1){
+                var text = property[i].name;
+                player1Owns.push(text);
+                var node = document.createElement("LI");                 // Create a <li> node
+                var textnode = document.createTextNode(text);           // Create a text node
+                node.appendChild(textnode);                              // Append the text to <li>
+                player1Cell.appendChild(node);
+            }
+            else{
+                continue
+            }
+        }
+    }
+    var player2Cell = document.getElementById("player2Properties");
+    for (var i = 0; i < 40; i++)
+    {
+        if (property[i].owner.playerNumber == 2){
+            if (player2Owns.indexOf(property[i].name) == -1){
+                var text = property[i].name;
+                player2Owns.push(text);
+                var node = document.createElement("LI");                 // Create a <li> node
+                var textnode = document.createTextNode(text);           // Create a text node
+                node.appendChild(textnode);                              // Append the text to <li>
+                player2Cell.appendChild(node);
+            }
+            else{
+                continue
+            }
+        }
+    }
+
+    
+
+   var x = document.getElementById("propertyList");
+   if (x.style.display === "none"){
+       x.style.display = "block";
+   }
+   else{
+       x.style.display = "none";
+   }
+
+}
+
+// function airport(player){
+
+//     var location = window.prompt("enter the number of spaces you would like to advance: ");
+//     player.updatePosition(location);
+// }
 
 window.onload = function () {
 
