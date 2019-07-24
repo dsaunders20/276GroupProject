@@ -412,6 +412,7 @@ class Player {
             // subtract the cash from player
             this.cash -= square.price;
             this.properties++;
+            this.estate_value += square.price;
             // else if this is already owned by another player
             // continue
             // console.log("player cash after purchase is: " + this.cash);
@@ -419,6 +420,7 @@ class Player {
             // document.getElementById('player_money_1').innerHTML -= square.price;
             updateCash(this);
             updatePlayerPropertyOwned(this);
+            updateEstateValue(this);
             addToGameLog(this.name + " has bought " + square.name + " for $" + square.price + " (-)");
             buyButton.disabled = true; 
             checkValidSquareMortgage(property[this.curCell], this);
@@ -436,6 +438,7 @@ class Player {
             // add half the cash to player
             let mortgageValue = square.price * 0.50;
             this.cash += mortgageValue;
+            this.estate_value -= square.price;
             // reset the houses and hotels to 0??
             square.house = 0;
             square.hotel = 0;
@@ -443,6 +446,7 @@ class Player {
             // playerMoney += mortgageValue;
             // document.getElementById('player_money_1').innerHTML = playerMoney;
             updateCash(this);
+            updateEstateValue(this);
             square.mortgage = true;
             document.getElementById('sellButton').innerHTML = "Unmortgage"; 
             addToGameLog(this.name + " has mortgaged " + square.name + " for $" + mortgageValue + " (+)");
@@ -502,6 +506,10 @@ function updateCash(player){
     player_money.innerHTML = player.cash;
     return;
 };
+function updateEstateValue(player){
+    player_estate_value = document.getElementById("player_estate_value_" + player.playerNumber);
+    player_estate_value.innerHTML = player.estate_value;
+}
 function updateTurn()
 {
     turn = (turn + 1) % players.length;
