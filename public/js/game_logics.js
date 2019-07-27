@@ -278,7 +278,7 @@ sellButton.addEventListener('click', function (e) {
 
 // ----------------------------------- Player ------------------------------------------
 class Player {
-    constructor(name, picture, playerNumber) {
+    constructor(name, picture, playerNumber, color) {
         this.name = name;
         this.cash = 1500;
         this.picture = picture;
@@ -286,6 +286,7 @@ class Player {
         this.estate_value = 0;
         this.properties = 0;
         this.playerNumber = playerNumber;
+        this.color = color;
         // what other attributes we need?
     }
     updatePosition(stepsToMove) {
@@ -428,12 +429,19 @@ class Player {
             addToGameLog(this.name + " has bought " + square.name + " for $" + square.price + " (-)");
             buyButton.disabled = true; 
             checkValidSquareMortgage(property[this.curCell], this);
+            let i = this.curCell; 
+            let currentCellOwner = document.getElementById("cell" + i + "owner");
+            currentCellOwner.style.display = "block"; 
+            currentCellOwner.style.backgroundColor = this.color; 
+			currentCellOwner.title = this.name;
+            
         }
         else {
             alert("Unable to buy the property");
         }
     }
     // sell == mortgage - fix this for the next iteration
+    // do we remove player color if we mortgage the property?
     sellProperty(square) {
         //check if this player owns the square
         if (square.owner === this && square.mortgage === false) {
@@ -583,6 +591,18 @@ function displayOwnedProperties(){
 
 }
 
+// from stackOverflow: 
+// https://stackoverflow.com/questions/1484506/random-color-generator
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+  
+
 // function airport(player){
 
 //     var location = window.prompt("enter the number of spaces you would like to advance: ");
@@ -593,7 +613,7 @@ window.onload = function () {
 
     let ajax_data;
     let player_num = 1;
-    
+    let player_color; 
     set_up_game_board()
     
     //retrieve players info
@@ -608,7 +628,8 @@ window.onload = function () {
     });
     
     ajax_data.forEach(function(element){
-        let player = new Player(element.username, element.picture, player_num);
+        player_color = getRandomColor();
+        let player = new Player(element.username, element.picture, player_num, player_color);
         players.push(player);
         player_num ++;
     });
@@ -618,7 +639,8 @@ window.onload = function () {
         player_num = i+1
         player_name = document.getElementById("player_name_" + player_num);
         player_name.innerHTML = players[i].playerNumber;
-        
+        // player_color = getRandomColor(); 
+        // player_color = "#FF0000"; 
         
         player_picture = document.getElementById("player_picture_" + player_num);
         var character_img = document.createElement("img");
@@ -649,8 +671,7 @@ window.onload = function () {
         document.getElementById("player_holder" +player_num).style.display="none";
     } 
     
-    document.getElementById("throw").disabled = false
-
+    document.getElementById("throw").disabled = false;
 }
 
 function flip() {
