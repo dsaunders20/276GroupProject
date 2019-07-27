@@ -397,6 +397,10 @@ class Player {
                 updateCash(this);
                 addToGameLog(this.name + ' lost $100 gambling.. Unlucky!');
             }
+            document.getElementById('sellButton').innerHTML = "Mortgage"; 
+            if (property[newPositionAfterRoll2].owner != this) {
+                sellButton.disabled = true; 
+            }
     //         // landing at the airport
     //         if (newPositionAfterRoll2 === 30)
     //         {

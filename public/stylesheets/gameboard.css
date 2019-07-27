@@ -94,8 +94,10 @@ h1 {
 }
 #propertyListSection{
 	position: relative;
-	left: 100px;
-	top: -100px;
+	/* top: -650px;
+	left: 450px; */
+	left: 800px;
+	top: -775px;
 }
 /* button color */
 .playerOptions-btn-group button {
