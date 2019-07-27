@@ -227,6 +227,14 @@ function set_up_game_board() {
 
 }
 
+//resign
+resignButton.addEventListener('click', function(e) {
+    var confirmed = confirm("Are you sure you want to resign?");
+    if (confirmed) {
+        //resign
+    }
+});
+
 //Buy and Sell
 const buyButton = document.getElementById('buyButton');
 const sellButton = document.getElementById('sellButton'); //mortgage
@@ -402,13 +410,15 @@ class Player {
             if (property[newPositionAfterRoll2].owner != this) {
                 sellButton.disabled = true; 
             }
+
+            payRent(property[newPositionAfterRoll2], this);
+
     //         // landing at the airport
     //         if (newPositionAfterRoll2 === 30)
     //         {
     //             airport(this);
     //         }
     }
-
     buyProperty(square) {
         // console.log("player cash before purchase is: " + this.cash);
         if (square.owner === 0) {
@@ -498,7 +508,7 @@ function checkValidSquareBuy(square) {
 }
 
 function checkValidSquareMortgage(square, player) {
-    if (square.owner === player) {
+    if (square.owner === player.name) {
         sellButton.disabled = false; 
     } else {
         sellButton.disabled = true;
@@ -536,6 +546,19 @@ function updatePlayerPropertyOwned(player) {
     player_properties = document.getElementById("player_property_" + player.playerNumber);
     player_properties.innerHTML = player.properties;
     return;
+};
+
+function payRent(square, player) {
+    //  TODO: calculate special railroad rent
+    rent = square.baserent; 
+    if (square.owner != 0 && square.mortgage === false) {
+        if (square.owner != player) {
+            player.cash -= rent; 
+            addToGameLog(player.name + " payed $" + rent + " to " + square.owner);
+            updateCash(player);
+        }
+    }
+
 };
 
 // properties that each player currently owns
