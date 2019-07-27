@@ -553,12 +553,14 @@ function payRent(square, player) {
     rent = square.baserent; 
     if (square.owner != 0 && square.mortgage === false) {
         if (square.owner != player) {
+            let player2 = square.owner; 
             player.cash -= rent; 
-            addToGameLog(player.name + " payed $" + rent + " to " + square.owner);
+            player2.cash += rent; 
+            addToGameLog(player.name + " payed $" + rent + " to " + player2.name);
             updateCash(player);
+            updateCash(player2);
         }
     }
-
 };
 
 // properties that each player currently owns
