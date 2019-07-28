@@ -1,3 +1,4 @@
+
 //Global Variables
 let players = [];
 let boardLength = 40;
@@ -5,6 +6,7 @@ let boardLength = 40;
 var property = [];
 // global turn property
 var turn = 0;
+var totalTurn = 0;
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
@@ -42,16 +44,21 @@ async function throwDice() {
     if ((double == 1) && (doubleCount < 2)) {
         doubleCount++
         addToGameLog('Doubles! Roll again!')
+        // player.updatePosition(randomd0+randomd1);
+        player.updatePosition(8);
+    }
+
+    else if (doubleCount == 3) {
+        addToGameLog(player.name + ' rolled doubles 3 times!  You are sent to jail!')
     }
     else {
         doubleCount = 0
-    }
-    if (doubleCount == 3) {
-        addToGameLog(player.name + ' rolled doubles 3 times!  You are sent to jail!')
+        // player.updatePosition(randomd0+randomd1);
+        player.updatePosition(8);
     }
     // Re-enable the button
     //document.getElementById("throw").disabled = false
-    player.updatePosition(randomd0+randomd1);
+    // player.updatePosition(randomd0+randomd1);
 }
 
 // Roll the dice with visual representation and return whether we rolled a double
@@ -127,20 +134,20 @@ function set_up_game_board() {
     property[1] = new Property("Pacific Center", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
     property[2] = new Property("Davie St.", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
     property[3] = new Property("Top Of Vancouver Restaurant", "$80", "#8B4513", 80, 3, 4, 20, 60, 180, 320, 450);
-    property[4] = new Property("Parking Ticket", "Pay $200", "#FFFFFF");
-    property[5] = new Property("Coal Habour", "$200", "#FFFFFF", 200, 1);
+    property[4] = new Property("SFU Parking Ticket", "Pay $200", "#FFFFFF");
+    property[5] = new Property("Coal Habour", "$200", "#FFFFFF", 200, 1, 8);
     property[6] = new Property("Granville Island", "$100", "#87CEEB", 100, 4, 6, 30, 90, 270, 400, 550);
     property[7] = new Property("Chance", "FOLLOW INSTRUCTIONS ON TOP CARD", "#FFFFFF");
     property[8] = new Property("GasTown", "$100", "#87CEEB", 100, 4, 6, 30, 90, 270, 400, 550);
     property[9] = new Property("Stanley Park", "$120", "#87CEEB", 120, 4, 8, 40, 100, 300, 450, 600);
     property[10] = new Property("Arrested", "Never overspeed in Vancouver", "#FFFFFF");
     property[11] = new Property("Simon Fraser University", "$140", "#FF0080", 140, 5, 10, 50, 150, 450, 625, 750);
-    property[12] = new Property("White Rock", "$150", "#FFFFFF", 150, 2);
+    property[12] = new Property("White Rock", "$150", "#FFFFFF", 150, 2, 8);
     property[13] = new Property("Queen Elizabeth Park", "$140", "#FF0080", 140, 5, 10, 50, 150, 450, 625, 750);
     property[14] = new Property("Vancouver Aquarium", "$160", "#FF0080", 160, 5, 12, 60, 180, 500, 700, 900);
-    property[15] = new Property("Metrotown", "$200", "#FFFFFF", 200, 1);
+    property[15] = new Property("Metrotown", "$200", "#FFFFFF", 200, 1, 8);
     property[16] = new Property("Grouse Mountain", "$180", "#FFA500", 180, 6, 14, 70, 200, 550, 750, 950);
-    property[17] = new Property("PlayLand", "$150", "#FFFFFF", 150, 2);
+    property[17] = new Property("PlayLand", "$150", "#FFFFFF", 150, 2, 8);
     property[18] = new Property("Kitsilano Beach", "$180", "#FFA500", 180, 6, 14, 70, 200, 550, 750, 950);
     property[19] = new Property("English Bay", "$200", "#FFA500", 200, 6, 16, 80, 220, 600, 800, 1000);
     property[20] = new Property("Parking Lot", "", "#FFFFFF");
@@ -148,17 +155,17 @@ function set_up_game_board() {
     property[22] = new Property("Chance", "FOLLOW INSTRUCTIONS ON TOP CARD", "#FFFFFF");
     property[23] = new Property("Burnaby Public Library", "$220", "#FF0000", 220, 7, 18, 90, 250, 700, 875, 1050);
     property[24] = new Property("Lynn Creek", "$240", "#FF0000", 240, 7, 20, 100, 300, 750, 925, 1100);
-    property[25] = new Property("Deer Lake", "$200", "#FFFFFF", 200, 1);
+    property[25] = new Property("Deer Lake", "$200", "#FFFFFF", 200, 1, 8);
     property[26] = new Property("Chinatown", "$260", "#FFFF00", 260, 8, 22, 110, 330, 800, 975, 1150);
     property[27] = new Property("Steveston Wharf", "$260", "#FFFF00", 260, 8, 22, 110, 330, 800, 975, 1150);
-    property[28] = new Property("Scotia Bank Theatre", "$150", "#FFFFFF", 150, 2);
+    property[28] = new Property("Scotia Bank Theatre", "$150", "#FFFFFF", 150, 2, 8);
     property[29] = new Property("St. Paul's Hospital", "$280", "#FFFF00", 280, 8, 24, 120, 360, 850, 1025, 1200);
     property[30] = new Property("YVR Airport", "Travel to any destination you want in next turn.", "#FFFFFF");
     property[31] = new Property("Granvile St.", "$300", "#008000", 300, 9, 26, 130, 390, 900, 110, 1275);
     property[32] = new Property("Waterfront", "$300", "#008000", 300, 9, 26, 130, 390, 900, 110, 1275);
-    property[33] = new Property("Rogers Arena", "$150", "#FFFFFF", 150, 2);
+    property[33] = new Property("Rogers Arena", "$150", "#FFFFFF", 150, 2, 8);
     property[34] = new Property("BC Place", "$320", "#008000", 320, 9, 28, 150, 450, 1000, 1200, 1400);
-    property[35] = new Property("Science World", "$200", "#FFFFFF", 200, 1);
+    property[35] = new Property("Science World", "$200", "#FFFFFF", 200, 1, 8);
     property[36] = new Property("Chance", "FOLLOW INSTRUCTIONS ON TOP CARD", "#FFFFFF");
     property[37] = new Property("Robson Street", "$350", "#0000FF", 350, 10, 35, 175, 500, 1100, 1300, 1500);
     property[38] = new Property("Parq Casino Gambling", "Pay $100", "#FFFFFF");
@@ -254,7 +261,7 @@ buyButton.addEventListener('click', function (e) {
         alert("This property is already owned");
     }
     //make sure they have enough cash
-    if (currentPlayer.cash >= currentSquare.price && currentSquare.owner == 0) {
+    else if (currentPlayer.cash >= currentSquare.price && currentSquare.owner == 0) {
         var confirmed = confirm("Are you sure you want to buy this property?");
         if (confirmed) {
             currentPlayer.buyProperty(currentSquare);
@@ -281,6 +288,14 @@ sellButton.addEventListener('click', function (e) {
     //make sure they have enough cash
     console.log("player cash after selling: " + currentPlayer.cash);
 });
+// end turn button functionality
+const endTurn = document.getElementById('endTurnButton');
+endTurn.addEventListener('click', function(e) {
+    updateTurn();
+    // let player = players[getCurrentPlayer()];
+    // checkValidSquareBuy(property[player.curCell]);
+    // checkValidSquareMortgage(property[player.curCell], player);
+})
 // ----------------------------------- PROPERTIES ------------------------------------------
 
 
@@ -320,7 +335,7 @@ class Player {
         
         let lap, if_calculate_lap, reset;
     
-        if(m < boardLength && newPositionAfterRoll > boardLength){
+        if(m < boardLength && newPositionAfterRoll >= boardLength){
             lap = true
             if_calculate_lap = false
             reset = true
@@ -392,6 +407,10 @@ class Player {
             else {
                 buyButton.disabled = false;
             }
+            if (property[newPositionAfterRoll2].owner == this)
+            {
+                sellButton.disabled = false;
+            }
             //checkValidSquareBuy(property[newPositionAfterRoll]);
 
             if (newPositionAfterRoll2 === 4)
@@ -437,7 +456,7 @@ class Player {
             updatePlayerPropertyOwned(this);
             updateEstateValue(this);
             addToGameLog(this.name + " has bought " + square.name + " for $" + square.price + " (-)");
-            buyButton.disabled = true; 
+            //buyButton.disabled = true; 
             checkValidSquareMortgage(property[this.curCell], this);
             let i = this.curCell; 
             let currentCellOwner = document.getElementById("cell" + i + "owner");
@@ -535,6 +554,11 @@ function updateEstateValue(player){
 function updateTurn()
 {
     turn = (turn + 1) % players.length;
+    totalTurn++;
+    if (totalTurn >= 5)
+    {
+        endGame();
+    }
 }
 
 function sendTo(position, player)
@@ -550,6 +574,7 @@ function updatePlayerPropertyOwned(player) {
 
 function payRent(square, player) {
     //  TODO: calculate special railroad rent
+    // also need to determine if the square has any houses on it
     rent = square.baserent; 
     if (square.owner != 0 && square.mortgage === false) {
         if (square.owner != player) {
@@ -586,7 +611,7 @@ function displayOwnedProperties(){
             }
         }
     }
-    var player2Cell = document.getElementById("player2Properties");
+    var player2Cell = document.getElementById("player2properties");
     for (var i = 0; i < 40; i++)
     {
         if (property[i].owner.playerNumber == 2){
@@ -626,19 +651,52 @@ function getRandomColor() {
     }
     return color;
   }
-  
+function endGame()
+{
+    // get the player number of the winner
+    var winner = getWinner() + 1;
 
-// function airport(player){
+    var board = document.getElementById('board');
+    var chance = document.getElementById('chanceCards');
+    board.style.display = 'none';
+    chance.style.display = 'none';
+    var text = document.getElementById('endGame');
+    text.innerHTML = 'GAME OVER <br> Player ' + winner + ' is the Winner';
+    text.style.display = 'block';
 
-//     var location = window.prompt("enter the number of spaces you would like to advance: ");
-//     player.updatePosition(location);
-// }
+
+    // let data;
+    // $.ajax({
+    //     url: "/update_winning_player"
+    //     , context: this
+    //     , async: false
+    //     , success: function(result) {
+    //         data = result;
+    //     }
+    // })
+
+};
+function getWinner(){
+    var max = 0;
+    for (var i = 0; i < players.length - 1; i++)
+    {
+        for (var j = i + 1; j < players.length; j++)
+        {
+            if ((players[j].cash + players[j].estate_value) > (players[i].cash + players[i].estate_value))
+            {
+                max = j;
+            }
+        }
+    }
+    return max;
+}
 
 window.onload = function () {
 
     let ajax_data;
     let player_num = 1;
     let player_color; 
+    document.getElementById('endGame').style.display = 'none';
     set_up_game_board()
     
     //retrieve players info

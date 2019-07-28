@@ -135,6 +135,9 @@ app.get('/fetch_players_info',function(req,res,next){
 
 });
 
+// app.get('/update_winning_player', function(req, res, next){
+//   let query = 'update users set wins
+// })
 
 // handles errors
 app.use(function(error, req, res, next) {
