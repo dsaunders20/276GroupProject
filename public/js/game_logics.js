@@ -8,6 +8,8 @@ var property = [];
 var turn = 0;
 var totalTurn = 0;
 
+const diceButton = document.getElementById('throw');
+
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
 var face1 = new Image()
@@ -44,8 +46,9 @@ async function throwDice() {
     if ((double == 1) && (doubleCount < 2)) {
         doubleCount++
         addToGameLog('Doubles! Roll again!')
-        // player.updatePosition(randomd0+randomd1);
-        player.updatePosition(8);
+        diceButton.disabled=false;
+        player.updatePosition(randomd0+randomd1);
+        // player.updatePosition(8);
     }
 
     else if (doubleCount == 3) {
@@ -53,8 +56,9 @@ async function throwDice() {
     }
     else {
         doubleCount = 0
-        // player.updatePosition(randomd0+randomd1);
-        player.updatePosition(8);
+        diceButton.disabled = true;
+        player.updatePosition(randomd0+randomd1);
+        // player.updatePosition(8);
     }
     // Re-enable the button
     //document.getElementById("throw").disabled = false
@@ -257,8 +261,14 @@ buyButton.addEventListener('click', function (e) {
     var currentSquare = property[playerPosition]; //this will get the property
     //   console.log("squre name is: " + currentSquare.name);
     // already owned
-    if (currentSquare.owner != 0) {
+    if (property[playerPosition].groupNumber < 1)
+    {
+        alert('Sorry this property is not for sale!');
+        return;
+    }
+    else if (currentSquare.owner != 0) {
         alert("This property is already owned");
+        return;
     }
     //make sure they have enough cash
     else if (currentPlayer.cash >= currentSquare.price && currentSquare.owner == 0) {
@@ -266,10 +276,12 @@ buyButton.addEventListener('click', function (e) {
         if (confirmed) {
             currentPlayer.buyProperty(currentSquare);
         }
+        return;
     }
     else {
         alert("You do not have the funds to buy the property"); //add to gamelog
         addToGameLog("You do not have the funds to buy the property");
+        return;
     }
 });
 
@@ -292,6 +304,7 @@ sellButton.addEventListener('click', function (e) {
 const endTurn = document.getElementById('endTurnButton');
 endTurn.addEventListener('click', function(e) {
     updateTurn();
+    diceButton.disabled = false;
     // let player = players[getCurrentPlayer()];
     // checkValidSquareBuy(property[player.curCell]);
     // checkValidSquareMortgage(property[player.curCell], player);
@@ -353,9 +366,12 @@ class Player {
         
         var interval = setInterval(() => {
                 // Re-enable the button
-                if (m == (newPositionAfterRoll % boardLength)) {
-                    document.getElementById("throw").disabled = false;
-                }
+                // ================================================================
+                // ENABLE THE NEXT TWO LINES IF YOU WANT MULTIPLE ROLLS PER TURN
+                // ===============================================================
+                // if (m == (newPositionAfterRoll % boardLength)) {
+                //     document.getElementById("throw").disabled = false;
+                // }
         
                  
                 if(lap == false){
