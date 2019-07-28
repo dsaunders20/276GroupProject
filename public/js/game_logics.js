@@ -1,3 +1,15 @@
+var imagearray = [
+
+"/images/c1.png",  
+"/images/c4.png","/images/c5.png","/images/c7.png",
+"/images/c9.png","/images/c11.png",
+"/images/c12.png","/images/c13.png","/images/c14.png","/images/c15.png"
+
+// "/images/c9.png", "/images/c10.png",
+
+
+
+];
 //Global Variables
 let players = [];
 let boardLength = 40;
@@ -123,7 +135,7 @@ function Property(name, pricetext, color, price, groupNumber, baserent, level1, 
 function set_up_game_board() {
 
     //initialize properties on the board
-    property[0] = new Property("Start", "COLLECT $200 TRAVEL SUBSIDY AS YOU PASS.", "#FFFFFF");
+    property[0] = new Property("GO", "COLLECT $200 TRAVEL SUBSIDY AS YOU PASS.", "#FFFFFF");
     property[1] = new Property("Pacific Center", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
     property[2] = new Property("Davie St.", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
     property[3] = new Property("Top Of Vancouver Restaurant", "$80", "#8B4513", 80, 3, 4, 20, 60, 180, 320, 450);
@@ -289,13 +301,17 @@ class Player {
         // what other attributes we need?
     }
     updatePosition(stepsToMove) {
+        console.log("player curcell is: " + this.curCell);
         // get current player location
         let currentPlayerPosition = this.curCell;
+
         // get newPosition after roll
         let newPositionAfterRoll = (currentPlayerPosition + stepsToMove);
 
         // used for checking if user is on a 'penalty square'
         let newPositionAfterRoll2 = (currentPlayerPosition + stepsToMove) % boardLength;
+        
+
         //update cash if the player completes one lap around the board
         if (newPositionAfterRoll >= boardLength) { //makes full revolution
             this.cash += 200;
@@ -397,11 +413,19 @@ class Player {
                 updateCash(this);
                 addToGameLog(this.name + ' lost $100 gambling.. Unlucky!');
             }
+            if (newPositionAfterRoll2 === 7 || newPositionAfterRoll2 === 22 || newPositionAfterRoll2 === 36){
+                console.log("At the chanceCard");
+                console.log("newPositionAfterRoll2: " + newPositionAfterRoll2);
+                 whenAtchanceCard(this, newPositionAfterRoll2);
+                
+
+            }
     //         // landing at the airport
     //         if (newPositionAfterRoll2 === 30)
     //         {
     //             airport(this);
     //         }
+    // console.log("this is this.curcell: "+ this.curCell);
     }
 
     buyProperty(square) {
@@ -464,10 +488,24 @@ class Player {
             alert("Unable to mortgage the property");
         }
     }
+    
     getPlayerPosition() {
         return this.curCell;
     }
+   
 }
+
+
+
+
+// async function sendToJail(player){
+  
+//     let result = await player.updatePosition(3);
+
+//     return result;
+
+
+// }
 
 function getCurrentPlayer() {
     return turn;
@@ -649,34 +687,141 @@ window.onload = function () {
 
 }
 
-function flip() {
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+async function whenAtchanceCard(player, currentCell){
+   
     $('.card').toggleClass('flipped');
-}
+
+    if(imagearray.length != 0){
+        var element=document.getElementById('cardImage');
+        var x = Math.floor((Math.random() * imagearray.length));
+        // console.log("x is: " +x);   
+        element.src=imagearray[x];
+        if(imagearray[x] == "/images/c1.png"){
+              //collect 50  and works
+            console.log("It is c1");
+            player.cash +=50;
+            updateCash(player);
+            addToGameLog(player.name + ' Collected $50');
+          
+        }
+        // else if(imagearray[x] == "/images/c2.png"){
+        //     console.log("It is c2");
+           
+        //     //Go to 'GO'
+        //     //Collect 200
+        // }
+        // else if(imagearray[x] == "/images/c3.png"){ // problem with this
+        //     console.log("Entering c3");
+        //     let result = await player.updatePosition(currentCell + 3);
+        
+        //     return result;
+        //     console.log("player.curcell is :" +player.curCell);
+            
+      
+        //     //Test: 3 positions forward
+           
 
 
-var imagearray = ["/images/c1.png", "/images/c2.png","/images/c3.png", "/images/c4.png", 
-                 "/images/c5.png", "/images/c6.png", "/images/c7.png", "/images/c8.png" , 
-                 "/images/c9.png", "/images/c10.png", "/images/c11.png", "/images/c12.png", 
-                 "/images/c13.png", "/images/c14.png", "/images/c15.png", "/images/c16.png", 
-                 "/images/c17.png", "/images/c18.png", "/images/c19.png", "/images/c20.png", "/images/c21.png"];
+            
+        //     //GO back 3 spaces
+        // }
+        else if(imagearray[x] == "/images/c4.png"){
+            console.log("It is c4");
+            //pay 75
+            player.cash -=75;
+            updateCash(player);
+            addToGameLog(player.name + ' Lost $75');
+        }
+        else if(imagearray[x] == "/images/c5.png"){
+            console.log("It is c5");
+            //collec 100
+            player.cash +=100;
+            updateCash(player);
+            addToGameLog(player.name + ' Collcted $100');
+        }
+        // else if(imagearray[x] == "/images/c6.png"){
+        //     console.log("It is c6");
+        //     //pay each player 25
 
-function changeImage()
-{
-if(imagearray.length != 0){
-    var element=document.getElementById('cardImage');
-    var x = Math.floor((Math.random() * imagearray.length));
-    console.log(x);
+        // }
+        else if(imagearray[x] == "/images/c7.png"){
+            console.log("It is c7");
+            //pay 500
+            player.cash -=500;
+            updateCash(player);
+            addToGameLog(player.name + ' lost $50');
+        }
+        // else if(imagearray[x] == "/images/c8.png"){
+        //     console.log("It is c8");
+        //     //pay 2600
+        //     player.cash +=50;
+        //     updateCash(player);
+        //     addToGameLog(player.name + ' lost $50');
+        // }
+        // else if(imagearray[x] == "/images/c9.png"){
+        //     console.log("It is c9");
+        //     //go to jail
+        //     sendToJail(player);
+        // }
+        // else if(imagearray[x] == "/images/c10.png"){
+        //     console.log("It is c10");
+        //     //get out of jail card, keep the card
+        // }
+        else if(imagearray[x] == "/images/c11.png"){
+            console.log("It is c11");
+            //get 45
+            player.cash +=40;
+            updateCash(player);
+            addToGameLog(player.name + ' Gained $45');
+        }
+        else if(imagearray[x] == "/images/c12.png"){
+            console.log("It is c12");
+            //get 0
+            addToGameLog(player.name + ' Gained 0');
+        }
+        else if(imagearray[x] == "/images/c13.png"){
+            console.log("It is c13");
+            //pay 25
+            player.cash -=25;
+            updateCash(player);
+            addToGameLog(player.name + ' Gained $25');
+            
+        }
+        else if(imagearray[x] == "/images/c14.png"){
+            console.log("It is c14");
+            //GO to jail, do not pass GO, do not collect 200
+        }else if(imagearray[x] == "/images/c15.png"){
+            console.log("It is c15");
+            //pay 150
+            player.cash +=150;
+            updateCash(player);
+            addToGameLog(player.name + ' Gained $150');
+        }
+    
 
-
-
-
-      element.src=imagearray[x];
-    imagearray.splice(x, 1);  
+        
+        imagearray.splice(x, 1);  
         console.log(imagearray);
-}
+        sleep(3500).then(() => {
+            // Do something after the sleep!
+            $('.card').toggleClass('flipped');
+        });
+      
+    } 
+
+
     else{
-         var element=document.getElementById('cardImage');
+        var element=document.getElementById('cardImage');
         element.src="/images/end.jpg"
+        sleep(4000).then(() => {
+            // Do something after the sleep!
+            $('.card').toggleClass('flipped');
+        });
     }
+
 }
 

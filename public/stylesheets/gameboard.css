@@ -22,8 +22,8 @@ td {
 /* for buy/sell/trade box */
 #control {
 	position: relative;
-	top: -650px;
-	left: 450px;
+	bottom:80%;
+	left: 37%;
 	/* border: 2px solid black; */
 	border: transparent;
 	padding: 10px;

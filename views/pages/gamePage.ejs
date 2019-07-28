@@ -205,25 +205,42 @@
         </tr>
         <tr>
             <td class="cell board-left" id="cell14" onclick="bingImageSearch('Vancouver Aquarium', 14)">
-                <!-- <section class="container">
+                <section class="container">
                     <div class="card" onclick="flip()">
                       <div  class="front"><img  onclick="changeImage();" src="images/chanceCard.jpeg"></div>
                        <div class="back"><img  id="cardImage"  name="canvas" src="images/end.jpg"></div>
                     </div>
-                  </section> -->
+                  </section>
 
 
             </td>
-            <td colspan="5" class="board-center"></td>
+            <td colspan="5" class="board-center">
+                  <!-- <div id='chanceCards'>
+                    <div class="card" style=" position:relative; ">
+                        <div  class="front"><img  src="images/chanceCard.jpeg"></div>
+                        <div class="back"><img  id="cardImage"  name="canvas" src="images/end.jpg"></div>
+                    </div>
+                </div> -->
+
+
+
+
+
+
+            </td>
             <td style="border:none;" rowspan="4" colspan="4">
                 <div class="container">
                     <div class="row">
                         <div class="col">
                         </div>
                         <div class="col-6">
-                            <div class="text-center" style="display:inline-table; position:relative; right:25em; bottom:7em;">
+                            <div class="text-center" style="display:inline-table; position:relative;  bottom:7em;">
                                 <img src="images/f0.png" class="dice" id="d0" class="rounded" alt="...">
-                                <img src="images/f0.png" class="dice" id="d1" class="rounded" alt="...">
+                                <img src="images/f0.png" class="dice" id="d1" class="rounded" alt="..."> &nbsp;
+                               <div></div>
+                                <button type="button" id="throw" class="btn btn-primary" disabled="true" onclick="throwDice()">Throw!</button>
+
+                               </div>
                             </div>
                         </div>
                         <div class="col">
@@ -233,9 +250,9 @@
                         <div class="col">
                         </div>
                         <div class="col-6">
-                            <div class="text-center py-2" style="position:relative; right:23em; bottom:7em;">
-                                <button type="button" id="throw" class="btn btn-primary" disabled="true" onclick="throwDice()">Throw!</button>
-                            </div>
+                            <div class="text-center py-2" style="position:relative; right:23em; bottom:7em;"> 
+                                
+                             </div>
                         </div>
                         <div class="col">
                         </div>
@@ -289,12 +306,7 @@
             </div>
     </div>
 
-    <div id='chanceCards'>
-            <div class="card" onclick="flip()">
-              <div  class="front"><img  onclick="changeImage();" src="images/chanceCard.jpeg"></div>
-               <div class="back"><img  id="cardImage"  name="canvas" src="images/end.jpg"></div>
-            </div>
-    </div>
+  
 
     <section id="propertyListSection">
         <div class="playerOptions-btn-group">
