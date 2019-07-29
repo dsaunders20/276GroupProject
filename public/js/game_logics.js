@@ -1,4 +1,14 @@
+var imagearray = [
 
+"/images/c1.png",  "/images/c2.png", "/images/c3.png",
+"/images/c4.png","/images/c5.png","/images/c7.png",
+"/images/c9.png","/images/c11.png",
+"/images/c12.png","/images/c13.png","/images/c14.png","/images/c15.png"
+
+
+
+
+];
 //Global Variables
 let players = [];
 let boardLength = 40;
@@ -76,6 +86,9 @@ function rollDice() {
             // Create a random integer between 0 and 5
             randomd0 = Math.floor(Math.random() * 6) + 1
             randomd1 = Math.floor(Math.random() * 6) + 1
+            //Use it when testing chanceCard
+            // randomd0 = 4;
+            // randomd1 = 3;
                 // Display result
             updateDice()
             num++
@@ -134,7 +147,7 @@ function Property(name, pricetext, color, price, groupNumber, baserent, level1, 
 function set_up_game_board() {
 
     //initialize properties on the board
-    property[0] = new Property("Start", "COLLECT $200 TRAVEL SUBSIDY AS YOU PASS.", "#FFFFFF");
+    property[0] = new Property("GO", "COLLECT $200 TRAVEL SUBSIDY AS YOU PASS.", "#FFFFFF");
     property[1] = new Property("Pacific Center", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
     property[2] = new Property("Davie St.", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
     property[3] = new Property("Top Of Vancouver Restaurant", "$80", "#8B4513", 80, 3, 4, 20, 60, 180, 320, 450);
@@ -323,16 +336,25 @@ class Player {
         this.properties = 0;
         this.playerNumber = playerNumber;
         this.color = color;
+        this.JailCard = false;
+        
         // what other attributes we need?
     }
+    
     updatePosition(stepsToMove) {
+        // console.log("player curcell is: " + this.curCell);
         // get current player location
+       
         let currentPlayerPosition = this.curCell;
+
         // get newPosition after roll
         let newPositionAfterRoll = (currentPlayerPosition + stepsToMove);
 
         // used for checking if user is on a 'penalty square'
         let newPositionAfterRoll2 = (currentPlayerPosition + stepsToMove) % boardLength;
+        // this.curCell = newPositionAfterRoll2;
+        
+        // console.log("beginning of update, this is: "+ this.curCell + "  " + currentPlayerPosition + "   " + newPositionAfterRoll);
         //update cash if the player completes one lap around the board
         if (newPositionAfterRoll >= boardLength) { //makes full revolution
             this.cash += 200;
@@ -342,7 +364,112 @@ class Player {
             updateCash(this);
             addToGameLog(this.name + ' made it around the board! Collect $200!');
         }
+        //when landed on the chanceblock
+        if (newPositionAfterRoll2 === 7 || newPositionAfterRoll2 === 22 || newPositionAfterRoll2 === 36){
+            console.log("ChanceCard Begin");
+            var Goback = false;
+            var GoBackNum;
+            
+            var tmp = whenAtchanceCard();
+            if (tmp ===1){ //collect 50
+                this.cash +=50
+                updateCash(this);
+                addToGameLog(this.name + ' Collected $50');
+            }
+            else if (tmp ===2){ //Go to 'Go'
+                newPositionAfterRoll+=(boardLength-newPositionAfterRoll);
+                this.cash+=200;
+                updateCash(this);
+                addToGameLog(this.name + ' made it around the board! Collect $200!');
+                
+            }
+            else if (tmp ===3){ // go 3 blocks backwards
+           
+                Goback=true;
+                GoBackNum=3;
+                addToGameLog(this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
+            }
+            else if (tmp ===4){ // collect $100
+                this.cash+=100;
+                updateCash(this);
+                addToGameLog(this.name + ' Collected $100');
+
+            }
+            else if (tmp ===5){ // lose $50
+                this.cash -=50;
+                updateCash(this);
+                addToGameLog(this.name = ' Lost $50');
+                
+            }
+            // else if (tmp === 6){ //give 25 to each player
+                
+            // }
+            else if (tmp ===7){ //pay $500
+                this.cash -= 500;
+                updateCash(this);
+                addToGameLog(this.name + ' Lost $500');
+
+                
+            }
         
+            else if (tmp ===9){ // Go to Jail
+                newPositionAfterRoll +=(boardLength-newPositionAfterRoll)+10;
+                this.cash+=200;
+                updateCash(this);
+                addToGameLog(this.name + ' is passing "Go" and Going To Jail, Gained $200');
+            }
+            // else if (tmp ===10){ //get out of Jail Card
+            //      if(this.JailCard === true){
+
+                //};
+
+                
+            // }
+            else if (tmp === 11){ // gain 45
+                this.cash +=45;
+                updateCash(this);
+                addToGameLog(this.name + ' Gained $45');
+                
+            }
+            else if (tmp ===12){ // get 0
+                addToGameLog(this.name + ' Gets NOTHING');
+            }
+            else if (tmp ===13){ // Lose 25
+                this.cash -=25;
+                updateCash(this);
+                addToGameLog(this.name + ' Lost $25');
+                
+            }
+            else if (tmp ===14){ //GO to Jail without passing 'GO'
+             
+              
+                if(newPositionAfterRoll === 7){
+                    Goback=false;
+                    newPositionAfterRoll+=3;
+                }
+                else if(newPositionAfterRoll===22){
+                    Goback=true;
+                    GoBackNum=12;
+
+                }
+                else if(newPositionAfterRoll ===36){
+                    Goback=true;
+                    GoBackNum=26;
+                }
+              
+                
+            }
+            else if (tmp === 15){ // gained 150;
+                this.cash +=150;
+                updateCash(this);
+                addToGameLog(this.name + ' Gained $150');
+                
+            }
+       
+
+            console.log(imagearray);
+        
+        }
         
         var m = this.curCell;
         
@@ -352,12 +479,13 @@ class Player {
             lap = true
             if_calculate_lap = false
             reset = true
-        }else{
+        }
+        else{
             lap = false
             if_calculate_lap = true
             reset = false
         }
-        
+        var i =0;
         var character_img = document.createElement("img");
                 character_img.src = "/images/" + this.picture + "character.png";
                 character_img.setAttribute("height", "auto");
@@ -382,6 +510,7 @@ class Player {
                         }else{
                             m = newPositionAfterRoll;
                             this.curCell = newPositionAfterRoll;
+                            i++;
                             clearInterval(interval);
                         }
                 }else {
@@ -402,19 +531,67 @@ class Player {
                           if( m < (newPositionAfterRoll % boardLength)){
                                 document.getElementById('cell' + m + 'positionholder').innerHTML = '';
                                 m = ((m + 1) % boardLength);
-                                document.getElementById('cell' + m + 'positionholder').appendChild(character_img);   
+                                document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
+                            
+                        }else if( m == boardLength - 1){
+                                document.getElementById('cell' + m + 'positionholder').innerHTML = '';
+                                    if_calculate_lap = true;
+                                    if(reset == true){
+                                        m = 0;
+                                        reset = false;
+                                    }
+                                document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
+                        }else{
+                            if( m < (newPositionAfterRoll % boardLength)){
+                                    document.getElementById('cell' + m + 'positionholder').innerHTML = '';
+                                    m = ((m + 1) % boardLength);
+                                    document.getElementById('cell' + m + 'positionholder').appendChild(character_img);   
 
-                          }else{
-                            m = (newPositionAfterRoll % boardLength)
-                            this.curCell = (newPositionAfterRoll % boardLength);
-                            clearInterval(interval); 
-                         }
+                            }else{
+                                m = (newPositionAfterRoll % boardLength)
+                                this.curCell = (newPositionAfterRoll % boardLength);
+                                i++;
+                                clearInterval(interval); 
+                            }
+                        }
                     }
+                
+
+                   
+                   
                 }
+                   
+                    
+                    if(i== 1&& Goback===true){
+                        console.log("GoBackNum is: " + GoBackNum);
+                        console.log("m is: "+ m);
+                        newPositionAfterRoll-=GoBackNum;
+                        var intervalforBack = setInterval(()=>{
+                            if(lap == false){
+                                            if((m % boardLength) > newPositionAfterRoll){
+                                                document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
+                                                m = ((m - 1) % boardLength);
+                                                document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
+                                            }else{
+                                                m = newPositionAfterRoll;
+                                                this.curCell = newPositionAfterRoll;
+                                                clearInterval(intervalforBack);
+                                            }
+                                        }
 
 
+                        }, 100);
+                    }
+        
+                }, 100); 
 
-            }, 100); 
+
+                
+              
+
+     
+            
+       
             // enable or disable the buy button depending on the property
             if (property[newPositionAfterRoll2].groupNumber == 0)
             {
@@ -521,10 +698,26 @@ class Player {
             alert("Unable to mortgage the property");
         }
     }
+    
     getPlayerPosition() {
         return this.curCell;
     }
+
+   
 }
+
+
+
+
+
+// async function sendToJail(player){
+  
+//     let result = await player.updatePosition(3);
+
+//     return result;
+
+
+// }
 
 function getCurrentPlayer() {
     return turn;
@@ -775,35 +968,142 @@ window.onload = function () {
     document.getElementById("throw").disabled = false;
 }
 
-function flip() {
-    $('.card').toggleClass('flipped');
-}
 
-
-var imagearray = ["/images/c1.png", "/images/c2.png","/images/c3.png", "/images/c4.png", 
-                 "/images/c5.png", "/images/c6.png", "/images/c7.png", "/images/c8.png" , 
-                 "/images/c9.png", "/images/c10.png", "/images/c11.png", "/images/c12.png", 
-                 "/images/c13.png", "/images/c14.png", "/images/c15.png", "/images/c16.png", 
-                 "/images/c17.png", "/images/c18.png", "/images/c19.png", "/images/c20.png", "/images/c21.png"];
-
-function changeImage()
-{
-if(imagearray.length != 0){
-    var element=document.getElementById('cardImage');
-    var x = Math.floor((Math.random() * imagearray.length));
-    console.log(x);
-
-
-
-
-      element.src=imagearray[x];
-    imagearray.splice(x, 1);  
-        console.log(imagearray);
-}
-    else{
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+function whenAtchanceCard(){
+   
+    $('.card').toggleClass('flipped'); //flip to chancecard;
+     
+    console.log(imagearray);
+   
+    if (imagearray.length == 0){  
          var element=document.getElementById('cardImage');
-        element.src="/images/end.jpg"
+    element.src="/images/end.jpg"
+    sleep(3500).then(() => {
+        // Do something after the sleep!
+        $('.card').toggleClass('flipped');
+    });
+
     }
+
+   if(imagearray.length != 0){
+    sleep(3500).then(() => {
+        // Do something after the sleep!
+        $('.card').toggleClass('flipped'); // flip it back;
+    });
+        var element=document.getElementById('cardImage');
+        var x = Math.floor((Math.random() * imagearray.length));
+        element.src=imagearray[x];
+        if(imagearray[x] == "/images/c1.png"){
+            //   //collect 50  
+            console.log("It is c1");
+            imagearray.splice(x, 1);
+            return 1;
+          
+        }
+        else   if(imagearray[x] == "/images/c2.png"){
+            //   //collect 50  
+            console.log("It is c2");
+            imagearray.splice(x, 1);
+            return 2;
+          
+        }
+        else if(imagearray[x] == "/images/c3.png"){ 
+            //go 3 blocks backwards
+            console.log("Entering c3");
+            imagearray.splice(x, 1);
+            return 3
+    
+           
+
+
+            
+        }
+        else if(imagearray[x] == "/images/c4.png"){
+            console.log("It is c4");
+            //pay 75
+
+            imagearray.splice(x, 1);
+            return 4;
+        }
+        else if(imagearray[x] == "/images/c5.png"){
+            console.log("It is c5");
+            //collec 100
+            imagearray.splice(x, 1);
+            return 5;
+        }
+        // else if(imagearray[x] == "/images/c6.png"){
+        //     console.log("It is c6");
+        //     //pay each player 25
+
+        // }
+        else if(imagearray[x] == "/images/c7.png"){
+            console.log("It is c7");
+            //pay 500
+       
+            imagearray.splice(x, 1);
+            return 7;
+        }
+ 
+        else if(imagearray[x] == "/images/c9.png"){
+            console.log("It is c9 and ");
+            //go to jail
+     
+            imagearray.splice(x, 1);
+            return 9;
+        }
+        // else if(imagearray[x] == "/images/c10.png"){
+        //     console.log("It is c10");
+        //     //get out of jail card, keep the card
+        // }
+        else if(imagearray[x] == "/images/c11.png"){
+            console.log("It is c11");
+            //get 45
+            // player.cash +=40;
+            // updateCash(player);
+            // addToGameLog(player.name + ' Gained $45');
+            imagearray.splice(x, 1);
+            return 11;
+        }
+        else if(imagearray[x] == "/images/c12.png"){
+            console.log("It is c12");
+            //get 0
+            // addToGameLog(player.name + ' Gained 0');
+            imagearray.splice(x, 1);
+            return 12;
+        }
+        else if(imagearray[x] == "/images/c13.png"){
+            console.log("It is c13");
+            //pay 25
+     
+            imagearray.splice(x, 1);
+            return 13;
+            
+        }
+        else if(imagearray[x] == "/images/c14.png"){
+            console.log("It is c14");
+            //GO to jail, do not pass GO, do not collect 200
+            imagearray.splice(x, 1);
+            return 14;
+        }else if(imagearray[x] == "/images/c15.png"){
+            console.log("It is c15");
+            //pay 150
+    
+            imagearray.splice(x, 1);
+            return 15;
+            
+        }
+    
+
+        
+     
+      
+    } 
+
+
+
 }
 
 // ========================chat Box functionality =======================

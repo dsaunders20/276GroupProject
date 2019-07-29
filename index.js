@@ -5,18 +5,24 @@ var server = http.createServer(app);
 const io = require('socket.io').listen(server);
 var cors = require('cors')
 const path = require('path')
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 8080
 
 
 
 const { Pool } = require('pg');
 
 // use this for testing
-var pool = new Pool({
+// var pool = new Pool({
+//   host: 'localhost',
+//   database: 'postgres'
+// });
+//for Michael
+const pool = new Pool({
+  user: 'postgres',
+  password: 'root',
   host: 'localhost',
   database: 'postgres'
 });
-
 // use this block for heroku app
 // const pool = new Pool({
 //  connectionString: process.env.DATABASE_URL
