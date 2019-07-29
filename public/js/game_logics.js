@@ -1017,14 +1017,9 @@ window.onload = function () {
     //    });
     
     
-<<<<<<< HEAD
-    document.getElementById("throw").disabled = false;
-    jailButton.disabled = true;
-=======
 //    set_up_game_board();
 //    document.getElementById("throw").disabled = false
 
->>>>>>> master
 }
 
 
