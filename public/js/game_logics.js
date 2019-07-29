@@ -1,11 +1,10 @@
-var imagearray = ["/images/c14.png"
+var imagearray = [
 
-// "/images/c1.png",  
-// "/images/c4.png","/images/c5.png","/images/c7.png",
-// "/images/c9.png","/images/c11.png",
-// "/images/c12.png","/images/c13.png","/images/c14.png","/images/c15.png"
+"/images/c1.png",  "/images/c2.png", "/images/c3.png",
+"/images/c4.png","/images/c5.png","/images/c7.png",
+"/images/c9.png","/images/c11.png",
+"/images/c12.png","/images/c13.png","/images/c14.png","/images/c15.png"
 
-// "/images/c9.png", "/images/c10.png",
 
 
 
@@ -75,10 +74,11 @@ function rollDice() {
                 clearInterval(roll)
             }
             // Create a random integer between 0 and 5
-            // randomd0 = Math.floor(Math.random() * 6) + 1
-            // randomd1 = Math.floor(Math.random() * 6) + 1
-            randomd0 = 5;
-            randomd1 = 6;
+            randomd0 = Math.floor(Math.random() * 6) + 1
+            randomd1 = Math.floor(Math.random() * 6) + 1
+            //Use it when testing chanceCard
+            // randomd0 = 4;
+            // randomd1 = 3;
                 // Display result
             updateDice()
             num++
@@ -328,6 +328,7 @@ class Player {
             updateCash(this);
             addToGameLog(this.name + ' made it around the board! Collect $200!');
         }
+        //when landed on the chanceblock
         if (newPositionAfterRoll2 === 7 || newPositionAfterRoll2 === 22 || newPositionAfterRoll2 === 36){
             console.log("ChanceCard Begin");
             var Goback = false;
@@ -341,15 +342,13 @@ class Player {
             }
             else if (tmp ===2){ //Go to 'Go'
                 newPositionAfterRoll+=(boardLength-newPositionAfterRoll);
-                // newPositionAfterRoll2+=(boardLength-newPositionAfterRoll2);
                 this.cash+=200;
                 updateCash(this);
                 addToGameLog(this.name + ' made it around the board! Collect $200!');
                 
             }
             else if (tmp ===3){ // go 3 blocks backwards
-                // newPositionAfterRoll-=3;
-                // newPositionAfterRoll2-=3;
+           
                 Goback=true;
                 GoBackNum=3;
                 addToGameLog(this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
@@ -539,28 +538,7 @@ class Player {
                 
               
 
-        
-                // var intervalforBack = setInterval(() => {
-                //     // Re-enable the button
-                //     if (m == (newPositionAfterRoll % boardLength)) {
-                //         document.getElementById("throw").disabled = false;
-                //     }
-            
-                     
-                //     if(lap == false){
-                //             if((m % boardLength) < newPositionAfterRoll){
-                //                 document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
-                //                 m = ((m - 1) % boardLength);
-                //                 document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
-                //             }else{
-                //                 m = newPositionAfterRoll;
-                //                 this.curCell = newPositionAfterRoll;
-                //                 clearInterval(intervalforBack);
-                //             }
-                //         }
-                 
-                // }, 100, ); 
-
+     
             
        
             // enable or disable the buy button depending on the property
