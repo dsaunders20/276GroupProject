@@ -674,8 +674,10 @@ function endGame()
 
     var board = document.getElementById('board');
     var chance = document.getElementById('chanceCards');
+    var chat = document.getElementById('chatBox');
     board.style.display = 'none';
     chance.style.display = 'none';
+    chat.style.display = 'none'
     var text = document.getElementById('endGame');
     text.innerHTML = 'GAME OVER <br> Player ' + winner + ' is the Winner';
     text.style.display = 'block';
@@ -803,4 +805,28 @@ if(imagearray.length != 0){
         element.src="/images/end.jpg"
     }
 }
+
+// ========================chat Box functionality =======================
+var socket = io.connect('http://localhost:8080');
+
+$('form').submit(function(e){
+    e.preventDefault(); // prevents page reloading
+    socket.emit('chat_message', $('#txt').val());
+    $('#txt').val('');
+    return false;
+});
+    // append the chat text message
+    socket.on('chat_message', function(msg){
+        $('#messages').append($('<li>').html(msg));
+        var Log = document.getElementById('messageDisplay');
+        Log.scrollTop = Log.scrollHeight;
+    });
+    // append text if someone is online
+    socket.on('is_online', function(username) {
+        $('#messages').append($('<li>').html(username));
+    });
+    // NEED TO FIGURE OUT A WAY TO GET THE PLAYERS NAME FOR CHATTING
+    var username = 'player';
+    socket.emit('username', username);
+
 

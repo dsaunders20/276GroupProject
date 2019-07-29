@@ -73,6 +73,33 @@ h1 {
     color: #fff;
     font-size: 3em;
 }
+#chatBox {
+	position: relative;
+	top: -200px;
+	padding-left: 10px;
+}
+#messages li { padding: 5px 5px; }
+#messages li:nth-child(odd) { background: #eee; }
+
+#messageDisplay {
+	position: absolute;
+	/* top: 550px; */
+	/* left: 550px; */
+	border: 2px solid black;
+	padding-left: 1px;
+	width: 500px;
+	height: 200px;
+	overflow-y: scroll;
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	font-style: italic;
+}
+#chatForm {
+	position: relative;
+	top: 200px;
+}
+#txt {
+	width: 500px;
+}
 
 #enlarge-wrap {
 	border: none;
