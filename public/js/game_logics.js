@@ -729,6 +729,7 @@ window.onload = function () {
     
     ajax_data.forEach(function(element){
         player_color = getRandomColor();
+        socket.emit('username', element.username);
         let player = new Player(element.username, element.picture, player_num, player_color);
         players.push(player);
         player_num ++;
@@ -825,7 +826,7 @@ $('form').submit(function(e){
         $('#messages').append($('<li>').html(username));
     });
     // NEED TO FIGURE OUT A WAY TO GET THE PLAYERS NAME FOR CHATTING
-    var username = 'player';
-    socket.emit('username', username);
+    // var username = 'player';
+    // socket.emit('username', username);
 
 
