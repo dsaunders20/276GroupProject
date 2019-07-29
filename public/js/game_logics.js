@@ -101,6 +101,39 @@ async function throwDice() {
     // player.updatePosition(randomd0+randomd1);
 }
 
+// Roll the dice with visual representation and return whether we rolled a double
+function rollDice() {
+    var num = 0
+        // Display dice rolling and return whether we rolled doubles
+    var roll = setInterval(function () {
+            if (num == 15) {
+                clearInterval(roll)
+            }
+            // Create a random integer between 0 and 5
+            randomd0 = Math.floor(Math.random() * 6) + 1
+            randomd1 = Math.floor(Math.random() * 6) + 1
+                // Display result
+            updateDice()
+            num++
+        }, 100)
+        // Return whether we rolled a double
+    return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            resolve(randomd0 == randomd1);
+        }, 1650)
+    })
+}
+// Display the corresponding die face for randomly generated values
+function updateDice() {
+    document.getElementById("d0").src = eval("face" + randomd0 + ".src")
+    document.getElementById("d1").src = eval("face" + randomd1 + ".src")
+}
+
+// ----------------------------------- DICE ROLLING ------------------------------------------
+
+
+// ----------------------------------- JAIL LOGIC ------------------------------------------
+
 const jailButton = document.getElementById("leaveJail");
 jailButton.addEventListener('click', function(b){
     var curPlayerNum = getCurrentPlayer();
@@ -136,35 +169,7 @@ function unJail(player) {
     jailButton.disabled = true;
 }
 
-// Roll the dice with visual representation and return whether we rolled a double
-function rollDice() {
-    var num = 0
-        // Display dice rolling and return whether we rolled doubles
-    var roll = setInterval(function () {
-            if (num == 15) {
-                clearInterval(roll)
-            }
-            // Create a random integer between 0 and 5
-            randomd0 = Math.floor(Math.random() * 6) + 1
-            randomd1 = Math.floor(Math.random() * 6) + 1
-                // Display result
-            updateDice()
-            num++
-        }, 100)
-        // Return whether we rolled a double
-    return new Promise(function (resolve, reject) {
-        setTimeout(function () {
-            resolve(randomd0 == randomd1);
-        }, 1650)
-    })
-}
-// Display the corresponding die face for randomly generated values
-function updateDice() {
-    document.getElementById("d0").src = eval("face" + randomd0 + ".src")
-    document.getElementById("d1").src = eval("face" + randomd1 + ".src")
-}
-
-// ----------------------------------- DICE ROLLING ------------------------------------------
+// ----------------------------------- JAIL LOGIC ------------------------------------------
 
 
 // ----------------------------------- Properties ------------------------------------------
