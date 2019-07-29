@@ -20,7 +20,7 @@ var totalTurn = 0;
 
 const diceButton = document.getElementById('throw');
 
-var socket = io('http://localhost:5000/');
+var socket = io('http://localhost:8080/');
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
