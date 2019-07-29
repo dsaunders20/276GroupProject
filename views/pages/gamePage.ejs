@@ -165,7 +165,20 @@
     </secion>
 
     <center><button type="button" id="readyButton" class="btn btn-primary" style="font-size:4em; margin-top:1em;" onClick="ready_button_click()">Ready</button></center>
-    <div id="turn_info" style="display:none;"></div>
+    <center><div id="turn_info" style="display:none;"></div></center>
+    <div id="control">
+    <div class="playerOptions-btn-group">
+        <button id="buyButton" disabled="true">Buy</button>
+        <button id="sellButton" disabled="true">Mortgage</button>
+        <button id="tradeButton" disabled="true">Trade</button>
+        <button id="resignButton" disabled="true">Resign</button>
+        <button id="endTurnButton" onclick="end_turn_click()" disabled="true">End Turn</button>
+    </div>
+
+    <div id="gameLog">
+
+    </div>
+</div>
     <table id="board" style="display:none;">
         <tr>
             <td class="cell board-corner" id="cell20"></td>
@@ -276,21 +289,13 @@
             <td class="cell board-bottom" id="cell1"></td>
             <td class="cell board-corner" id="cell0"></td>
         </tr>
+        
+            <!-- represents the game log in the middle of board -->
+
+        
     </table>
 
-    <!-- represents the game log in the middle of board -->
-    <div id="control">
-            <div class="playerOptions-btn-group">
-                <button id="buyButton">Buy</button>
-                <button id="sellButton">Mortgage</button>
-                <button id="tradeButton">Trade</button>
-                <button id="endTurnButton" onclick="end_turn_click()" disabled="true">End Turn</button>
-            </div>
-    
-            <div id="gameLog">
-            
-            </div>
-        </div>
+
         
     <!-- weather api  -->
     <!-- <p id="weather-text">Current Weather via OpenWeatherMap.org</p>

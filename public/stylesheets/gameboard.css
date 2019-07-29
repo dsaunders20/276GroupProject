@@ -22,8 +22,8 @@ td {
 /* for buy/sell/trade box */
 #control {
 	position: relative;
-	top: -650px;
-	left: 450px;
+	bottom:80%;
+	left: 37%;
 	/* border: 2px solid black; */
 	border: transparent;
 	padding: 10px;
@@ -73,12 +73,59 @@ h1 {
     color: #fff;
     font-size: 3em;
 }
+#chatBox {
+	position: relative;
+	top: -175px;
+	padding-left: 10px;
+}
+#messages li { padding: 5px 5px; }
+#messages li:nth-child(odd) { background: #eee; }
+
+#messageDisplay {
+	position: absolute;
+	/* top: 550px; */
+	/* left: 550px; */
+	border: 2px solid black;
+	padding-left: 1px;
+	width: 500px;
+	height: 200px;
+	overflow-y: scroll;
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	font-style: italic;
+}
+#chatForm {
+	position: relative;
+	top: 200px;
+}
+#txt {
+	width: 500px;
+}
 
 #enlarge-wrap {
 	border: none;
 	z-index: 0;
 }
 
+#chanceCards {
+	position: relative;
+	top: -550px;
+	left: 0px;
+	/* width: 300px;
+	height: 100px; */
+}
+
+#propertyList{
+	display: none;
+	width: 200px;
+	size: 200px;
+}
+#propertyListSection{
+	position: relative;
+	/* top: -650px;
+	left: 450px; */
+	left: 800px;
+	top: -775px;
+}
 /* button color */
 .playerOptions-btn-group button {
 	background-color: #6b5b95; /* purple background */
@@ -172,6 +219,11 @@ h1 {
 .enlarge-token {
 	height: 45px;
 	width: 150px;
+	background-size: 100% 100%;
+	position:relative; 
+	left: -2px;
+	top: -12px;
+	/* background-image: url('http://2.bp.blogspot.com/-lqgdvvK5pPM/TjqzswOyM_I/AAAAAAAADs8/T5wEBb36jmY/s1600/Capilano-Suspension-Bridge-Vancouver.jpg') */
 }
 
 .moneybarcell {
@@ -301,7 +353,7 @@ h1 {
 	height: 15px;
 	left: 0px;
 	top: -25px;
-	width: 72px;
+	width: 100px;
 
 }
 
@@ -309,7 +361,7 @@ h1 {
 	bottom: -25px;
 	height: 15px;
 	left: 0px;
-	width: 72px;
+	width: 125px;
 }
 
 .board-left .cell-owner {
