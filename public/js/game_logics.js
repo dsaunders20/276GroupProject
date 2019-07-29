@@ -123,29 +123,6 @@ jailButton.addEventListener('click', function(b){
     unJail(curPlayer);
 })
 
-
-//  Send player to jail and update attributes
-function toJail(player) {
-    //  Move avatar
-    var character_img = document.createElement("img");
-        character_img.src = "/images/" + player.picture + "character.png";
-        character_img.setAttribute("height", "auto");
-        character_img.setAttribute("width", "25%");
-        character_img.setAttribute("padding-top", "10px");
-    document.getElementById('cell'+ player.curCell + 'positionholder').innerHTML = '';  //  Maybe use some animations?
-    document.getElementById('cell10positionholder').appendChild(character_img);         //  But not sure how to implement...
-
-    //  Set jail attributes
-    player.inJail = true;
-    player.curCell = 10;
-    player.turnsInJail = 0;
-}
-
-function unJail(player) {
-    player.inJail = false;
-    jailButton.disabled = true;
-}
-
 // Roll the dice with visual representation and return whether we rolled a double
 function rollDice() {
     var num = 0
@@ -179,6 +156,32 @@ function updateDice() {
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 
+
+// ----------------------------------- JAIL LOGIC ------------------------------------------
+
+//  Send player to jail and update attributes
+function toJail(player) {
+    //  Move avatar
+    var character_img = document.createElement("img");
+        character_img.src = "/images/" + player.picture + "character.png";
+        character_img.setAttribute("height", "auto");
+        character_img.setAttribute("width", "25%");
+        character_img.setAttribute("padding-top", "10px");
+    document.getElementById('cell'+ player.curCell + 'positionholder').innerHTML = '';  //  Maybe use some animations?
+    document.getElementById('cell10positionholder').appendChild(character_img);         //  But not sure how to implement...
+
+    //  Set jail attributes
+    player.inJail = true;
+    player.curCell = 10;
+    player.turnsInJail = 0;
+}
+
+function unJail(player) {
+    player.inJail = false;
+    jailButton.disabled = true;
+}
+
+// ----------------------------------- JAIL LOGIC ------------------------------------------
 
 // ----------------------------------- Properties ------------------------------------------
 function Property(name, pricetext, color, price, groupNumber, baserent, level1, level2, level3, level4) {
