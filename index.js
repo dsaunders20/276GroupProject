@@ -1,18 +1,33 @@
 const express = require('express')
+var http = require('http');
+const app = express();
 var cors = require('cors')
 const path = require('path')
 const PORT = process.env.PORT || 5000
 
-const app = express()
+
 
 const { Pool } = require('pg');
+
+//networking libraries
+var http = require('http');
+var server = http.createServer(app).listen(PORT);
+var io = require('socket.io')(server);
+console.log('Server hosted at port:' + PORT);
+var browserSession = require('browser-session-store')
 
 // use this for testing
 var pool = new Pool({
   host: 'localhost',
   database: 'postgres'
 });
-
+//for Michael
+// const pool = new Pool({
+//   user: 'postgres',
+//   password: 'root',
+//   host: 'localhost',
+//   database: 'postgres'
+// });
 // use this block for heroku app
 // const pool = new Pool({
 //  connectionString: process.env.DATABASE_URL
@@ -101,15 +116,16 @@ var query1 = "SELECT username, password, type from users";
     {
      if (userType === 'admin')
      {
+       browserSession.put('user', req_username);
        var results = { 'results': (result.rows[0].username) ? result.rows : [] };
        res.render('pages/adminPage', results);
      }
      if (userType === 'user')
      {
+       browserSession.put('user', req_username);
        res.render('pages/gamePage',{player});
-       //res.render('pages/openingPage');
+       
      }
-        //res.render('pages/gamePage',{player});
     }
   });
 });
@@ -135,9 +151,28 @@ app.get('/fetch_players_info',function(req,res,next){
 
 });
 
+// ==============NETWORKING FOR CHAT BOX===================
+// inspired by https://itnext.io/build-a-group-chat-app-in-30-lines-using-node-js-15bfe7a2417b
+io.sockets.on('connection', function(socket) {
+  socket.on('username', function(username) {
+      socket.username = username;
+      io.emit('is_online', '<i>' + socket.username + ' joined the chat..</i>');
+  });
+
+  socket.on('disconnect', function(username) {
+    io.emit('is_online', '<i>' + socket.username + ' left the chat..</i>');
+  });
+  socket.on('chat_message', function(message) {
+    io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
+  });
+
+});
+
+
 // app.get('/update_winning_player', function(req, res, next){
 //   let query = 'update users set wins
 // })
+
 
 // handles errors
 app.use(function(error, req, res, next) {
@@ -145,6 +180,177 @@ app.use(function(error, req, res, next) {
     res.json({ message: error.message });
   });
 
-app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
+/////////////////////////////////////////////////
+var player_list = {};
+var player_ready_list= [];
+var log_in_players = [];
+var clients = 0;
+var current_player_id = 1;
+//0 => game does not start; 1=> game has started; -1 => game has ended;
+var game_status = 1;
+var if_game_start = false;
+
+function switchPlayer(current_player_id, player_list){
+    if(current_player_id < Object.keys(player_list).length){
+                current_player_id += 1;
+    }else{
+                current_player_id = 1;
+    }
+    return current_player_id;
+}
+
+io.on('connection', function(socket){
+    var playerName;
+    var if_new_player = true;
+
+    if(if_game_start == false){
+        clients += 1;
+
+        socket.emit('clientChange',clients);
+        socket.broadcast.emit('clientChange',clients);
+
+
+        browserSession.get('user', function(err, value){
+           playerName = JSON.stringify(value);
+           let temp = clients;
+
+           socket.emit('connected',playerName);
+           socket.broadcast.emit('connected',playerName);
+
+
+           if(player_list[playerName] == undefined){
+               player_list[playerName] = socket.id;
+            }
+
+            for(i=0; i< log_in_players.length; i++){
+                if(log_in_players[i].playerName == playerName){
+                    if_new_player = false;
+                    break;
+                }
+            }
+    //            
+    //            if(if_new_player){
+
+                let temp_obj = {};
+                temp_obj.playerName = playerName;
+                temp_obj.picture = clients; 
+                log_in_players.push(temp_obj);
+    //            }
+
+            socket.emit('update_log_in_player',temp_obj);
+            socket.broadcast.emit('update_log_in_player',temp_obj);
+
+        });
+    }
+    
+    
+    socket.on('getAllPlayers',function(){
+       console.log(log_in_players);
+       socket.emit('get_all_players',log_in_players);
+       socket.broadcast.emit('get_all_players',log_in_players);
+    });
+
+    socket.on('getPlayerName',function(socket_id){
+        let tmp_player_name = Object.keys(player_list).find(key => player_list[key] === socket_id);
+        socket.emit('set_player_name',tmp_player_name);
+    })
+
+
+    socket.on('chat', function(message){
+       socket.emit('message', message);
+       socket.broadcast.emit('message', message); 
+    });
+    
+    if(if_game_start == false){
+        socket.on('disconnect', function () {
+            if(if_game_start == false){
+                clients--;
+                delete player_list[playerName];
+
+                //update the user states.
+                socket.emit('dis', playerName);
+                socket.broadcast.emit('dis', playerName);
+                socket.broadcast.emit('clientChange', clients);
+            }
+        });
+    }
+    
+        socket.on('intializeGameAvastar',function(){
+            socket.emit('updateAvastar');
+//            socket.broadcast.emit('updateAvastar');        
+        });
+    
+    
+    if(player_list){
+        socket.emit('updateState', {
+            player: player_list[Object.keys(player_list)[current_player_id - 1]],
+            playerName: Object.keys(player_list)[current_player_id - 1],
+            status: 1,
+            id:current_player_id,
+        });
+        socket.broadcast.emit('updateState', {
+            player: player_list[Object.keys(player_list)[current_player_id - 1]],
+            playerName: Object.keys(player_list)[current_player_id- 1],
+            status: 1,
+            id:current_player_id,
+        });
+    }
+    
+    socket.on('switchPlayer', function(){
+        if(game_status == 1){
+            console.log(Object.keys(player_list).length);
+            current_player_id = switchPlayer(current_player_id,player_list);
+            console.log("current_player_id:"+current_player_id);
+        }
+        
+        socket.emit('updateState', {
+            player: player_list[Object.keys(player_list)[current_player_id - 1]],
+            playerName: Object.keys(player_list)[current_player_id - 1],
+            status: 1,
+            id:current_player_id,
+        });
+        socket.broadcast.emit('updateState', {
+            player: player_list[Object.keys(player_list)[current_player_id - 1]],
+            playerName: Object.keys(player_list)[current_player_id - 1], 
+            status: 1,
+            id:current_player_id,
+        });
+    });
+    
+    socket.on('playerReady',function(name){
+        let if_ready = false;
+        for(let i = 0; i<player_ready_list.length;i++){
+            if(player_ready_list[i] == name){
+                if_ready = true;
+                break;
+            }
+        }
+        if(!if_ready){
+            player_ready_list.push(name);
+        }
+        
+        let data = {};
+        data.name = name;
+        data.info ={};
+        data.info.status = "Ready!";
+        socket.emit('update_player',data);
+        socket.broadcast.emit('update_player',data);
+        if(player_ready_list.length == log_in_players.length && player_ready_list.length >= 2){
+            socket.emit('gameStart');
+            socket.broadcast.emit('gameStart');
+            if_game_start = true;
+        }
+    });
+    
+    socket.on('playerAfterReady',function(name){
+            let data2 = {};
+            data2.name = name;
+            data2.info ={};
+            data2.info.status = "Playing";
+            socket.emit('update_player',data2);
+            socket.broadcast.emit('update_player',data2); 
+    });
+});
+/////////////////////////////////////////////////
 
 module.exports = app;

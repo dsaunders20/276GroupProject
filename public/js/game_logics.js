@@ -1,4 +1,14 @@
+var imagearray = [
 
+"/images/c1.png",  "/images/c2.png", "/images/c3.png",
+"/images/c4.png","/images/c5.png","/images/c7.png",
+"/images/c9.png","/images/c11.png",
+"/images/c12.png","/images/c13.png","/images/c14.png","/images/c15.png"
+
+
+
+
+];
 //Global Variables
 let players = [];
 let boardLength = 40;
@@ -15,6 +25,8 @@ diceButton.addEventListener('click', function(d){
     }
     throwDice();
 })
+
+var socket = io('http://localhost:5000/');
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
@@ -145,8 +157,11 @@ function rollDice() {
                 clearInterval(roll)
             }
             // Create a random integer between 0 and 5
-            randomd0 = Math.floor(Math.random() * 6) + 1
-            randomd1 = Math.floor(Math.random() * 6) + 1
+            // randomd0 = Math.floor(Math.random() * 6) + 1
+            // randomd1 = Math.floor(Math.random() * 6) + 1
+            //Use it when testing chanceCard
+            randomd0 = 4;
+            randomd1 = 3;
                 // Display result
             updateDice()
             num++
@@ -205,7 +220,7 @@ function Property(name, pricetext, color, price, groupNumber, baserent, level1, 
 function set_up_game_board() {
 
     //initialize properties on the board
-    property[0] = new Property("Start", "COLLECT $200 TRAVEL SUBSIDY AS YOU PASS.", "#FFFFFF");
+    property[0] = new Property("GO", "COLLECT $200 TRAVEL SUBSIDY AS YOU PASS.", "#FFFFFF");
     property[1] = new Property("Pacific Center", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
     property[2] = new Property("Davie St.", "$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
     property[3] = new Property("Top Of Vancouver Restaurant", "$80", "#8B4513", 80, 3, 4, 20, 60, 180, 320, 450);
@@ -313,7 +328,7 @@ function set_up_game_board() {
 resignButton.addEventListener('click', function(e) {
     var confirmed = confirm("Are you sure you want to resign?");
     if (confirmed) {
-        //resign
+        endGame();
     }
 });
 
@@ -399,11 +414,17 @@ class Player {
         this.color = color;
         this.inJail = false;
         this.turnsInJail = 0;
+        this.JailCard = false;
+        
         // what other attributes we need?
     }
+    
     updatePosition(stepsToMove) {
+        // console.log("player curcell is: " + this.curCell);
         // get current player location
+       
         let currentPlayerPosition = this.curCell;
+
         // get newPosition after roll
         let newPositionAfterRoll = (currentPlayerPosition + stepsToMove);
 
@@ -412,13 +433,117 @@ class Player {
         //update cash if the player completes one lap around the board
         if (newPositionAfterRoll >= boardLength) { //makes full revolution
             this.cash += 200;
-            // var playerMoney = parseInt(document.getElementById('player_money_'+getCurrentPlayer()).innerHTML);
-            // playerMoney += 200;
-            // document.getElementById('player_money_'+getCurrentPlayer()).innerHTML = playerMoney;
             updateCash(this);
             addToGameLog(this.name + ' made it around the board! Collect $200!');
         }
+        //when landed on the chanceblock
+        if (newPositionAfterRoll2 === 7 || newPositionAfterRoll2 === 22 || newPositionAfterRoll2 === 36){
+            console.log("ChanceCard Begin");
+            var Goback = false;
+            var GoBackNum;
+            
+            var tmp = whenAtchanceCard();
+            if (tmp ===1){ //collect 50
+                this.cash +=50
+                updateCash(this);
+                addToGameLog(this.name + ' Collected $50');
+            }
+            else if (tmp ===2){ //Go to 'Go'
+                newPositionAfterRoll+=(boardLength-newPositionAfterRoll);
+                this.cash+=200;
+                updateCash(this);
+                addToGameLog(this.name + ' made it around the board! Collect $200!');
+                
+            }
+            else if (tmp ===3){ // go 3 blocks backwards
+           
+                Goback=true;
+                GoBackNum=3;
+                addToGameLog(this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
+            }
+            else if (tmp ===4){ // pay $75
+                this.cash-=75;
+                updateCash(this);
+                addToGameLog(this.name + ' Paied $75');
+
+            }
+            else if (tmp ===5){ // collect $100
+                this.cash +=100;
+                updateCash(this);
+                addToGameLog(this.name = ' Collected $100');
+                
+            }
+            // else if (tmp === 6){ //give 25 to each player
+                
+            // }
+            else if (tmp ===7){ //pay $500
+                this.cash -= 500;
+                updateCash(this);
+                addToGameLog(this.name + ' Lost $500');
+
+                
+            }
         
+            else if (tmp ===9){ // Go to Jail
+                newPositionAfterRoll +=(boardLength-newPositionAfterRoll)+10;
+                this.cash+=200;
+                updateCash(this);
+                addToGameLog(this.name + ' is passing "Go" and Going To Jail, Gained $200');
+            }
+            // else if (tmp ===10){ //get out of Jail Card
+            //      if(this.JailCard === true){
+
+                //};
+
+                
+            // }
+            else if (tmp === 11){ // gain 45
+                this.cash +=45;
+                updateCash(this);
+                addToGameLog(this.name + ' Gained $45');
+                
+            }
+            else if (tmp ===12){ // get 0
+                addToGameLog(this.name + ' Gets NOTHING');
+            }
+            else if (tmp ===13){ // Lose 25
+                this.cash -=25;
+                updateCash(this);
+                addToGameLog(this.name + ' Lost $25');
+                
+            }
+            else if (tmp ===14){ //GO to Jail without passing 'GO'
+             
+              
+                if(newPositionAfterRoll === 7){
+                    Goback=false;
+                    newPositionAfterRoll+=3;
+                }
+                else if(newPositionAfterRoll===22){
+                    Goback=true;
+                    GoBackNum=12;
+
+                }
+                else if(newPositionAfterRoll ===36){
+                    Goback=true;
+                    GoBackNum=26;
+                }
+              
+                
+            }
+            else if (tmp === 15){ // pay 150;
+                this.cash -=150;
+                updateCash(this);
+                addToGameLog(this.name + ' Paied $150');
+                
+            }
+       
+
+        
+        }
+        else if (newPositionAfterRoll2 === 30){
+            console.log("im at the airport");
+        }
         
         var m = this.curCell;
         
@@ -428,12 +553,13 @@ class Player {
             lap = true
             if_calculate_lap = false
             reset = true
-        }else{
+        }
+        else{
             lap = false
             if_calculate_lap = true
             reset = false
         }
-        
+        var i =0;
         var character_img = document.createElement("img");
                 character_img.src = "/images/" + this.picture + "character.png";
                 character_img.setAttribute("height", "auto");
@@ -441,27 +567,42 @@ class Player {
                 character_img.setAttribute("padding-top", "10px");
         
         var interval = setInterval(() => {
-                // Re-enable the button
-                // ================================================================
-                // ENABLE THE NEXT TWO LINES IF YOU WANT MULTIPLE ROLLS PER TURN
-                // ===============================================================
-                // if (m == (newPositionAfterRoll % boardLength)) {
-                //     document.getElementById("throw").disabled = false;
-                // }
-        
-                 
-                if(lap == false){
-                        if((m % boardLength) < newPositionAfterRoll){
-                            document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
-                            m = ((m + 1) % boardLength);
-                            document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
-                        }else{
-                            m = newPositionAfterRoll;
-                            this.curCell = newPositionAfterRoll;
-                            clearInterval(interval);
-                        }
-                }else {
-                    if ( m < boardLength - 1 && if_calculate_lap == false) {
+            // Re-enable the button
+            // ================================================================
+            // ENABLE THE NEXT TWO LINES IF YOU WANT MULTIPLE ROLLS PER TURN
+            // ===============================================================
+            if (m == (newPositionAfterRoll % boardLength)) {
+                document.getElementById("throw").disabled = false;
+            }
+    
+                
+            if(lap == false){
+                    if((m % boardLength) < newPositionAfterRoll){
+                        document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
+                        m = ((m + 1) % boardLength);
+                        document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
+                    }else{
+                        m = newPositionAfterRoll;
+                        this.curCell = newPositionAfterRoll;
+                        i++;
+                        clearInterval(interval);
+                    }
+            }else {
+                if ( m < boardLength - 1 && if_calculate_lap == false) {
+                        document.getElementById('cell' + m + 'positionholder').innerHTML = '';
+                        m = ((m + 1) % boardLength);
+                        document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
+                    
+                }else if( m == boardLength - 1){
+                        document.getElementById('cell' + m + 'positionholder').innerHTML = '';
+                            if_calculate_lap = true;
+                            if(reset == true){
+                                m = 0;
+                                reset = false;
+                            }
+                        document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
+                }else{
+                        if( m < (newPositionAfterRoll % boardLength)){
                             document.getElementById('cell' + m + 'positionholder').innerHTML = '';
                             m = ((m + 1) % boardLength);
                             document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
@@ -475,22 +616,49 @@ class Player {
                                 }
                             document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
                     }else{
-                          if( m < (newPositionAfterRoll % boardLength)){
+                        if( m < (newPositionAfterRoll % boardLength)){
                                 document.getElementById('cell' + m + 'positionholder').innerHTML = '';
                                 m = ((m + 1) % boardLength);
                                 document.getElementById('cell' + m + 'positionholder').appendChild(character_img);   
 
-                          }else{
+                        }else{
                             m = (newPositionAfterRoll % boardLength)
                             this.curCell = (newPositionAfterRoll % boardLength);
+                            i++;
                             clearInterval(interval); 
-                         }
+                        }
                     }
                 }
+            
+
+                
+                
+            }
+                
+                
+                if(i== 1&& Goback===true){
+                    console.log("GoBackNum is: " + GoBackNum);
+                    console.log("m is: "+ m);
+                    newPositionAfterRoll-=GoBackNum;
+                    var intervalforBack = setInterval(()=>{
+                        if(lap == false){
+                                        if((m % boardLength) > newPositionAfterRoll){
+                                            document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
+                                            m = ((m - 1) % boardLength);
+                                            document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
+                                        }else{
+                                            m = newPositionAfterRoll;
+                                            this.curCell = newPositionAfterRoll;
+                                            clearInterval(intervalforBack);
+                                        }
+                                    }
 
 
-
+                    }, 100);
+                }
+    
             }, 100); 
+
         // enable or disable the buy button depending on the property
         if (property[newPositionAfterRoll2].groupNumber == 0)
         {
@@ -607,11 +775,26 @@ class Player {
             alert("Unable to mortgage the property");
         }
     }
+    
     getPlayerPosition() {
         return this.curCell;
     }
+
+   
 }
 
+
+
+
+
+// async function sendToJail(player){
+  
+//     let result = await player.updatePosition(3);
+
+//     return result;
+
+
+// }
 
 function getCurrentPlayer() {
     return turn;
@@ -732,8 +915,6 @@ function displayOwnedProperties(){
         }
     }
 
-    
-
    var x = document.getElementById("propertyList");
    if (x.style.display === "none"){
        x.style.display = "block";
@@ -753,20 +934,20 @@ function getRandomColor() {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-  }
+}
+
 function endGame()
 {
     // get the player number of the winner
     var winner = getWinner() + 1;
 
     var board = document.getElementById('board');
-    var chance = document.getElementById('chanceCards');
+    var chat = document.getElementById('chatBox');
     board.style.display = 'none';
-    chance.style.display = 'none';
+    chat.style.display = 'none';
     var text = document.getElementById('endGame');
     text.innerHTML = 'GAME OVER <br> Player ' + winner + ' is the Winner';
     text.style.display = 'block';
-
 
     // let data;
     // $.ajax({
@@ -796,99 +977,389 @@ function getWinner(){
 
 window.onload = function () {
 
-    let ajax_data;
-    let player_num = 1;
-    let player_color; 
-    document.getElementById('endGame').style.display = 'none';
-    set_up_game_board()
+//     let ajax_data;
+//     let player_num = 1;
+//     let player_color; 
+    document.getElementById('control').style.display = 'inline-block';
+//     set_up_game_board()
     
     //retrieve players info
-    $.ajax({
-        url: "/fetch_players_info"
-        , context: this
-        , async: false
-        , success: function (result) {
-            ajax_data = result;
+    //    $.ajax({
+    //        url: "/fetch_players_info"
+    //        , context: this
+    //        , async: false
+    //        , success: function (result) {
+    //            ajax_data = result;
+    //
+    //        }
+    //    });
+    //    
+    //    ajax_data.forEach(function(element){
+    //        let player = new Player(element.username, element.picture, player_num);
+    //        players.push(player);
+    //        player_num ++;
+    //    });
+    
+    
+//    set_up_game_board();
+//    document.getElementById("throw").disabled = false
 
-        }
-    });
-    
-    ajax_data.forEach(function(element){
-        player_color = getRandomColor();
-        let player = new Player(element.username, element.picture, player_num, player_color);
-        players.push(player);
-        player_num ++;
-    });
-    
-    // creating players
-    for(let i = 0; i < players.length; i++){
-        player_num = i+1
-        player_name = document.getElementById("player_name_" + player_num);
-        player_name.innerHTML = players[i].playerNumber;
-        // player_color = getRandomColor(); 
-        // player_color = "#FF0000"; 
-        
-        player_picture = document.getElementById("player_picture_" + player_num);
-        var character_img = document.createElement("img");
-        var character_img2 = document.createElement("img");
-        character_img.src = "/images/" + (players[i].picture) + "character.png";
-        character_img2.src = "/images/" + (players[i].picture) + "character.png";
-        character_img2.setAttribute("width","120px");
-        character_img2.setAttribute("height","160px");
-        player_picture.appendChild(character_img2);
-        
-        // add character image to first square on the board
-        character_img.setAttribute("height", "auto");
-        character_img.setAttribute("width", "25%");
-        character_img.setAttribute("padding-top", "10px");
-        document.getElementById('cell0positionholder').appendChild(character_img);
-        
-        
-        player_money = document.getElementById("player_money_" + player_num);
-        player_money.innerHTML = players[i].cash;
-        
-        player_properties = document.getElementById("player_property_" + player_num);
-        player_properties.innerHTML = players[i].properties;
-        
-        player_estate_value = document.getElementById("player_estate_value_" + player_num);
-        player_estate_value.innerHTML = players[i].estate_value;
-        
-        document.getElementById("player_" + player_num).style.display="inline-table";
-        document.getElementById("player_holder" +player_num).style.display="none";
-    } 
-    
-    document.getElementById("throw").disabled = false;
-    jailButton.disabled = true;
-}
-
-function flip() {
-    $('.card').toggleClass('flipped');
 }
 
 
-var imagearray = ["/images/c1.png", "/images/c2.png","/images/c3.png", "/images/c4.png", 
-                 "/images/c5.png", "/images/c6.png", "/images/c7.png", "/images/c8.png" , 
-                 "/images/c9.png", "/images/c10.png", "/images/c11.png", "/images/c12.png", 
-                 "/images/c13.png", "/images/c14.png", "/images/c15.png", "/images/c16.png", 
-                 "/images/c17.png", "/images/c18.png", "/images/c19.png", "/images/c20.png", "/images/c21.png"];
-
-function changeImage()
-{
-if(imagearray.length != 0){
-    var element=document.getElementById('cardImage');
-    var x = Math.floor((Math.random() * imagearray.length));
-    console.log(x);
-
-
-
-
-      element.src=imagearray[x];
-    imagearray.splice(x, 1);  
-        console.log(imagearray);
-}
-    else{
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+function whenAtchanceCard(){
+   
+    $('.card').toggleClass('flipped'); //flip to chancecard;
+     
+    console.log(imagearray);
+   
+    if (imagearray.length == 0){  
          var element=document.getElementById('cardImage');
-        element.src="/images/end.jpg"
+    element.src="/images/end.jpg"
+    sleep(3500).then(() => {
+        // Do something after the sleep!
+        $('.card').toggleClass('flipped');
+    });
+
     }
+
+   if(imagearray.length != 0){
+    sleep(3500).then(() => {
+        // Do something after the sleep!
+        $('.card').toggleClass('flipped'); // flip it back;
+    });
+        var element=document.getElementById('cardImage');
+        var x = Math.floor((Math.random() * imagearray.length));
+        element.src=imagearray[x];
+        if(imagearray[x] == "/images/c1.png"){
+            //   //collect 50  
+            console.log("It is c1");
+            imagearray.splice(x, 1);
+            return 1;
+          
+        }
+        else   if(imagearray[x] == "/images/c2.png"){
+            //   //collect 50  
+            console.log("It is c2");
+            imagearray.splice(x, 1);
+            return 2;
+          
+        }
+        else if(imagearray[x] == "/images/c3.png"){ 
+            //go 3 blocks backwards
+            console.log("Entering c3");
+            imagearray.splice(x, 1);
+            return 3
+    
+           
+
+
+            
+        }
+        else if(imagearray[x] == "/images/c4.png"){
+            console.log("It is c4");
+            //pay 75
+
+            imagearray.splice(x, 1);
+            return 4;
+        }
+        else if(imagearray[x] == "/images/c5.png"){
+            console.log("It is c5");
+            //collec 100
+            imagearray.splice(x, 1);
+            return 5;
+        }
+        // else if(imagearray[x] == "/images/c6.png"){
+        //     console.log("It is c6");
+        //     //pay each player 25
+
+        // }
+        else if(imagearray[x] == "/images/c7.png"){
+            console.log("It is c7");
+            //pay 500
+       
+            imagearray.splice(x, 1);
+            return 7;
+        }
+ 
+        else if(imagearray[x] == "/images/c9.png"){
+            console.log("It is c9 and ");
+            //go to jail
+     
+            imagearray.splice(x, 1);
+            return 9;
+        }
+        // else if(imagearray[x] == "/images/c10.png"){
+        //     console.log("It is c10");
+        //     //get out of jail card, keep the card
+        // }
+        else if(imagearray[x] == "/images/c11.png"){
+            console.log("It is c11");
+            //get 45
+            // player.cash +=40;
+            // updateCash(player);
+            // addToGameLog(player.name + ' Gained $45');
+            imagearray.splice(x, 1);
+            return 11;
+        }
+        else if(imagearray[x] == "/images/c12.png"){
+            console.log("It is c12");
+            //get 0
+            // addToGameLog(player.name + ' Gained 0');
+            imagearray.splice(x, 1);
+            return 12;
+        }
+        else if(imagearray[x] == "/images/c13.png"){
+            console.log("It is c13");
+            //pay 25
+     
+            imagearray.splice(x, 1);
+            return 13;
+            
+        }
+        else if(imagearray[x] == "/images/c14.png"){
+            console.log("It is c14");
+            //GO to jail, do not pass GO, do not collect 200
+            imagearray.splice(x, 1);
+            return 14;
+        }else if(imagearray[x] == "/images/c15.png"){
+            console.log("It is c15");
+            //pay 150
+    
+            imagearray.splice(x, 1);
+            return 15;
+            
+        }
+    
+
+        
+     
+      
+    } 
+
+
+
 }
+
+
+// ----------------------------------- Networking ------------------------------------------
+var displayed_players = [];
+var log_in_players = [];
+var playerName;
+
+function createPlayer(){
+    // creating players
+    for(let i = 0; i < log_in_players.length; i++){
+        if(!displayed_players.includes(log_in_players[i].name)){
+            player_num = i+1
+            player_name = document.getElementById("player_name_" + player_num);
+            player_name.innerHTML = log_in_players[i].name;
+
+
+            player_picture = document.getElementById("player_picture_" + player_num);
+//            var character_img = document.createElement("img");
+            var character_img2 = document.createElement("img");
+//            character_img.src = "/images/" + (log_in_players[i].picture) + "character.png";
+            character_img2.src = "/images/" + (log_in_players[i].picture) + "character.png";
+            character_img2.setAttribute("width","120px");
+            character_img2.setAttribute("height","160px");
+            player_picture.appendChild(character_img2);
+
+
+            player_money = document.getElementById("player_money_" + player_num);
+            player_money.innerHTML = log_in_players[i].cash;
+
+            player_properties = document.getElementById("player_property_" + player_num);
+            player_properties.innerHTML = log_in_players[i].properties;
+
+            player_estate_value = document.getElementById("player_estate_value_" + player_num);
+            player_estate_value.innerHTML = log_in_players[i].estate_value;
+
+            document.getElementById("player_" + player_num).style.display="inline-table";
+            document.getElementById("player_holder" +player_num).style.display="none";
+            
+            displayed_players.push(log_in_players[i].name);
+        }
+    }     
+}
+
+function updatePlayer(name,data){
+    let current_player;
+    for(let i=0; i<log_in_players.length; i++){
+        if(log_in_players[i].name == name){
+            current_player = log_in_players[i];
+        }
+    }
+    let player_status = document.getElementById("player_status_" + current_player.picture);
+      player_status.style.fontWeight = 'bold';
+      player_status.style.color = 'red';
+      player_status.innerHTML=(data.status); 
+}
+
+
+socket.on('connect', function(data) {
+    socket.emit('getPlayerName',socket.id);
+});
+
+socket.on('set_player_name',function(data){
+    playerName = data;
+})
+
+socket.on('clientChange', function (clientNum) {
+    document.querySelector("#clients").innerHTML = "Online players:" + clientNum;
+});
+
+socket.on('connected', function(data){
+	var msg = data + " has connected!!";
+	socket.emit('chat',msg);
+});
+
+socket.on('update_log_in_player',function(data){
+    var if_new_player = true;
+    var player_num;
+    
+    socket.emit('getAllPlayers');
+    
+    for(let i = 0; i < log_in_players.length; i++){
+        if(log_in_players[i].name == data.playerName){
+            if_new_player = false;
+            break;
+        }
+    }
+    
+    if(if_new_player){
+        let new_player = new Player(data.playerName, data.picture, player_num)
+        log_in_players.push(new_player);        
+    }
+//    
+//    console.log(displayed_players,log_in_players);
+    
+});
+
+socket.on('get_all_players',function(data){
+//    console.log("test:");
+//    console.log(data.length,log_in_players);
+    
+    for(let i=data.length-1 ; i>=0; i--){
+        var if_find = false;
+        for(let j=0; j<log_in_players.length; j++){  
+            if(data[i].playerName != log_in_players[j].name){
+                continue;
+            }else{
+                if_find = true;
+                break;
+            }
+            
+        }
+        if(!if_find){
+            let new_player = new Player(data[i].playerName, data[i].picture, data[i].picture);
+            log_in_players.unshift(new_player);
+        }
+             
+
+    }
+    
+    createPlayer();
+});
+
+socket.on('message',function(message){
+	addToGameLog(message);
+});
+
+socket.on('dis', function(data){
+//    console.log(data);
+	var msg = data + " has disconnected!!";
+    addToGameLog(msg);
+});
+
+socket.on('updateState',function(data){
+    document.querySelector("#turn_info").innerHTML = "Playing:" + data.playerName;
+    if(data.playerName == playerName){
+        document.getElementById("endTurnButton").disabled = false;
+        document.getElementById("throw").disabled = false;
+    }else{
+        document.getElementById('endTurnButton').disabled = true;
+        document.getElementById('throw').disabled = true;
+    }
+});
+
+
+socket.on('gameStart',function(){
+
+    set_up_game_board();
+    let ready_button = document.querySelector("#readyButton");
+    ready_button.parentNode.removeChild(ready_button);
+    document.getElementById("board").style.display = "table";
+    document.getElementById("turn_info").style.display = "initial";
+    
+    for(let i=log_in_players.length+1;i<5;i++){
+        let tmp= document.getElementById("player_holder"+i);
+        tmp.innerHTML = "";
+    }
+    socket.emit('playerAfterReady',playerName);
+    socket.emit('intializeGameAvastar');
+});
+
+socket.on('updateAvastar',function(){
+//    var this_player;
+    
+    
+    for(let i = 0; i< log_in_players.length; i++){
+//        if(log_in_players[i].name == playerName){
+//            this_player = log_in_players[i];
+//        }
+            var character_img = document.createElement("img");
+            character_img.src = "/images/" + (log_in_players[i].picture) + "character.png";
+            // add character image to first square on the board
+            character_img.setAttribute("height", "auto");
+            character_img.setAttribute("width", "25%");
+            character_img.setAttribute("id", "player_avastar_"+log_in_players[i].picture);
+            character_img.setAttribute("padding-top", "10px");
+            document.getElementById('cell0positionholder').appendChild(character_img);
+    }
+    
+    
+
+});
+
+function end_turn_click(){
+    socket.emit('switchPlayer');
+}
+
+socket.on('update_player',function(data){
+    updatePlayer(data.name,data.info);
+});
+
+function ready_button_click(){
+    document.querySelector("#readyButton").disabled = true;
+    socket.emit('playerReady',playerName);
+}
+
+// ----------------------------------- Networking ------------------------------------------
+// ========================chat Box functionality =======================
+// var socket = io.connect('http://localhost:8080');
+
+// $('form').submit(function(e){
+//     e.preventDefault(); // prevents page reloading
+//     socket.emit('chat_message', $('#txt').val());
+//     $('#txt').val('');
+//     return false;
+// });
+//     // append the chat text message
+//     socket.on('chat_message', function(msg){
+//         $('#messages').append($('<li>').html(msg));
+//         var Log = document.getElementById('messageDisplay');
+//         Log.scrollTop = Log.scrollHeight;
+//     });
+//     // append text if someone is online
+//     socket.on('is_online', function(username) {
+//         $('#messages').append($('<li>').html(username));
+//     });
+//     // NEED TO FIGURE OUT A WAY TO GET THE PLAYERS NAME FOR CHATTING
+//     // var username = 'player';
+//     // socket.emit('username', username);
+
 

@@ -2,14 +2,14 @@
     width: 60%;
     height: 65%;
     position: relative;
-    border: 1px solid #ccc;
-    -webkit-perspective: 800px;
+       -webkit-perspective: 800px;
     -moz-perspective: 800px;
     -o-perspective: 800px;
     perspective: 800px;
 }
 .card {
-    left:300px;
+    left:230%;
+    top:-80%;
     width: 30%;
     height: 35%;
     position: absolute;
