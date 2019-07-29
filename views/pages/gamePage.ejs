@@ -6,6 +6,7 @@
 </head>
 
 <body>
+    <div id="clients"></div>
     <secion class="player_info">
         <table id="player_wrapper">
             <tr>
@@ -19,7 +20,7 @@
                             <td><b>Player:</b>&nbsp;
                                 <span id="player_name_1"></span>
                             </td>
-                            <td colspan="3"><span id="player_color_1"></span></td>
+                            <td colspan="3"><span id="player_status_1"></span></td>
 
                         </tr>
 
@@ -56,7 +57,7 @@
                             <td><b>Player:</b>&nbsp;
                                 <span id="player_name_2"></span>
                             </td>
-                            <td colspan="3"><span id="player_color_2"></span></td>
+                            <td colspan="3"><span id="player_status_2"></span></td>
 
                         </tr>
 
@@ -94,7 +95,7 @@
                             <td><b>Player:</b>&nbsp;
                                 <span id="player_name_3"></span>
                             </td>
-                            <td colspan="3"><span id="player_color_3"></span></td>
+                            <td colspan="3"><span id="player_status_3"></span></td>
 
                         </tr>
 
@@ -132,7 +133,7 @@
                             <td><b>Player:</b>&nbsp;
                                 <span id="player_name_4"></span>
                             </td>
-                            <td colspan="3"><span id="player_color_4"></span></td>
+                            <td colspan="3"><span id="player_status_4"></span></td>
 
                         </tr>
 
@@ -163,7 +164,9 @@
         </table>
     </secion>
 
-    <table id="board">
+    <center><button type="button" id="readyButton" class="btn btn-primary" style="font-size:4em; margin-top:1em;" onClick="ready_button_click()">Ready</button></center>
+    <div id="turn_info" style="display:none;"></div>
+    <table id="board" style="display:none;">
         <tr>
             <td class="cell board-corner" id="cell20"></td>
             <td class="cell board-top" id="cell21"></td>
@@ -281,6 +284,7 @@
                 <button id="buyButton">Buy</button>
                 <button id="sellButton">Mortgage</button>
                 <button id="tradeButton">Trade</button>
+                <button id="endTurnButton" onclick="end_turn_click()" disabled="true">End Turn</button>
             </div>
     
             <div id="gameLog">
@@ -298,6 +302,7 @@
 </body>
 
 <footer>
+    <script src="/js/socket.io.js"></script>
     <link rel="stylesheet" href="/stylesheets/dice.css">
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -307,7 +312,6 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/gameboard.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,900" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/stylesheets/chance.css" />
-    
 </footer>
 
 </html>
