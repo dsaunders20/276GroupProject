@@ -75,7 +75,7 @@ h1 {
 }
 #chatBox {
 	position: relative;
-	top: -200px;
+	top: -175px;
 	padding-left: 10px;
 }
 #messages li { padding: 5px 5px; }
@@ -353,7 +353,7 @@ h1 {
 	height: 15px;
 	left: 0px;
 	top: -25px;
-	width: 72px;
+	width: 100px;
 
 }
 
@@ -361,7 +361,7 @@ h1 {
 	bottom: -25px;
 	height: 15px;
 	left: 0px;
-	width: 72px;
+	width: 125px;
 }
 
 .board-left .cell-owner {

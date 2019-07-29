@@ -242,7 +242,7 @@ function set_up_game_board() {
 resignButton.addEventListener('click', function(e) {
     var confirmed = confirm("Are you sure you want to resign?");
     if (confirmed) {
-        //resign
+        endGame();
     }
 });
 
@@ -645,8 +645,6 @@ function displayOwnedProperties(){
         }
     }
 
-    
-
    var x = document.getElementById("propertyList");
    if (x.style.display === "none"){
        x.style.display = "block";
@@ -666,7 +664,8 @@ function getRandomColor() {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-  }
+}
+
 function endGame()
 {
     // get the player number of the winner
