@@ -113,6 +113,39 @@ async function throwDice() {
     // player.updatePosition(randomd0+randomd1);
 }
 
+// Roll the dice with visual representation and return whether we rolled a double
+function rollDice() {
+    var num = 0
+        // Display dice rolling and return whether we rolled doubles
+    var roll = setInterval(function () {
+            if (num == 15) {
+                clearInterval(roll)
+            }
+            // Create a random integer between 0 and 5
+            randomd0 = Math.floor(Math.random() * 6) + 1
+            randomd1 = Math.floor(Math.random() * 6) + 1
+                // Display result
+            updateDice()
+            num++
+        }, 100)
+        // Return whether we rolled a double
+    return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            resolve(randomd0 == randomd1);
+        }, 1650)
+    })
+}
+// Display the corresponding die face for randomly generated values
+function updateDice() {
+    document.getElementById("d0").src = eval("face" + randomd0 + ".src")
+    document.getElementById("d1").src = eval("face" + randomd1 + ".src")
+}
+
+// ----------------------------------- DICE ROLLING ------------------------------------------
+
+
+// ----------------------------------- JAIL FUNCTIONS ------------------------------------------
+
 const jailButton = document.getElementById("leaveJail");
 jailButton.addEventListener('click', function(b){
     var curPlayerNum = getCurrentPlayer();
@@ -148,38 +181,7 @@ function unJail(player) {
     jailButton.disabled = true;
 }
 
-// Roll the dice with visual representation and return whether we rolled a double
-function rollDice() {
-    var num = 0
-        // Display dice rolling and return whether we rolled doubles
-    var roll = setInterval(function () {
-            if (num == 15) {
-                clearInterval(roll)
-            }
-            // Create a random integer between 0 and 5
-            // randomd0 = Math.floor(Math.random() * 6) + 1
-            // randomd1 = Math.floor(Math.random() * 6) + 1
-            //Use it when testing chanceCard
-            randomd0 = 4;
-            randomd1 = 3;
-                // Display result
-            updateDice()
-            num++
-        }, 100)
-        // Return whether we rolled a double
-    return new Promise(function (resolve, reject) {
-        setTimeout(function () {
-            resolve(randomd0 == randomd1);
-        }, 1650)
-    })
-}
-// Display the corresponding die face for randomly generated values
-function updateDice() {
-    document.getElementById("d0").src = eval("face" + randomd0 + ".src")
-    document.getElementById("d1").src = eval("face" + randomd1 + ".src")
-}
-
-// ----------------------------------- DICE ROLLING ------------------------------------------
+// ----------------------------------- JAIL FUNCTIONS ------------------------------------------
 
 
 // ----------------------------------- Properties ------------------------------------------
@@ -652,8 +654,25 @@ class Player {
                                             clearInterval(intervalforBack);
                                         }
                                     }
-
-
+                                    
+                                    if (newPositionAfterRoll2 === 4)
+                                        {
+                                            console.log("here");
+                                            this.cash -= 200
+                                            updateCash(this);
+                                            addToGameLog(this.name + ' paid $200 for a Parking Ticket!');
+                                        } 
+                                        if (property[newPositionAfterRoll2].groupNumber == 0)
+                                        {
+                                            buyButton.disabled = true;
+                                        }
+                                        else {
+                                            buyButton.disabled = false;
+                                        }
+                                        if (property[newPositionAfterRoll2].owner == this)
+                                        {
+                                            sellButton.disabled = false;
+                                        }
                     }, 100);
                 }
     
@@ -783,18 +802,6 @@ class Player {
    
 }
 
-
-
-
-
-// async function sendToJail(player){
-  
-//     let result = await player.updatePosition(3);
-
-//     return result;
-
-
-// }
 
 function getCurrentPlayer() {
     return turn;
