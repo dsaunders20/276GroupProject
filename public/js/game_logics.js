@@ -865,11 +865,9 @@ function endGame()
     var winner = getWinner() + 1;
 
     var board = document.getElementById('board');
-    var chance = document.getElementById('chanceCards');
     var chat = document.getElementById('chatBox');
     board.style.display = 'none';
-    chance.style.display = 'none';
-    chat.style.display = 'none'
+    chat.style.display = 'none';
     var text = document.getElementById('endGame');
     text.innerHTML = 'GAME OVER <br> Player ' + winner + ' is the Winner';
     text.style.display = 'block';

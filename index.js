@@ -17,16 +17,16 @@ const { Pool } = require('pg');
 //   database: 'postgres'
 // });
 //for Michael
-const pool = new Pool({
-  user: 'postgres',
-  password: 'root',
-  host: 'localhost',
-  database: 'postgres'
-});
-// use this block for heroku app
 // const pool = new Pool({
-//  connectionString: process.env.DATABASE_URL
+//   user: 'postgres',
+//   password: 'root',
+//   host: 'localhost',
+//   database: 'postgres'
 // });
+// use this block for heroku app
+const pool = new Pool({
+ connectionString: process.env.DATABASE_URL
+});
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
