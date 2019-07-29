@@ -84,11 +84,11 @@ function rollDice() {
                 clearInterval(roll)
             }
             // Create a random integer between 0 and 5
-            randomd0 = Math.floor(Math.random() * 6) + 1
-            randomd1 = Math.floor(Math.random() * 6) + 1
+            // randomd0 = Math.floor(Math.random() * 6) + 1
+            // randomd1 = Math.floor(Math.random() * 6) + 1
             //Use it when testing chanceCard
-            // randomd0 = 4;
-            // randomd1 = 3;
+            randomd0 = 4;
+            randomd1 = 3;
                 // Display result
             updateDice()
             num++
@@ -352,15 +352,9 @@ class Player {
 
         // used for checking if user is on a 'penalty square'
         let newPositionAfterRoll2 = (currentPlayerPosition + stepsToMove) % boardLength;
-        // this.curCell = newPositionAfterRoll2;
-        
-        // console.log("beginning of update, this is: "+ this.curCell + "  " + currentPlayerPosition + "   " + newPositionAfterRoll);
         //update cash if the player completes one lap around the board
         if (newPositionAfterRoll >= boardLength) { //makes full revolution
             this.cash += 200;
-            // var playerMoney = parseInt(document.getElementById('player_money_'+getCurrentPlayer()).innerHTML);
-            // playerMoney += 200;
-            // document.getElementById('player_money_'+getCurrentPlayer()).innerHTML = playerMoney;
             updateCash(this);
             addToGameLog(this.name + ' made it around the board! Collect $200!');
         }
@@ -389,16 +383,16 @@ class Player {
                 GoBackNum=3;
                 addToGameLog(this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
             }
-            else if (tmp ===4){ // collect $100
-                this.cash+=100;
+            else if (tmp ===4){ // pay $75
+                this.cash-=75;
                 updateCash(this);
-                addToGameLog(this.name + ' Collected $100');
+                addToGameLog(this.name + ' Paied $75');
 
             }
-            else if (tmp ===5){ // lose $50
-                this.cash -=50;
+            else if (tmp ===5){ // collect $100
+                this.cash +=100;
                 updateCash(this);
-                addToGameLog(this.name = ' Lost $50');
+                addToGameLog(this.name = ' Collected $100');
                 
             }
             // else if (tmp === 6){ //give 25 to each player
@@ -459,16 +453,18 @@ class Player {
               
                 
             }
-            else if (tmp === 15){ // gained 150;
-                this.cash +=150;
+            else if (tmp === 15){ // pay 150;
+                this.cash -=150;
                 updateCash(this);
-                addToGameLog(this.name + ' Gained $150');
+                addToGameLog(this.name + ' Paied $150');
                 
             }
        
 
-            console.log(imagearray);
         
+        }
+        else if (newPositionAfterRoll2 === 30){
+            console.log("im at the airport");
         }
         
         var m = this.curCell;
@@ -497,9 +493,9 @@ class Player {
                 // ================================================================
                 // ENABLE THE NEXT TWO LINES IF YOU WANT MULTIPLE ROLLS PER TURN
                 // ===============================================================
-                // if (m == (newPositionAfterRoll % boardLength)) {
-                //     document.getElementById("throw").disabled = false;
-                // }
+                if (m == (newPositionAfterRoll % boardLength)) {
+                    document.getElementById("throw").disabled = false;
+                }
         
                  
                 if(lap == false){
@@ -865,15 +861,12 @@ function endGame()
     var winner = getWinner() + 1;
 
     var board = document.getElementById('board');
-    var chance = document.getElementById('chanceCards');
     var chat = document.getElementById('chatBox');
     board.style.display = 'none';
-    chance.style.display = 'none';
-    chat.style.display = 'none'
+    chat.style.display = 'none';
     var text = document.getElementById('endGame');
     text.innerHTML = 'GAME OVER <br> Player ' + winner + ' is the Winner';
     text.style.display = 'block';
-
 
     // let data;
     // $.ajax({
