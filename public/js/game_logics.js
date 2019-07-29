@@ -9,6 +9,12 @@ var turn = 0;
 var totalTurn = 0;
 
 const diceButton = document.getElementById('throw');
+diceButton.addEventListener('click', function(d){
+    if (players[getCurrentPlayer()].inJail) {
+        jailButton.disabled = true;
+    }
+    throwDice();
+})
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
@@ -27,7 +33,7 @@ face6.src = "images/f6.png"
 var randomd0 = 0
 var randomd1 = 1
 var doubleCount = 0
-var double = 0
+var double = false;
 
 $("#throw").click(function () {
     $(".dice").addClass('shake')
@@ -42,27 +48,92 @@ async function throwDice() {
     // Disable the button so user can't keep pressing it
     document.getElementById("throw").disabled = true
     var double = await rollDice()
-    addToGameLog("[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
-    if ((double == 1) && (doubleCount < 2)) {
+    if (double == 1) {
         doubleCount++
-        addToGameLog('Doubles! Roll again!')
-        diceButton.disabled=false;
-        player.updatePosition(randomd0+randomd1);
-        // player.updatePosition(8);
     }
+    addToGameLog("[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
+    if ( player.inJail === false ){
+        if ((double === true) && (doubleCount <= 2) && (player.curCell+randomd0+randomd1 != 10)) {
+            addToGameLog('Doubles! Roll again!')
+            diceButton.disabled=false;
+            player.updatePosition(randomd0+randomd1);
+            // player.updatePosition(8);
+        }
+        else if (doubleCount === 3) {
+            addToGameLog('['+player.name+'] rolled doubles 3 times in a row, now sent to jail for 3 turns! ['+player.name+'] can pay $50 to get out.')
+            doubleCount = 0;
 
-    else if (doubleCount == 3) {
-        addToGameLog(player.name + ' rolled doubles 3 times!  You are sent to jail!')
+            toJail(player);
+        }
+        else {
+            doubleCount = 0
+            diceButton.disabled = true;
+            player.updatePosition(randomd0+randomd1);
+            // player.updatePosition(8);
+        }
     }
-    else {
-        doubleCount = 0
-        diceButton.disabled = true;
-        player.updatePosition(randomd0+randomd1);
-        // player.updatePosition(8);
+    else {      //  player rolls while in jail
+        player.turnsInJail += 1;
+        if ( player.turnsInJail < 3 && double === true ){   //  rolls doubles
+            addToGameLog("Doubles! ["+players.name+"] is free to go.");
+            doubleCount = 0;
+            unJail(player);
+            diceButton.disabled = true;
+            player.updatePosition(randomd0+randomd1);
+        }
+        else if ( player.turnsInJail < 3 && double === false ){ //  in jail less than 3 turns, no double
+            addToGameLog("Try again next turn!");
+            diceButton.disabled = true;
+        }
+        else if ( player.turnsInJail >= 3 ){    //  in jail for 3 turns
+            addToGameLog(player.name+" has now paid the $50 fine after 3 turns in jail and is free to go!");
+            unJail(player);
+            doubleCount = 0;
+            diceButton.disabled = true;
+            player.updatePosition(randomd0+randomd1);
+        }
+        else {
+            addToGameLog("Error in roll dice");
+        }
     }
     // Re-enable the button
     //document.getElementById("throw").disabled = false
     // player.updatePosition(randomd0+randomd1);
+}
+
+const jailButton = document.getElementById("leaveJail");
+jailButton.addEventListener('click', function(b){
+    var curPlayerNum = getCurrentPlayer();
+    var curPlayer = players[curPlayerNum];
+
+    addToGameLog("["+curPlayer.name+"] paid $50 to get out of jail.");
+    curPlayer.cash -= 50;
+    updateCash(curPlayer);
+
+    unJail(curPlayer);
+})
+
+
+//  Send player to jail and update attributes
+function toJail(player) {
+    //  Move avatar
+    var character_img = document.createElement("img");
+        character_img.src = "/images/" + player.picture + "character.png";
+        character_img.setAttribute("height", "auto");
+        character_img.setAttribute("width", "25%");
+        character_img.setAttribute("padding-top", "10px");
+    document.getElementById('cell'+ player.curCell + 'positionholder').innerHTML = '';  //  Maybe use some animations?
+    document.getElementById('cell10positionholder').appendChild(character_img);         //  But not sure how to implement...
+
+    //  Set jail attributes
+    player.inJail = true;
+    player.curCell = 10;
+    player.turnsInJail = 0;
+}
+
+function unJail(player) {
+    player.inJail = false;
+    jailButton.disabled = true;
 }
 
 // Roll the dice with visual representation and return whether we rolled a double
@@ -305,6 +376,9 @@ const endTurn = document.getElementById('endTurnButton');
 endTurn.addEventListener('click', function(e) {
     updateTurn();
     diceButton.disabled = false;
+    if ( players[getCurrentPlayer()].inJail ){
+        jailButton.disabled = false;
+    }
     // let player = players[getCurrentPlayer()];
     // checkValidSquareBuy(property[player.curCell]);
     // checkValidSquareMortgage(property[player.curCell], player);
@@ -323,6 +397,8 @@ class Player {
         this.properties = 0;
         this.playerNumber = playerNumber;
         this.color = color;
+        this.inJail = false;
+        this.turnsInJail = 0;
         // what other attributes we need?
     }
     updatePosition(stepsToMove) {
@@ -415,44 +491,54 @@ class Player {
 
 
             }, 100); 
-            // enable or disable the buy button depending on the property
-            if (property[newPositionAfterRoll2].groupNumber == 0)
-            {
-                buyButton.disabled = true;
-            }
-            else {
-                buyButton.disabled = false;
-            }
-            if (property[newPositionAfterRoll2].owner == this)
-            {
-                sellButton.disabled = false;
-            }
-            //checkValidSquareBuy(property[newPositionAfterRoll]);
+        // enable or disable the buy button depending on the property
+        if (property[newPositionAfterRoll2].groupNumber == 0)
+        {
+            buyButton.disabled = true;
+        }
+        else {
+            buyButton.disabled = false;
+        }
+        if (property[newPositionAfterRoll2].owner == this)
+        {
+            sellButton.disabled = false;
+        }
+        //checkValidSquareBuy(property[newPositionAfterRoll]);
 
-            if (newPositionAfterRoll2 === 4)
-            {
-                this.cash -= 200
-                updateCash(this);
-                addToGameLog(this.name + ' paid $200 for a Parking Ticket!');
-            } 
-            if (newPositionAfterRoll2 === 38)
-            {
-                this.cash -= 100
-                updateCash(this);
-                addToGameLog(this.name + ' lost $100 gambling.. Unlucky!');
-            }
-            document.getElementById('sellButton').innerHTML = "Mortgage"; 
-            if (property[newPositionAfterRoll2].owner != this) {
-                sellButton.disabled = true; 
-            }
+        if (newPositionAfterRoll2 === 4)
+        {
+            this.cash -= 200
+            updateCash(this);
+            addToGameLog(this.name + ' paid $200 for a Parking Ticket!');
+        } 
+        if (newPositionAfterRoll2 === 38)
+        {
+            this.cash -= 100
+            updateCash(this);
+            addToGameLog(this.name + ' lost $100 gambling.. Unlucky!');
+        }
+        document.getElementById('sellButton').innerHTML = "Mortgage"; 
+        if (property[newPositionAfterRoll2].owner != this) {
+            sellButton.disabled = true; 
+        }
 
-            payRent(property[newPositionAfterRoll2], this);
+        payRent(property[newPositionAfterRoll2], this);
 
-    //         // landing at the airport
-    //         if (newPositionAfterRoll2 === 30)
-    //         {
-    //             airport(this);
-    //         }
+//         // landing at the airport
+//         if (newPositionAfterRoll2 === 30)
+//         {
+//             airport(this);
+//         }
+
+        //  If player lands on jail
+        if ( this.inJail === false && newPositionAfterRoll2 === 10 ){
+            //  Set player's jail attributes
+            addToGameLog(this.name + ' is now in jail!  Unlucky!')
+            this.inJail = true;
+            this.turnsInJail = 0;
+            // jailButton.disabled = false;
+        }
+            
     }
     buyProperty(square) {
         // console.log("player cash before purchase is: " + this.cash);
@@ -526,6 +612,7 @@ class Player {
     }
 }
 
+
 function getCurrentPlayer() {
     return turn;
 }
@@ -571,10 +658,10 @@ function updateTurn()
 {
     turn = (turn + 1) % players.length;
     totalTurn++;
-    if (totalTurn >= 5)
-    {
-        endGame();
-    }
+    // if (totalTurn >= 5)
+    // {
+    //     endGame();
+    // }
 }
 
 function sendTo(position, player)
@@ -771,6 +858,7 @@ window.onload = function () {
     } 
     
     document.getElementById("throw").disabled = false;
+    jailButton.disabled = true;
 }
 
 function flip() {
