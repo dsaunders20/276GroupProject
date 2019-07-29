@@ -26,6 +26,8 @@ diceButton.addEventListener('click', function(d){
     throwDice();
 })
 
+var socket = io('http://localhost:5000/');
+
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
 var face1 = new Image()
@@ -991,70 +993,38 @@ function getWinner(){
 
 window.onload = function () {
 
-    let ajax_data;
-    let player_num = 1;
-    let player_color; 
-    document.getElementById('endGame').style.display = 'none';
-    set_up_game_board()
+//     let ajax_data;
+//     let player_num = 1;
+//     let player_color; 
+    document.getElementById('control').style.display = 'inline-block';
+//     set_up_game_board()
     
     //retrieve players info
-    $.ajax({
-        url: "/fetch_players_info"
-        , context: this
-        , async: false
-        , success: function (result) {
-            ajax_data = result;
-
-        }
-    });
+    //    $.ajax({
+    //        url: "/fetch_players_info"
+    //        , context: this
+    //        , async: false
+    //        , success: function (result) {
+    //            ajax_data = result;
+    //
+    //        }
+    //    });
+    //    
+    //    ajax_data.forEach(function(element){
+    //        let player = new Player(element.username, element.picture, player_num);
+    //        players.push(player);
+    //        player_num ++;
+    //    });
     
-    ajax_data.forEach(function(element){
-        player_color = getRandomColor();
-        socket.emit('username', element.username);
-        let player = new Player(element.username, element.picture, player_num, player_color);
-        players.push(player);
-        player_num ++;
-    });
     
-    // creating players
-    for(let i = 0; i < players.length; i++){
-        player_num = i+1
-        player_name = document.getElementById("player_name_" + player_num);
-        player_name.innerHTML = players[i].playerNumber;
-        // player_color = getRandomColor(); 
-        // player_color = "#FF0000"; 
-        
-        player_picture = document.getElementById("player_picture_" + player_num);
-        var character_img = document.createElement("img");
-        var character_img2 = document.createElement("img");
-        character_img.src = "/images/" + (players[i].picture) + "character.png";
-        character_img2.src = "/images/" + (players[i].picture) + "character.png";
-        character_img2.setAttribute("width","120px");
-        character_img2.setAttribute("height","160px");
-        player_picture.appendChild(character_img2);
-        
-        // add character image to first square on the board
-        character_img.setAttribute("height", "auto");
-        character_img.setAttribute("width", "25%");
-        character_img.setAttribute("padding-top", "10px");
-        document.getElementById('cell0positionholder').appendChild(character_img);
-        
-        
-        player_money = document.getElementById("player_money_" + player_num);
-        player_money.innerHTML = players[i].cash;
-        
-        player_properties = document.getElementById("player_property_" + player_num);
-        player_properties.innerHTML = players[i].properties;
-        
-        player_estate_value = document.getElementById("player_estate_value_" + player_num);
-        player_estate_value.innerHTML = players[i].estate_value;
-        
-        document.getElementById("player_" + player_num).style.display="inline-table";
-        document.getElementById("player_holder" +player_num).style.display="none";
-    } 
-    
+<<<<<<< HEAD
     document.getElementById("throw").disabled = false;
     jailButton.disabled = true;
+=======
+//    set_up_game_board();
+//    document.getElementById("throw").disabled = false
+
+>>>>>>> master
 }
 
 
@@ -1195,27 +1165,222 @@ function whenAtchanceCard(){
 
 }
 
-// ========================chat Box functionality =======================
-var socket = io.connect('http://localhost:8080');
 
-$('form').submit(function(e){
-    e.preventDefault(); // prevents page reloading
-    socket.emit('chat_message', $('#txt').val());
-    $('#txt').val('');
-    return false;
+// ----------------------------------- Networking ------------------------------------------
+var displayed_players = [];
+var log_in_players = [];
+var playerName;
+
+function createPlayer(){
+    // creating players
+    for(let i = 0; i < log_in_players.length; i++){
+        if(!displayed_players.includes(log_in_players[i].name)){
+            player_num = i+1
+            player_name = document.getElementById("player_name_" + player_num);
+            player_name.innerHTML = log_in_players[i].name;
+
+
+            player_picture = document.getElementById("player_picture_" + player_num);
+//            var character_img = document.createElement("img");
+            var character_img2 = document.createElement("img");
+//            character_img.src = "/images/" + (log_in_players[i].picture) + "character.png";
+            character_img2.src = "/images/" + (log_in_players[i].picture) + "character.png";
+            character_img2.setAttribute("width","120px");
+            character_img2.setAttribute("height","160px");
+            player_picture.appendChild(character_img2);
+
+
+            player_money = document.getElementById("player_money_" + player_num);
+            player_money.innerHTML = log_in_players[i].cash;
+
+            player_properties = document.getElementById("player_property_" + player_num);
+            player_properties.innerHTML = log_in_players[i].properties;
+
+            player_estate_value = document.getElementById("player_estate_value_" + player_num);
+            player_estate_value.innerHTML = log_in_players[i].estate_value;
+
+            document.getElementById("player_" + player_num).style.display="inline-table";
+            document.getElementById("player_holder" +player_num).style.display="none";
+            
+            displayed_players.push(log_in_players[i].name);
+        }
+    }     
+}
+
+function updatePlayer(name,data){
+    let current_player;
+    for(let i=0; i<log_in_players.length; i++){
+        if(log_in_players[i].name == name){
+            current_player = log_in_players[i];
+        }
+    }
+    let player_status = document.getElementById("player_status_" + current_player.picture);
+      player_status.style.fontWeight = 'bold';
+      player_status.style.color = 'red';
+      player_status.innerHTML=(data.status); 
+}
+
+
+socket.on('connect', function(data) {
+    socket.emit('getPlayerName',socket.id);
 });
-    // append the chat text message
-    socket.on('chat_message', function(msg){
-        $('#messages').append($('<li>').html(msg));
-        var Log = document.getElementById('messageDisplay');
-        Log.scrollTop = Log.scrollHeight;
-    });
-    // append text if someone is online
-    socket.on('is_online', function(username) {
-        $('#messages').append($('<li>').html(username));
-    });
-    // NEED TO FIGURE OUT A WAY TO GET THE PLAYERS NAME FOR CHATTING
-    // var username = 'player';
-    // socket.emit('username', username);
+
+socket.on('set_player_name',function(data){
+    playerName = data;
+})
+
+socket.on('clientChange', function (clientNum) {
+    document.querySelector("#clients").innerHTML = "Online players:" + clientNum;
+});
+
+socket.on('connected', function(data){
+	var msg = data + " has connected!!";
+	socket.emit('chat',msg);
+});
+
+socket.on('update_log_in_player',function(data){
+    var if_new_player = true;
+    var player_num;
+    
+    socket.emit('getAllPlayers');
+    
+    for(let i = 0; i < log_in_players.length; i++){
+        if(log_in_players[i].name == data.playerName){
+            if_new_player = false;
+            break;
+        }
+    }
+    
+    if(if_new_player){
+        let new_player = new Player(data.playerName, data.picture, player_num)
+        log_in_players.push(new_player);        
+    }
+//    
+//    console.log(displayed_players,log_in_players);
+    
+});
+
+socket.on('get_all_players',function(data){
+//    console.log("test:");
+//    console.log(data.length,log_in_players);
+    
+    for(let i=data.length-1 ; i>=0; i--){
+        var if_find = false;
+        for(let j=0; j<log_in_players.length; j++){  
+            if(data[i].playerName != log_in_players[j].name){
+                continue;
+            }else{
+                if_find = true;
+                break;
+            }
+            
+        }
+        if(!if_find){
+            let new_player = new Player(data[i].playerName, data[i].picture, data[i].picture);
+            log_in_players.unshift(new_player);
+        }
+             
+
+    }
+    
+    createPlayer();
+});
+
+socket.on('message',function(message){
+	addToGameLog(message);
+});
+
+socket.on('dis', function(data){
+//    console.log(data);
+	var msg = data + " has disconnected!!";
+    addToGameLog(msg);
+});
+
+socket.on('updateState',function(data){
+    document.querySelector("#turn_info").innerHTML = "Playing:" + data.playerName;
+    if(data.playerName == playerName){
+        document.getElementById("endTurnButton").disabled = false;
+        document.getElementById("throw").disabled = false;
+    }else{
+        document.getElementById('endTurnButton').disabled = true;
+        document.getElementById('throw').disabled = true;
+    }
+});
+
+
+socket.on('gameStart',function(){
+
+    set_up_game_board();
+    let ready_button = document.querySelector("#readyButton");
+    ready_button.parentNode.removeChild(ready_button);
+    document.getElementById("board").style.display = "table";
+    document.getElementById("turn_info").style.display = "initial";
+    
+    for(let i=log_in_players.length+1;i<5;i++){
+        let tmp= document.getElementById("player_holder"+i);
+        tmp.innerHTML = "";
+    }
+    socket.emit('playerAfterReady',playerName);
+    socket.emit('intializeGameAvastar');
+});
+
+socket.on('updateAvastar',function(){
+//    var this_player;
+    
+    
+    for(let i = 0; i< log_in_players.length; i++){
+//        if(log_in_players[i].name == playerName){
+//            this_player = log_in_players[i];
+//        }
+            var character_img = document.createElement("img");
+            character_img.src = "/images/" + (log_in_players[i].picture) + "character.png";
+            // add character image to first square on the board
+            character_img.setAttribute("height", "auto");
+            character_img.setAttribute("width", "25%");
+            character_img.setAttribute("id", "player_avastar_"+log_in_players[i].picture);
+            character_img.setAttribute("padding-top", "10px");
+            document.getElementById('cell0positionholder').appendChild(character_img);
+    }
+    
+    
+
+});
+
+function end_turn_click(){
+    socket.emit('switchPlayer');
+}
+
+socket.on('update_player',function(data){
+    updatePlayer(data.name,data.info);
+});
+
+function ready_button_click(){
+    document.querySelector("#readyButton").disabled = true;
+    socket.emit('playerReady',playerName);
+}
+
+// ----------------------------------- Networking ------------------------------------------
+// ========================chat Box functionality =======================
+// var socket = io.connect('http://localhost:8080');
+
+// $('form').submit(function(e){
+//     e.preventDefault(); // prevents page reloading
+//     socket.emit('chat_message', $('#txt').val());
+//     $('#txt').val('');
+//     return false;
+// });
+//     // append the chat text message
+//     socket.on('chat_message', function(msg){
+//         $('#messages').append($('<li>').html(msg));
+//         var Log = document.getElementById('messageDisplay');
+//         Log.scrollTop = Log.scrollHeight;
+//     });
+//     // append text if someone is online
+//     socket.on('is_online', function(username) {
+//         $('#messages').append($('<li>').html(username));
+//     });
+//     // NEED TO FIGURE OUT A WAY TO GET THE PLAYERS NAME FOR CHATTING
+//     // var username = 'player';
+//     // socket.emit('username', username);
 
 
