@@ -3,7 +3,7 @@ var http = require('http');
 const app = express();
 var cors = require('cors')
 const path = require('path')
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 8080
 
 
 
@@ -236,6 +236,21 @@ io.on('connection', function(socket){
         console.log('d0 = '+d0+' d1 = '+d1);
         socket.broadcast.emit('diceThrown', d0,d1);
     })
+
+    socket.on('makeRandNum', function() {
+      console.log("in the makeRandNum");
+      var r = Math.floor((Math.random() * 10))
+      socket.emit('getRandNum', r);
+      socket.broadcast.emit('getRandNum', r);
+    })
+
+    socket.on('SelectChanceCard', function(x){
+      console.log('SelectChanceCard');
+      console.log("in index.js, x is: "+ x);
+    
+      x = Math.floor((Math.random() * 10));
+      socket.broadcast.emit('chanceCardSelected', x);
+    })
     
     socket.on('getAllPlayers',function(){
        console.log(log_in_players);
@@ -387,6 +402,7 @@ io.on('connection', function(socket){
         data.info.positionToMove = move;
         socket.broadcast.emit('update_player',data); 
     });
+
 // ==============NETWORKING FOR CHAT BOX===================
 // inspired by https://itnext.io/build-a-group-chat-app-in-30-lines-using-node-js-15bfe7a2417b
     socket.on('username', function(username) {
