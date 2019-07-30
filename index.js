@@ -3,7 +3,11 @@ var http = require('http');
 const app = express();
 var cors = require('cors')
 const path = require('path')
+<<<<<<< HEAD
 const PORT = process.env.PORT || 8080
+=======
+const PORT = process.env.PORT || 5000   
+>>>>>>> 2b6414081a00ffd953de702ef99a510e4864dfaf
 
 
 
@@ -17,18 +21,18 @@ console.log('Server hosted at port:' + PORT);
 var browserSession = require('browser-session-store')
 
 // use this for testing
-// var pool = new Pool({
-//   host: 'localhost',
-//   database: 'postgres'
-// });
+ var pool = new Pool({
+   host: 'localhost',
+   database: 'postgres'
+ });
 
 //for Michael
-const pool = new Pool({
-  user: 'postgres',
-  password: 'root',
-  host: 'localhost',
-  database: 'postgres'
-});
+//const pool = new Pool({
+//  user: 'postgres',
+//  password: 'root',
+//  host: 'localhost',
+//  database: 'postgres'
+//});
 // use this block for heroku app
 
 //const pool = new Pool({
@@ -266,6 +270,11 @@ io.on('connection', function(socket){
 
     socket.on('chat', function(message){
        socket.emit('message', message);
+//       socket.broadcast.emit('message', message); 
+    });
+    
+    socket.on('chat_broadcast', function(message){
+//       socket.emit('message', message);
        socket.broadcast.emit('message', message); 
     });
     
@@ -352,6 +361,14 @@ io.on('connection', function(socket){
 
     socket.on('buy', function(player){
       socket.broadcast.emit('buy', player)
+    });
+
+    socket.on('sell', function(player){
+      socket.broadcast.emit('sell', player)
+    });
+
+    socket.on('unsell', function(player){
+      socket.broadcast.emit('unsell', player)
     });
 
     //check if all logged in players are ready

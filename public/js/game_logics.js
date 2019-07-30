@@ -32,7 +32,8 @@ diceButton.addEventListener('click', function(d){
     throwDice();
 })
 
-var socket = io('http://localhost:8080/');
+//var socket = io('http://localhost:8080/');
+var socket = io('http://localhost:5000/');
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
@@ -89,7 +90,8 @@ async function throwDice() {
         doubleCount++
     }
     // addToGameLog("[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
-    socket.emit('chat', player.name+' rolled a ' + (randomd0 + randomd1) + '!');
+     socket.emit('chat', player.name+' rolled a ' + (randomd0 + randomd1) + '!');
+    socket.emit('chat_broadcast', player.name+' rolled a ' + (randomd0 + randomd1) + '!');
     if ( player.inJail === false ){
         if ((double === true) && (doubleCount <= 2) && (player.curCell+randomd0+randomd1 != 10)) {
             // addToGameLog('Doubles! Roll again!')
@@ -107,7 +109,7 @@ async function throwDice() {
         }
         else {
             doubleCount = 0
-            socket.emit('chat', 'dice button should be disabled');
+//            socket.emit('chat', 'dice button should be disabled');
             // diceButton.disabled = true;
             document.getElementById('throw').disabled = true;
             player.updatePosition(randomd0+randomd1);
@@ -157,8 +159,13 @@ function rollDice() {
             // Create a random integer between 0 and 5
             // randomd0 = Math.floor(Math.random() * 6) + 1
             // randomd1 = Math.floor(Math.random() * 6) + 1
+<<<<<<< HEAD
             randomd0 = 3;
             randomd1 = 4;
+=======
+            randomd0 = 6;
+            randomd1 = 2;
+>>>>>>> 2b6414081a00ffd953de702ef99a510e4864dfaf
                 // Display result
             updateDice()
             socket.emit('throwDice', randomd0, randomd1);
@@ -449,7 +456,7 @@ class Player {
         this.name = name;
         this.cash = 1500;
         this.picture = picture;
-        this.curCell = 0;
+        this.curCell = 30;
         this.estate_value = 0;
         this.properties = 0;
         this.playerNumber = playerNumber;
@@ -510,7 +517,28 @@ class Player {
               
             
             }
+<<<<<<< HEAD
             
+=======
+            else if (tmp ===2){ //Go to 'Go'
+                newPositionAfterRoll+=(boardLength-newPositionAfterRoll);
+                this.cash+=200;
+                updateCash(this);
+                socket.emit('chat',this.name + ' made it around the board! Collect $200!');
+                socket.emit('chat_broadcast',this.name + ' made it around the board! Collect $200!');
+                
+            }
+            // else if (tmp ===3){ // go 3 blocks backwards
+           
+            //     Goback=true;
+            //     GoBackNum=3;
+            //     socket.emit('chat',this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
+            // }
+            else if (tmp ===4){ // pay $75
+                this.cash-=75;
+                updateCash(this);
+                socket.emit('chat',this.name + ' Paied $75');
+>>>>>>> 2b6414081a00ffd953de702ef99a510e4864dfaf
 
             else if(imagearray[x] == "/images/c4.png"){
                 console.log("It is c4");
@@ -738,7 +766,7 @@ class Player {
                         m = ((m + 1) % boardLength);
                         document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
                     
-                }else if( m == boardLength - 1){
+                }else if( m == boardLength - 1 && if_calculate_lap == false){
                         let position_holder = document.getElementById('cell'+ m + 'positionholder');
                         let current_player = document.getElementById("player_avastar_"+this.picture);
                         position_holder.removeChild(current_player);
@@ -755,40 +783,43 @@ class Player {
                         position_holder.removeChild(current_player);
                             m = ((m + 1) % boardLength);
                             document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
-                        
-                    }else if( m == boardLength - 1){
-                        let position_holder = document.getElementById('cell'+ m + 'positionholder');
-                        let current_player = document.getElementById("player_avastar_"+this.picture);
-                        position_holder.removeChild(current_player);
-                                if_calculate_lap = true;
-                                if(reset == true){
-                                    m = 0;
-                                    reset = false;
-                                }
-                            document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
-                    }else{
-                        if( m < (newPositionAfterRoll % boardLength)){
-                                let position_holder = document.getElementById('cell'+ m + 'positionholder');
-                                let current_player = document.getElementById("player_avastar_"+this.picture);
-                                position_holder.removeChild(current_player);
-                                m = ((m + 1) % boardLength);
-                                document.getElementById('cell' + m + 'positionholder').appendChild(character_img);   
-
                         }else{
-                            m = (newPositionAfterRoll % boardLength)
+                            m = (newPositionAfterRoll % boardLength);
                             this.curCell = (newPositionAfterRoll % boardLength);
                             i++;
-                            clearInterval(interval); 
+                            clearInterval(interval);
                         }
+                        
+//                    }else if( m == boardLength - 1){
+//                        let position_holder = document.getElementById('cell'+ m + 'positionholder');
+//                        let current_player = document.getElementById("player_avastar_"+this.picture);
+//                        position_holder.removeChild(current_player);
+//                                if_calculate_lap = true;
+//                                if(reset == true){
+//                                    m = 0;
+//                                    reset = false;
+//                                }
+//                            document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
+//                    }else{
+//                        if( m < (newPositionAfterRoll % boardLength)){
+//                                let position_holder = document.getElementById('cell'+ m + 'positionholder');
+//                                let current_player = document.getElementById("player_avastar_"+this.picture);
+//                                position_holder.removeChild(current_player);
+//                                m = ((m + 1) % boardLength);
+//                                document.getElementById('cell' + m + 'positionholder').appendChild(character_img);   
+//
+//                        }else{
+//                            m = (newPositionAfterRoll % boardLength)
+//                            this.curCell = (newPositionAfterRoll % boardLength);
+//                            i++;
+//                            clearInterval(interval); 
+//                        }
                     }
                 }
             
 
                 
-                
-            }
-                
-                
+        
                 // if(i== 1&& Goback===true){
                 //     console.log("GoBackNum is: " + GoBackNum);
                 //     console.log("m is: "+ m);
@@ -850,7 +881,9 @@ class Player {
         {
             this.cash -= 200
             updateCash(this);
+            socket.emit('chat_broadcast',this.name + ' paid $200 for a Parking Ticket!');
             socket.emit('chat',this.name + ' paid $200 for a Parking Ticket!');
+            
         } 
         if (newPositionAfterRoll2 === 38)
         {
@@ -934,6 +967,7 @@ class Player {
             updateEstateValue(this);
             square.mortgage = true;
             document.getElementById('sellButton').innerHTML = "Unmortgage"; 
+            socket.emit('sell', this);
             socket.emit('chat',this.name + " has mortgaged " + square.name + " for $" + mortgageValue + " (+)");
         } else if (square.owner === this && square.mortgage === true) { 
             var confirmed = confirm("Are you sure you want to unmortgage this property?");
@@ -945,6 +979,7 @@ class Player {
                 updateEstateValue(this);
                 document.getElementById('sellButton').innerHTML = "Mortgage";
                 square.mortgage = false; 
+                socket.emit('unsell', this);
                 socket.emit('chat',this.name + " has unmortgaged " + square.name + " for $" + unmortgageValue + " (-)");
             }
         }
@@ -1037,13 +1072,15 @@ function payRent(square, player) {
     // also need to determine if the square has any houses on it
     rent = square.baserent; 
     if (square.owner != player) {
-        if (square.owner != 0 && square.mortgage === false) {
-            let player2 = square.owner; 
-            player.cash -= rent; 
-            player2.cash += rent; 
-            socket.emit('chat',player.name + " payed $" + rent + " to " + player2.name);
-            updateCash(player);
-            updateCash(player2);
+        if (square.owner != 0) {
+            if (square.mortgage === false) {
+                let player2 = square.owner; 
+                player.cash -= rent; 
+                player2.cash += rent; 
+                socket.emit('chat',player.name + " payed $" + rent + " to " + player2.name);
+                updateCash(player);
+                updateCash(player2);
+            }
         }
     }
 };
@@ -1198,6 +1235,7 @@ function createPlayer(){
             log_in_players[i].color = player_color; 
             player_num = i+1
             player_name = document.getElementById("player_name_" + player_num);
+//            player_name.style.color = player_color;
             player_name.innerHTML = log_in_players[i].name;
             log_in_players[i].playerNumber = i + 1;
 
@@ -1275,6 +1313,7 @@ socket.on('updateTurn', function(data){
 
 socket.on('updateCash', function(player)
 {
+    console.log(player.cash);
     player_money = document.getElementById("player_money_" + player.playerNumber);
     player_money.innerHTML = player.cash;
 })
@@ -1297,6 +1336,16 @@ socket.on('buy', function(player){
     currentCellOwner.style.display = "block"; 
     currentCellOwner.style.backgroundColor = player.color; 
     currentCellOwner.title = player.name;
+})
+
+socket.on('sell', function(player){
+    let i = player.curCell; 
+    property[i].mortgage = true; 
+})
+
+socket.on('unsell', function(player){
+    let i = player.curCell; 
+    property[i].mortgage = false; 
 })
 
 socket.on('update_log_in_player',function(data){
@@ -1406,7 +1455,7 @@ socket.on('initializeClientAvastar',function(){
             character_img.setAttribute("width", "25%");
             character_img.setAttribute("id", "player_avastar_"+log_in_players[i].picture);
             character_img.setAttribute("padding-top", "10px");
-            document.getElementById('cell0positionholder').appendChild(character_img);
+            document.getElementById('cell30positionholder').appendChild(character_img);
     }
 });
 
