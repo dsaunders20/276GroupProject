@@ -17,10 +17,11 @@ console.log('Server hosted at port:' + PORT);
 var browserSession = require('browser-session-store')
 
 // use this for testing
-// var pool = new Pool({
-//   host: 'localhost',
-//   database: 'postgres'
-// });
+var pool = new Pool({
+  host: 'localhost',
+  database: 'postgres'
+});
+
 //for Michael
 // const pool = new Pool({
 //   user: 'postgres',
@@ -29,9 +30,11 @@ var browserSession = require('browser-session-store')
 //   database: 'postgres'
 // });
 // use this block for heroku app
-const pool = new Pool({
- connectionString: process.env.DATABASE_URL
-});
+
+//const pool = new Pool({
+// connectionString: process.env.DATABASE_URL
+//});
+
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
@@ -189,7 +192,7 @@ var current_player_id = 1;
 //0 => game does not start; 1=> game has started; -1 => game has ended;
 var game_status = 1;
 var if_game_start = false;
-var turn = 0;
+
 
 function switchPlayer(current_player_id, player_list){
     if(current_player_id < Object.keys(player_list).length){
@@ -229,14 +232,10 @@ io.on('connection', function(socket){
                     break;
                 }
             }
-    //            
-    //            if(if_new_player){
-
                 let temp_obj = {};
                 temp_obj.playerName = playerName;
                 temp_obj.picture = clients; 
                 log_in_players.push(temp_obj);
-    //            }
 
             socket.emit('update_log_in_player',temp_obj);
             socket.broadcast.emit('update_log_in_player',temp_obj);
@@ -281,8 +280,8 @@ io.on('connection', function(socket){
         });
     }
     
-        socket.on('intializeGameAvastar',function(){
-            socket.emit('updateAvastar');
+        socket.on('initializeGameAvastar',function(){
+            socket.emit('initializeClientAvastar');
 //            socket.broadcast.emit('updateAvastar');        
         });
     
@@ -302,6 +301,7 @@ io.on('connection', function(socket){
         });
     }
     
+    //switch turn and tells client who is playing
     socket.on('switchPlayer', function(){
         if(game_status == 1){
             console.log(Object.keys(player_list).length);
@@ -331,6 +331,11 @@ io.on('connection', function(socket){
       socket.broadcast.emit('updateCash', player)
     });
 
+    socket.on('buy', function(player){
+      socket.broadcast.emit('buy', player)
+    });
+
+    //check if all logged in players are ready
     socket.on('playerReady',function(name){
         let if_ready = false;
         for(let i = 0; i<player_ready_list.length;i++){
@@ -349,6 +354,8 @@ io.on('connection', function(socket){
         data.info.status = "Ready!";
         socket.emit('update_player',data);
         socket.broadcast.emit('update_player',data);
+        
+        //start a new game if all log_in_players are in 'ready' status
         if(player_ready_list.length == log_in_players.length && player_ready_list.length >= 2){
             socket.emit('gameStart');
             socket.broadcast.emit('gameStart');
@@ -356,6 +363,7 @@ io.on('connection', function(socket){
         }
     });
     
+    //update clients when they click 'Ready' button
     socket.on('playerAfterReady',function(name){
             let data2 = {};
             data2.name = name;
@@ -363,6 +371,16 @@ io.on('connection', function(socket){
             data2.info.status = "Playing";
             socket.emit('update_player',data2);
             socket.broadcast.emit('update_player',data2); 
+    });
+
+    //update clients after a certain client rolls the dice
+    socket.on('afterDiceRoll',function(name,move){
+        let data = {};
+        console.log(name);
+        data.name = name;
+        data.info = {};
+        data.info.positionToMove = move;
+        socket.broadcast.emit('update_player',data); 
     });
 });
 /////////////////////////////////////////////////

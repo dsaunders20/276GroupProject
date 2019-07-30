@@ -74,8 +74,9 @@ socket.on('diceThrown', function(d0, d1){
 
 async function throwDice() {
     let current_player_num = getCurrentPlayer();
-    let player = log_in_players[current_player_num];
+    let player = log_in_players[current_player_num - 1];
     
+    console.log(getCurrentPlayerName(),getCurrentPlayer());
     // Disable the button so user can't keep pressing it
     document.getElementById("throw").disabled = true
     var double = await rollDice()
@@ -83,13 +84,14 @@ async function throwDice() {
         doubleCount++
     }
     // addToGameLog("[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
-    socket.emit('chat', log_in_players[current_player_num].name+' rolled a ' + (randomd0 + randomd1) + '!');
+    socket.emit('chat', player.name+' rolled a ' + (randomd0 + randomd1) + '!');
     if ( player.inJail === false ){
         if ((double === true) && (doubleCount <= 2) && (player.curCell+randomd0+randomd1 != 10)) {
             // addToGameLog('Doubles! Roll again!')
-            socket.emit('chat', log_in_players[current_player_num].name+' rolled doubles and gets to roll again!');
+            socket.emit('chat', player.name+' rolled doubles and gets to roll again!');
             diceButton.disabled=false;
             player.updatePosition(randomd0+randomd1);
+            socket.emit('afterDiceRoll',getCurrentPlayerName(),(randomd0+randomd1))
             // player.updatePosition(8);
         }
         else if (doubleCount === 3) {
@@ -104,6 +106,7 @@ async function throwDice() {
             // diceButton.disabled = true;
             document.getElementById('throw').disabled = true;
             player.updatePosition(randomd0+randomd1);
+            socket.emit('afterDiceRoll',getCurrentPlayerName(),(randomd0+randomd1))
             // player.updatePosition(8);
         }
     }
@@ -116,25 +119,26 @@ async function throwDice() {
             // diceButton.disabled = true;
             document.getElementById('throw').disabled = true;
             player.updatePosition(randomd0+randomd1);
+            socket.emit('afterDiceRoll',getCurrentPlayerName(),(randomd0+randomd1))
         }
         else if ( player.turnsInJail < 3 && double === false ){ //  in jail less than 3 turns, no double
-            socket.emit('chat', "Try again next turn!");
+            socket.emit('chat',"Try again next turn!");
             diceButton.disabled = true;
         }
         else if ( player.turnsInJail >= 3 ){    //  in jail for 3 turns
-            socket.emit('chat', player.name+" has now paid the $50 fine after 3 turns in jail and is free to go!");
+            socket.emit('chat',player.name+" has now paid the $50 fine after 3 turns in jail and is free to go!");
+            player.cash -= 50;
+            updateCash(player);
             unJail(player);
             doubleCount = 0;
             diceButton.disabled = true;
             player.updatePosition(randomd0+randomd1);
+            socket.emit('afterDiceRoll',getCurrentPlayerName(),(randomd0+randomd1))
         }
         else {
             socket.emit('chat',"Error in roll dice");
         }
     }
-    // Re-enable the button
-    //document.getElementById("throw").disabled = false
-    // player.updatePosition(randomd0+randomd1);
 }
 
 // Roll the dice with visual representation and return whether we rolled a double
@@ -176,7 +180,7 @@ jailButton.addEventListener('click', function(b){
     var curPlayerNum = getCurrentPlayer();
     var curPlayer = log_in_players[curPlayerNum];
 
-    socket.emit('chat', "["+curPlayer.name+"] paid $50 to get out of jail.");
+    socket.emit('chat',"["+curPlayer.name+"] paid $50 to get out of jail.");
     curPlayer.cash -= 50;
     updateCash(curPlayer);
     // socket.emit('updateCash', curPlayer);
@@ -368,10 +372,9 @@ sellButton.disabled = true;
 
 buyButton.addEventListener('click', function (e) {
     var currentPlayerNum = getCurrentPlayer();
-    var currentPlayer = log_in_players[currentPlayerNum];
+    var currentPlayer = log_in_players[currentPlayerNum - 1];
     //   console.log("current cell is: " + currentPlayer.curCell);
     var playerPosition = currentPlayer.curCell; // should return int
-    // this is hard coded currently, change 2 to playerPosition
     var currentSquare = property[playerPosition]; //this will get the property
     //   console.log("squre name is: " + currentSquare.name);
     // already owned
@@ -394,14 +397,14 @@ buyButton.addEventListener('click', function (e) {
     }
     else {
         alert("You do not have the funds to buy the property"); //add to gamelog
-        addToGameLog("You do not have the funds to buy the property");
+        socket.emit('chat',"You do not have the funds to buy the property");
         return;
     }
 });
 
 sellButton.addEventListener('click', function (e) {
     var currentPlayerNum = getCurrentPlayer();
-    var currentPlayer = log_in_players[currentPlayerNum];
+    var currentPlayer = log_in_players[currentPlayerNum - 1];
     var playerPosition = currentPlayer.curCell;
     console.log("player position is: " + playerPosition);
     // this is hard coded currently, change 2 to playerPosition
@@ -462,7 +465,7 @@ class Player {
         if (newPositionAfterRoll >= boardLength) { //makes full revolution
             this.cash += 200;
             updateCash(this);
-            addToGameLog(this.name + ' made it around the board! Collect $200!');
+            socket.emit('chat',this.name + ' made it around the board! Collect $200!');
         }
         //when landed on the chanceblock
         if (newPositionAfterRoll2 === 7 || newPositionAfterRoll2 === 22 || newPositionAfterRoll2 === 36){
@@ -474,31 +477,31 @@ class Player {
             if (tmp ===1){ //collect 50
                 this.cash +=50
                 updateCash(this);
-                addToGameLog(this.name + ' Collected $50');
+                socket.emit('chat',this.name + ' Collected $50');
             }
             else if (tmp ===2){ //Go to 'Go'
                 newPositionAfterRoll+=(boardLength-newPositionAfterRoll);
                 this.cash+=200;
                 updateCash(this);
-                addToGameLog(this.name + ' made it around the board! Collect $200!');
+                socket.emit('chat',this.name + ' made it around the board! Collect $200!');
                 
             }
             else if (tmp ===3){ // go 3 blocks backwards
            
                 Goback=true;
                 GoBackNum=3;
-                addToGameLog(this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
+                socket.emit('chat',this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
             }
             else if (tmp ===4){ // pay $75
                 this.cash-=75;
                 updateCash(this);
-                addToGameLog(this.name + ' Paied $75');
+                socket.emit('chat',this.name + ' Paied $75');
 
             }
             else if (tmp ===5){ // collect $100
                 this.cash +=100;
                 updateCash(this);
-                addToGameLog(this.name = ' Collected $100');
+                socket.emit('chat',this.name = ' Collected $100');
                 
             }
             // else if (tmp === 6){ //give 25 to each player
@@ -507,7 +510,7 @@ class Player {
             else if (tmp ===7){ //pay $500
                 this.cash -= 500;
                 updateCash(this);
-                addToGameLog(this.name + ' Lost $500');
+                socket.emit('chat',this.name + ' Lost $500');
 
                 
             }
@@ -516,7 +519,7 @@ class Player {
                 newPositionAfterRoll +=(boardLength-newPositionAfterRoll)+10;
                 this.cash+=200;
                 updateCash(this);
-                addToGameLog(this.name + ' is passing "Go" and Going To Jail, Gained $200');
+                socket.emit('chat',this.name + ' is passing "Go" and Going To Jail, Gained $200');
             }
             // else if (tmp ===10){ //get out of Jail Card
             //      if(this.JailCard === true){
@@ -528,16 +531,16 @@ class Player {
             else if (tmp === 11){ // gain 45
                 this.cash +=45;
                 updateCash(this);
-                addToGameLog(this.name + ' Gained $45');
+                socket.emit('chat',this.name + ' Gained $45');
                 
             }
             else if (tmp ===12){ // get 0
-                addToGameLog(this.name + ' Gets NOTHING');
+                socket.emit('chat',this.name + ' Gets NOTHING');
             }
             else if (tmp ===13){ // Lose 25
                 this.cash -=25;
                 updateCash(this);
-                addToGameLog(this.name + ' Lost $25');
+                socket.emit('chat',this.name + ' Lost $25');
                 
             }
             else if (tmp ===14){ //GO to Jail without passing 'GO'
@@ -562,7 +565,7 @@ class Player {
             else if (tmp === 15){ // pay 150;
                 this.cash -=150;
                 updateCash(this);
-                addToGameLog(this.name + ' Paid $150');
+                socket.emit('chat',this.name + ' Paid $150');
                 
             }
        
@@ -589,10 +592,11 @@ class Player {
         }
         var i =0;
         var character_img = document.createElement("img");
-                character_img.src = "/images/" + this.picture + "character.png";
-                character_img.setAttribute("height", "auto");
-                character_img.setAttribute("width", "25%");
-                character_img.setAttribute("padding-top", "10px");
+        character_img.setAttribute("id", "player_avastar_"+this.picture);
+        character_img.src = "/images/" + this.picture + "character.png";
+        character_img.setAttribute("height", "auto");
+        character_img.setAttribute("width", "25%");
+        character_img.setAttribute("padding-top", "10px");
         
         var interval = setInterval(() => {
             // Re-enable the button
@@ -603,10 +607,13 @@ class Player {
             //     document.getElementById("throw").disabled = false;
             // }
     
+
                 
             if(lap == false){
                     if((m % boardLength) < newPositionAfterRoll){
-                        document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
+                        let position_holder = document.getElementById('cell'+ m + 'positionholder');
+                        let current_player = document.getElementById("player_avastar_"+this.picture);
+                        position_holder.removeChild(current_player);
                         m = ((m + 1) % boardLength);
                         document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
                     }else{
@@ -617,12 +624,16 @@ class Player {
                     }
             }else {
                 if ( m < boardLength - 1 && if_calculate_lap == false) {
-                        document.getElementById('cell' + m + 'positionholder').innerHTML = '';
+                        let position_holder = document.getElementById('cell'+ m + 'positionholder');
+                        let current_player = document.getElementById("player_avastar_"+this.picture);
+                        position_holder.removeChild(current_player);
                         m = ((m + 1) % boardLength);
                         document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
                     
                 }else if( m == boardLength - 1){
-                        document.getElementById('cell' + m + 'positionholder').innerHTML = '';
+                        let position_holder = document.getElementById('cell'+ m + 'positionholder');
+                        let current_player = document.getElementById("player_avastar_"+this.picture);
+                        position_holder.removeChild(current_player);
                             if_calculate_lap = true;
                             if(reset == true){
                                 m = 0;
@@ -631,12 +642,16 @@ class Player {
                         document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
                 }else{
                         if( m < (newPositionAfterRoll % boardLength)){
-                            document.getElementById('cell' + m + 'positionholder').innerHTML = '';
+                        let position_holder = document.getElementById('cell'+ m + 'positionholder');
+                        let current_player = document.getElementById("player_avastar_"+this.picture);
+                        position_holder.removeChild(current_player);
                             m = ((m + 1) % boardLength);
                             document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
                         
                     }else if( m == boardLength - 1){
-                            document.getElementById('cell' + m + 'positionholder').innerHTML = '';
+                        let position_holder = document.getElementById('cell'+ m + 'positionholder');
+                        let current_player = document.getElementById("player_avastar_"+this.picture);
+                        position_holder.removeChild(current_player);
                                 if_calculate_lap = true;
                                 if(reset == true){
                                     m = 0;
@@ -645,7 +660,9 @@ class Player {
                             document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
                     }else{
                         if( m < (newPositionAfterRoll % boardLength)){
-                                document.getElementById('cell' + m + 'positionholder').innerHTML = '';
+                                let position_holder = document.getElementById('cell'+ m + 'positionholder');
+                                let current_player = document.getElementById("player_avastar_"+this.picture);
+                                position_holder.removeChild(current_player);
                                 m = ((m + 1) % boardLength);
                                 document.getElementById('cell' + m + 'positionholder').appendChild(character_img);   
 
@@ -686,7 +703,7 @@ class Player {
                                             console.log("here");
                                             this.cash -= 200
                                             updateCash(this);
-                                            addToGameLog(this.name + ' paid $200 for a Parking Ticket!');
+                                            socket.emit('chat',this.name + ' paid $200 for a Parking Ticket!');
                                         } 
                                         if (property[newPositionAfterRoll2].groupNumber == 0)
                                         {
@@ -722,13 +739,13 @@ class Player {
         {
             this.cash -= 200
             updateCash(this);
-            addToGameLog(this.name + ' paid $200 for a Parking Ticket!');
+            socket.emit('chat',this.name + ' paid $200 for a Parking Ticket!');
         } 
         if (newPositionAfterRoll2 === 38)
         {
             this.cash -= 100
             updateCash(this);
-            addToGameLog(this.name + ' lost $100 gambling.. Unlucky!');
+            socket.emit('chat',this.name + ' lost $100 gambling.. Unlucky!');
         }
         document.getElementById('sellButton').innerHTML = "Mortgage"; 
         if (property[newPositionAfterRoll2].owner != this) {
@@ -770,9 +787,10 @@ class Player {
             updateCash(this);
             updatePlayerPropertyOwned(this);
             updateEstateValue(this);
-            addToGameLog(this.name + " has bought " + square.name + " for $" + square.price + " (-)");
+            socket.emit('chat',this.name + " has bought " + square.name + " for $" + square.price + " (-)");
             //buyButton.disabled = true; 
             checkValidSquareMortgage(property[this.curCell], this);
+            socket.emit('buy', this);
             let i = this.curCell; 
             let currentCellOwner = document.getElementById("cell" + i + "owner");
             currentCellOwner.style.display = "block"; 
@@ -805,7 +823,7 @@ class Player {
             updateEstateValue(this);
             square.mortgage = true;
             document.getElementById('sellButton').innerHTML = "Unmortgage"; 
-            addToGameLog(this.name + " has mortgaged " + square.name + " for $" + mortgageValue + " (+)");
+            socket.emit('chat',this.name + " has mortgaged " + square.name + " for $" + mortgageValue + " (+)");
         } else if (square.owner === this && square.mortgage === true) { 
             var confirmed = confirm("Are you sure you want to unmortgage this property?");
             if (confirmed) {
@@ -813,7 +831,7 @@ class Player {
                 this.cash -= unmortgageValue;
                 updateCash(this);
                 document.getElementById('sellButton').innerHTML = "Mortgage";
-                addToGameLog(this.name + " has unmortgaged " + square.name + " for $" + unmortgageValue + " (-)");
+                socket.emit('chat',this.name + " has unmortgaged " + square.name + " for $" + unmortgageValue + " (-)");
             }
         }
         else {
@@ -830,7 +848,11 @@ class Player {
 
 
 function getCurrentPlayer() {
-    return turn;
+    return current_server_turn_player_id;
+}
+
+function getCurrentPlayerName() {
+    return current_server_turn_player;
 }
 
 // to allow for buy/mortage
@@ -880,6 +902,7 @@ function updateTurn()
     // {
     //     endGame();
     // }
+    socket.emit('updateTurn', turn)
 }
 
 function sendTo(position, player)
@@ -902,7 +925,7 @@ function payRent(square, player) {
             let player2 = square.owner; 
             player.cash -= rent; 
             player2.cash += rent; 
-            addToGameLog(player.name + " payed $" + rent + " to " + player2.name);
+            socket.emit('chat',player.name + " payed $" + rent + " to " + player2.name);
             updateCash(player);
             updateCash(player2);
         }
@@ -1011,34 +1034,7 @@ function getWinner(){
 }
 
 window.onload = function () {
-
-//     let ajax_data;
-//     let player_num = 1;
-//     let player_color; 
     document.getElementById('control').style.display = 'inline-block';
-//     set_up_game_board()
-    
-    //retrieve players info
-    //    $.ajax({
-    //        url: "/fetch_players_info"
-    //        , context: this
-    //        , async: false
-    //        , success: function (result) {
-    //            ajax_data = result;
-    //
-    //        }
-    //    });
-    //    
-    //    ajax_data.forEach(function(element){
-    //        let player = new Player(element.username, element.picture, player_num);
-    //        players.push(player);
-    //        player_num ++;
-    //    });
-    
-    
-//    set_up_game_board();
-//    document.getElementById("throw").disabled = false
-
 }
 
 
@@ -1184,20 +1180,23 @@ function whenAtchanceCard(){
 var displayed_players = [];
 var log_in_players = [];
 var playerName;
+var current_server_turn_player = "";
+var current_server_turn_player_id = -1;
+var player_color; 
 
 function createPlayer(){
     // creating players
     for(let i = 0; i < log_in_players.length; i++){
         if(!displayed_players.includes(log_in_players[i].name)){
+            player_color = getRandomColor(); 
+            log_in_players[i].color = player_color; 
             player_num = i+1
             player_name = document.getElementById("player_name_" + player_num);
             player_name.innerHTML = log_in_players[i].name;
             log_in_players[i].playerNumber = i + 1;
 
             player_picture = document.getElementById("player_picture_" + player_num);
-//            var character_img = document.createElement("img");
             var character_img2 = document.createElement("img");
-//            character_img.src = "/images/" + (log_in_players[i].picture) + "character.png";
             character_img2.src = "/images/" + (log_in_players[i].picture) + "character.png";
             character_img2.setAttribute("width","120px");
             character_img2.setAttribute("height","160px");
@@ -1222,27 +1221,36 @@ function createPlayer(){
 }
 
 function updatePlayer(name,data){
+    console.log("update"+name);
     let current_player;
     for(let i=0; i<log_in_players.length; i++){
         if(log_in_players[i].name == name){
             current_player = log_in_players[i];
         }
     }
-    let player_status = document.getElementById("player_status_" + current_player.picture);
-      player_status.style.fontWeight = 'bold';
-      player_status.style.color = 'red';
-      player_status.innerHTML=(data.status); 
+    
+    if(data.status != undefined){
+        let player_status = document.getElementById("player_status_" + current_player.picture);
+          player_status.style.fontWeight = 'bold';
+          player_status.style.color = 'red';
+          player_status.innerHTML=(data.status);
+    }
+    if(data.positionToMove != undefined){
+        current_player.updatePosition(data.positionToMove);
+    }
 }
 
-
+//send socket.id to server for identification
 socket.on('connect', function(data) {
     socket.emit('getPlayerName',socket.id);
 });
 
+//tell client who I am
 socket.on('set_player_name',function(data){
     playerName = data;
 })
 
+//display concurrent connected clients
 socket.on('clientChange', function (clientNum) {
     document.querySelector("#clients").innerHTML = "Online players:" + clientNum;
 });
@@ -1262,6 +1270,14 @@ socket.on('updateCash', function(player)
     player_money.innerHTML = player.cash;
 })
 
+socket.on('buy', function(player){
+    let i = player.curCell; 
+    let currentCellOwner = document.getElementById("cell" + i + "owner");
+    currentCellOwner.style.display = "block"; 
+    currentCellOwner.style.backgroundColor = player.color; 
+    currentCellOwner.title = player.name;
+})
+
 socket.on('update_log_in_player',function(data){
     var if_new_player = true;
     var player_num;
@@ -1279,15 +1295,11 @@ socket.on('update_log_in_player',function(data){
         let new_player = new Player(data.playerName, data.picture, player_num)
         log_in_players.push(new_player);        
     }
-//    
-//    console.log(displayed_players,log_in_players);
-    
 });
 
-socket.on('get_all_players',function(data){
-//    console.log("test:");
-//    console.log(data.length,log_in_players);
-    
+
+// tell clients all the players logged in the server
+socket.on('get_all_players',function(data){    
     for(let i=data.length-1 ; i>=0; i--){
         var if_find = false;
         for(let j=0; j<log_in_players.length; j++){  
@@ -1303,25 +1315,29 @@ socket.on('get_all_players',function(data){
             let new_player = new Player(data[i].playerName, data[i].picture, data[i].picture);
             log_in_players.unshift(new_player);
         }
-             
-
     }
     
     createPlayer();
 });
 
+// add message to game log
 socket.on('message',function(message){
 	addToGameLog(message);
 });
 
+
+//disconnect from game
 socket.on('dis', function(data){
-//    console.log(data);
 	var msg = data + " has disconnected!!";
     addToGameLog(msg);
 });
 
+//update game status, for instance, who is playing
 socket.on('updateState',function(data){
     document.querySelector("#turn_info").innerHTML = "Playing:" + data.playerName;
+    current_server_turn_player = data.playerName;
+    current_server_turn_player_id = data.id;
+    console.log("turn:"+current_server_turn_player+" "+current_server_turn_player_id);
     if(data.playerName == playerName){
         document.getElementById("endTurnButton").disabled = false;
         document.getElementById("throw").disabled = false;
@@ -1333,29 +1349,29 @@ socket.on('updateState',function(data){
 
 
 socket.on('gameStart',function(){
-
+    //prepare the game board
     set_up_game_board();
+    
+    //take out ready button
     let ready_button = document.querySelector("#readyButton");
     ready_button.parentNode.removeChild(ready_button);
+    
+    //display board
     document.getElementById("board").style.display = "table";
     document.getElementById("turn_info").style.display = "initial";
     
+    //close spots which are not filled
     for(let i=log_in_players.length+1;i<5;i++){
         let tmp= document.getElementById("player_holder"+i);
         tmp.innerHTML = "";
     }
     socket.emit('playerAfterReady',playerName);
-    socket.emit('intializeGameAvastar');
+    socket.emit('initializeGameAvastar');
 });
 
-socket.on('updateAvastar',function(){
-//    var this_player;
-    
-    
+//intialize avastars on the first square
+socket.on('initializeClientAvastar',function(){
     for(let i = 0; i< log_in_players.length; i++){
-//        if(log_in_players[i].name == playerName){
-//            this_player = log_in_players[i];
-//        }
             var character_img = document.createElement("img");
             character_img.src = "/images/" + (log_in_players[i].picture) + "character.png";
             // add character image to first square on the board
@@ -1365,19 +1381,19 @@ socket.on('updateAvastar',function(){
             character_img.setAttribute("padding-top", "10px");
             document.getElementById('cell0positionholder').appendChild(character_img);
     }
-    
-    
-
 });
 
+//tell server to switch to another player when end turn button is clicked
 function end_turn_click(){
     socket.emit('switchPlayer');
 }
 
+//grab data from server and update player on the game board accordingly
 socket.on('update_player',function(data){
     updatePlayer(data.name,data.info);
 });
 
+//disable ready button after click
 function ready_button_click(){
     document.querySelector("#readyButton").disabled = true;
     socket.emit('playerReady',playerName);
