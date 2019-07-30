@@ -154,11 +154,11 @@ function rollDice() {
                 clearInterval(roll)
             }
             // Create a random integer between 0 and 5
-            // randomd0 = Math.floor(Math.random() * 6) + 1
-            // randomd1 = Math.floor(Math.random() * 6) + 1
+             randomd0 = Math.floor(Math.random() * 6) + 1
+             randomd1 = Math.floor(Math.random() * 6) + 1
         
-            randomd0 = 3;
-            randomd1 = 4;
+//            randomd0 = 3;
+//            randomd1 = 4;
 
                 // Display result
             updateDice()
