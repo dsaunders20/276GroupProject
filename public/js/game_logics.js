@@ -64,7 +64,7 @@ async function throwDice() {
     if (double == 1) {
         doubleCount++
     }
-    addToGameLog("[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
+    socket.emit('chat',"[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
     if ( player.inJail === false ){
         if ((double === true) && (doubleCount <= 2) && (player.curCell+randomd0+randomd1 != 10)) {
             socket.emit('chat','Doubles! Roll again!')
@@ -74,7 +74,7 @@ async function throwDice() {
             // player.updatePosition(8);
         }
         else if (doubleCount === 3) {
-            addToGameLog('['+player.name+'] rolled doubles 3 times in a row, now sent to jail for 3 turns! ['+player.name+'] can pay $50 to get out.')
+            socket.emit('chat','['+player.name+'] rolled doubles 3 times in a row, now sent to jail for 3 turns! ['+player.name+'] can pay $50 to get out.')
             doubleCount = 0;
 
             toJail(player);
@@ -90,7 +90,7 @@ async function throwDice() {
     else {      //  player rolls while in jail
         player.turnsInJail += 1;
         if ( player.turnsInJail < 3 && double === true ){   //  rolls doubles
-            addToGameLog("Doubles! ["+players.name+"] is free to go.");
+            socket.emit('chat',"Doubles! ["+players.name+"] is free to go.");
             doubleCount = 0;
             unJail(player);
             diceButton.disabled = true;
@@ -98,11 +98,11 @@ async function throwDice() {
             socket.emit('afterDiceRoll',getCurrentPlayerName(),(randomd0+randomd1))
         }
         else if ( player.turnsInJail < 3 && double === false ){ //  in jail less than 3 turns, no double
-            addToGameLog("Try again next turn!");
+            socket.emit('chat',"Try again next turn!");
             diceButton.disabled = true;
         }
         else if ( player.turnsInJail >= 3 ){    //  in jail for 3 turns
-            addToGameLog(player.name+" has now paid the $50 fine after 3 turns in jail and is free to go!");
+            socket.emit('chat',player.name+" has now paid the $50 fine after 3 turns in jail and is free to go!");
             player.cash -= 50;
             updateCash(player);
             unJail(player);
@@ -112,7 +112,7 @@ async function throwDice() {
             socket.emit('afterDiceRoll',getCurrentPlayerName(),(randomd0+randomd1))
         }
         else {
-            addToGameLog("Error in roll dice");
+            socket.emit('chat',"Error in roll dice");
         }
     }
 }
@@ -155,7 +155,7 @@ jailButton.addEventListener('click', function(b){
     var curPlayerNum = getCurrentPlayer();
     var curPlayer = players[curPlayerNum];
 
-    addToGameLog("["+curPlayer.name+"] paid $50 to get out of jail.");
+    socket.emit('chat',"["+curPlayer.name+"] paid $50 to get out of jail.");
     curPlayer.cash -= 50;
     updateCash(curPlayer);
 
@@ -372,7 +372,7 @@ buyButton.addEventListener('click', function (e) {
     }
     else {
         alert("You do not have the funds to buy the property"); //add to gamelog
-        addToGameLog("You do not have the funds to buy the property");
+        socket.emit('chat',"You do not have the funds to buy the property");
         return;
     }
 });
@@ -440,7 +440,7 @@ class Player {
         if (newPositionAfterRoll >= boardLength) { //makes full revolution
             this.cash += 200;
             updateCash(this);
-            addToGameLog(this.name + ' made it around the board! Collect $200!');
+            socket.emit('chat',this.name + ' made it around the board! Collect $200!');
         }
         //when landed on the chanceblock
         if (newPositionAfterRoll2 === 7 || newPositionAfterRoll2 === 22 || newPositionAfterRoll2 === 36){
@@ -452,31 +452,31 @@ class Player {
             if (tmp ===1){ //collect 50
                 this.cash +=50
                 updateCash(this);
-                addToGameLog(this.name + ' Collected $50');
+                socket.emit('chat',this.name + ' Collected $50');
             }
             else if (tmp ===2){ //Go to 'Go'
                 newPositionAfterRoll+=(boardLength-newPositionAfterRoll);
                 this.cash+=200;
                 updateCash(this);
-                addToGameLog(this.name + ' made it around the board! Collect $200!');
+                socket.emit('chat',this.name + ' made it around the board! Collect $200!');
                 
             }
             else if (tmp ===3){ // go 3 blocks backwards
            
                 Goback=true;
                 GoBackNum=3;
-                addToGameLog(this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
+                socket.emit('chat',this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
             }
             else if (tmp ===4){ // pay $75
                 this.cash-=75;
                 updateCash(this);
-                addToGameLog(this.name + ' Paied $75');
+                socket.emit('chat',this.name + ' Paied $75');
 
             }
             else if (tmp ===5){ // collect $100
                 this.cash +=100;
                 updateCash(this);
-                addToGameLog(this.name = ' Collected $100');
+                socket.emit('chat',this.name = ' Collected $100');
                 
             }
             // else if (tmp === 6){ //give 25 to each player
@@ -485,7 +485,7 @@ class Player {
             else if (tmp ===7){ //pay $500
                 this.cash -= 500;
                 updateCash(this);
-                addToGameLog(this.name + ' Lost $500');
+                socket.emit('chat',this.name + ' Lost $500');
 
                 
             }
@@ -494,7 +494,7 @@ class Player {
                 newPositionAfterRoll +=(boardLength-newPositionAfterRoll)+10;
                 this.cash+=200;
                 updateCash(this);
-                addToGameLog(this.name + ' is passing "Go" and Going To Jail, Gained $200');
+                socket.emit('chat',this.name + ' is passing "Go" and Going To Jail, Gained $200');
             }
             // else if (tmp ===10){ //get out of Jail Card
             //      if(this.JailCard === true){
@@ -506,16 +506,16 @@ class Player {
             else if (tmp === 11){ // gain 45
                 this.cash +=45;
                 updateCash(this);
-                addToGameLog(this.name + ' Gained $45');
+                socket.emit('chat',this.name + ' Gained $45');
                 
             }
             else if (tmp ===12){ // get 0
-                addToGameLog(this.name + ' Gets NOTHING');
+                socket.emit('chat',this.name + ' Gets NOTHING');
             }
             else if (tmp ===13){ // Lose 25
                 this.cash -=25;
                 updateCash(this);
-                addToGameLog(this.name + ' Lost $25');
+                socket.emit('chat',this.name + ' Lost $25');
                 
             }
             else if (tmp ===14){ //GO to Jail without passing 'GO'
@@ -540,7 +540,7 @@ class Player {
             else if (tmp === 15){ // pay 150;
                 this.cash -=150;
                 updateCash(this);
-                addToGameLog(this.name + ' Paid $150');
+                socket.emit('chat',this.name + ' Paid $150');
                 
             }
        
@@ -678,7 +678,7 @@ class Player {
                                             console.log("here");
                                             this.cash -= 200
                                             updateCash(this);
-                                            addToGameLog(this.name + ' paid $200 for a Parking Ticket!');
+                                            socket.emit('chat',this.name + ' paid $200 for a Parking Ticket!');
                                         } 
                                         if (property[newPositionAfterRoll2].groupNumber == 0)
                                         {
@@ -714,13 +714,13 @@ class Player {
         {
             this.cash -= 200
             updateCash(this);
-            addToGameLog(this.name + ' paid $200 for a Parking Ticket!');
+            socket.emit('chat',this.name + ' paid $200 for a Parking Ticket!');
         } 
         if (newPositionAfterRoll2 === 38)
         {
             this.cash -= 100
             updateCash(this);
-            addToGameLog(this.name + ' lost $100 gambling.. Unlucky!');
+            socket.emit('chat',this.name + ' lost $100 gambling.. Unlucky!');
         }
         document.getElementById('sellButton').innerHTML = "Mortgage"; 
         if (property[newPositionAfterRoll2].owner != this) {
@@ -738,7 +738,7 @@ class Player {
         //  If player lands on jail
         if ( this.inJail === false && newPositionAfterRoll2 === 10 ){
             //  Set player's jail attributes
-            addToGameLog(this.name + ' is now in jail!  Unlucky!')
+            socket.emit('chat',this.name + ' is now in jail!  Unlucky!')
             this.inJail = true;
             this.turnsInJail = 0;
             // jailButton.disabled = false;
@@ -762,7 +762,7 @@ class Player {
             updateCash(this);
             updatePlayerPropertyOwned(this);
             updateEstateValue(this);
-            addToGameLog(this.name + " has bought " + square.name + " for $" + square.price + " (-)");
+            socket.emit('chat',this.name + " has bought " + square.name + " for $" + square.price + " (-)");
             //buyButton.disabled = true; 
             checkValidSquareMortgage(property[this.curCell], this);
             socket.emit('buy', this);
@@ -798,7 +798,7 @@ class Player {
             updateEstateValue(this);
             square.mortgage = true;
             document.getElementById('sellButton').innerHTML = "Unmortgage"; 
-            addToGameLog(this.name + " has mortgaged " + square.name + " for $" + mortgageValue + " (+)");
+            socket.emit('chat',this.name + " has mortgaged " + square.name + " for $" + mortgageValue + " (+)");
         } else if (square.owner === this && square.mortgage === true) { 
             var confirmed = confirm("Are you sure you want to unmortgage this property?");
             if (confirmed) {
@@ -806,7 +806,7 @@ class Player {
                 this.cash -= unmortgageValue;
                 updateCash(this);
                 document.getElementById('sellButton').innerHTML = "Mortgage";
-                addToGameLog(this.name + " has unmortgaged " + square.name + " for $" + unmortgageValue + " (-)");
+                socket.emit('chat',this.name + " has unmortgaged " + square.name + " for $" + unmortgageValue + " (-)");
             }
         }
         else {
@@ -900,7 +900,7 @@ function payRent(square, player) {
             let player2 = square.owner; 
             player.cash -= rent; 
             player2.cash += rent; 
-            addToGameLog(player.name + " payed $" + rent + " to " + player2.name);
+            socket.emit('chat',player.name + " payed $" + rent + " to " + player2.name);
             updateCash(player);
             updateCash(player2);
         }
