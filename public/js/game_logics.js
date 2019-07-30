@@ -1221,6 +1221,7 @@ socket.on('connect', function(data) {
 //tell client who I am
 socket.on('set_player_name',function(data){
     playerName = data;
+    socket.emit('username', playerName);
 })
 
 //display concurrent connected clients
@@ -1332,6 +1333,7 @@ socket.on('gameStart',function(){
     //display board
     document.getElementById("board").style.display = "table";
     document.getElementById("turn_info").style.display = "initial";
+    document.getElementById("chatBox").style.display = 'block';
     
     //close spots which are not filled
     for(let i=log_in_players.length+1;i<5;i++){
@@ -1376,24 +1378,23 @@ function ready_button_click(){
 // ========================chat Box functionality =======================
 // var socket = io.connect('http://localhost:8080');
 
-// $('form').submit(function(e){
-//     e.preventDefault(); // prevents page reloading
-//     socket.emit('chat_message', $('#txt').val());
-//     $('#txt').val('');
-//     return false;
-// });
-//     // append the chat text message
-//     socket.on('chat_message', function(msg){
-//         $('#messages').append($('<li>').html(msg));
-//         var Log = document.getElementById('messageDisplay');
-//         Log.scrollTop = Log.scrollHeight;
-//     });
-//     // append text if someone is online
-//     socket.on('is_online', function(username) {
-//         $('#messages').append($('<li>').html(username));
-//     });
-//     // NEED TO FIGURE OUT A WAY TO GET THE PLAYERS NAME FOR CHATTING
-//     // var username = 'player';
-//     // socket.emit('username', username);
+$('form').submit(function(e){
+    e.preventDefault(); // prevents page reloading
+    socket.emit('chat_message', $('#txt').val());
+    $('#txt').val('');
+    return false;
+});
+    // append the chat text message
+    socket.on('chat_message', function(msg){
+        $('#messages').append($('<li>').html(msg));
+        var Log = document.getElementById('messageDisplay');
+        Log.scrollTop = Log.scrollHeight;
+    });
+    // append text if someone is online
+    socket.on('is_online', function(username) {
+        $('#messages').append($('<li>').html(username));
+    });
+    // NEED TO FIGURE OUT A WAY TO GET THE PLAYERS NAME FOR CHATTING
+    //socket.emit('username', playerName);
 
 
