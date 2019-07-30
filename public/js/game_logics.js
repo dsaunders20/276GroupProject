@@ -31,7 +31,8 @@ diceButton.addEventListener('click', function(d){
     throwDice();
 })
 
-var socket = io('http://localhost:5000/');
+var socket = io('http://localhost:8080/');
+//var socket = io('http://localhost:5000/');
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
@@ -113,7 +114,7 @@ async function throwDice() {
     else {      //  player rolls while in jail
         player.turnsInJail += 1;
         if ( player.turnsInJail < 3 && double === true ){   //  rolls doubles
-            socket.emit('chat',"Doubles! ["+players.name+"] is free to go.");
+            socket.emit('chat',"Doubles! ["+player.name+"] is free to go.");
             doubleCount = 0;
             unJail(player);
             // diceButton.disabled = true;
@@ -150,8 +151,10 @@ function rollDice() {
                 clearInterval(roll)
             }
             // Create a random integer between 0 and 5
-            randomd0 = Math.floor(Math.random() * 6) + 1
-            randomd1 = Math.floor(Math.random() * 6) + 1
+            // randomd0 = Math.floor(Math.random() * 6) + 1
+            // randomd1 = Math.floor(Math.random() * 6) + 1
+            randomd0 = 6;
+            randomd1 = 2;
                 // Display result
             updateDice()
             socket.emit('throwDice', randomd0, randomd1);
@@ -282,7 +285,7 @@ function set_up_game_board() {
     property[27] = new Property("Steveston Wharf", "$260", "#FFFF00", 260, 8, 22, 110, 330, 800, 975, 1150);
     property[28] = new Property("Scotia Bank Theatre", "$150", "#FFFFFF", 150, 2, 8);
     property[29] = new Property("St. Paul's Hospital", "$280", "#FFFF00", 280, 8, 24, 120, 360, 850, 1025, 1200);
-    property[30] = new Property("YVR Airport", "Travel to any destination you want in next turn.", "#FFFFFF");
+    property[30] = new Property("YVR Airport", "", "#FFFFFF");
     property[31] = new Property("Granvile St.", "$300", "#008000", 300, 9, 26, 130, 390, 900, 110, 1275);
     property[32] = new Property("Waterfront", "$300", "#008000", 300, 9, 26, 130, 390, 900, 110, 1275);
     property[33] = new Property("Rogers Arena", "$150", "#FFFFFF", 150, 2, 8);
@@ -357,18 +360,18 @@ function set_up_game_board() {
 }
 
 //resign
-resignButton.addEventListener('click', function(e) {
-    var confirmed = confirm("Are you sure you want to resign?");
-    if (confirmed) {
-        endGame();
-    }
-});
+// resignButton.addEventListener('click', function(e) {
+//     var confirmed = confirm("Are you sure you want to resign?");
+//     if (confirmed) {
+//         endGame();
+//     }
+// });
 
 //Buy and Sell
 const buyButton = document.getElementById('buyButton');
 const sellButton = document.getElementById('sellButton'); //mortgage
-buyButton.disabled = true;
-sellButton.disabled = true;
+// buyButton.disabled = true;
+// sellButton.disabled = true;
 
 buyButton.addEventListener('click', function (e) {
     var currentPlayerNum = getCurrentPlayer();
@@ -421,8 +424,13 @@ sellButton.addEventListener('click', function (e) {
 const endTurn = document.getElementById('endTurnButton');
 endTurn.addEventListener('click', function(e) {
 //    updateTurn();
+    var curPlayer = getCurrentPlayer()-1
+    var player = log_in_players[curPlayer];
     diceButton.disabled = false;
-    if ( log_in_players[getCurrentPlayer()].inJail ){
+    buyButton.disabled = true; 
+    sellButton.disabled = true;
+    
+    if ( player.inJail && current_server_turn_player_id == player.playerNumber ){
         jailButton.disabled = false;
     }
     // checkValidSquareBuy(property[player.curCell]);
@@ -485,12 +493,12 @@ class Player {
                 socket.emit('chat',this.name + ' made it around the board! Collect $200!');
                 
             }
-            else if (tmp ===3){ // go 3 blocks backwards
+            // else if (tmp ===3){ // go 3 blocks backwards
            
-                Goback=true;
-                GoBackNum=3;
-                socket.emit('chat',this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
-            }
+            //     Goback=true;
+            //     GoBackNum=3;
+            //     socket.emit('chat',this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
+            // }
             else if (tmp ===4){ // pay $75
                 this.cash-=75;
                 updateCash(this);
@@ -682,46 +690,44 @@ class Player {
             
 
                 
-                
-                
-//                
-//                if(i== 1&& Goback===true){
-//                    console.log("GoBackNum is: " + GoBackNum);
-//                    console.log("m is: "+ m);
-//                    newPositionAfterRoll-=GoBackNum;
-//                    var intervalforBack = setInterval(()=>{
-//                        if(lap == false){
-//                                        if((m % boardLength) > newPositionAfterRoll){
-//                                            document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
-//                                            m = ((m - 1) % boardLength);
-//                                            document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
-//                                        }else{
-//                                            m = newPositionAfterRoll;
-//                                            this.curCell = newPositionAfterRoll;
-//                                            clearInterval(intervalforBack);
-//                                        }
-//                                    }
-//                                    
-//                                    if (newPositionAfterRoll2 === 4)
-//                                        {
-//                                            console.log("here");
-//                                            this.cash -= 200
-//                                            updateCash(this);
-//                                            socket.emit('chat',this.name + ' paid $200 for a Parking Ticket!');
-//                                        } 
-//                                        if (property[newPositionAfterRoll2].groupNumber == 0)
-//                                        {
-//                                            buyButton.disabled = true;
-//                                        }
-//                                        else {
-//                                            buyButton.disabled = false;
-//                                        }
-//                                        if (property[newPositionAfterRoll2].owner == this)
-//                                        {
-//                                            sellButton.disabled = false;
-//                                        }
-//                    }, 100);
-//                }
+        
+                // if(i== 1&& Goback===true){
+                //     console.log("GoBackNum is: " + GoBackNum);
+                //     console.log("m is: "+ m);
+                //     newPositionAfterRoll-=GoBackNum;
+                //     var intervalforBack = setInterval(()=>{
+                //         if(lap == false){
+                //                         if((m % boardLength) > newPositionAfterRoll){
+                //                             document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
+                //                             m = ((m - 1) % boardLength);
+                //                             document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
+                //                         }else{
+                //                             m = newPositionAfterRoll;
+                //                             this.curCell = newPositionAfterRoll;
+                //                             clearInterval(intervalforBack);
+                //                         }
+                //                     }
+                                    
+                //                     if (newPositionAfterRoll2 === 4)
+                //                         {
+                //                             console.log("here");
+                //                             this.cash -= 200
+                //                             updateCash(this);
+                //                             socket.emit('chat',this.name + ' paid $200 for a Parking Ticket!');
+                //                         } 
+                //                         if (property[newPositionAfterRoll2].groupNumber == 0)
+                //                         {
+                //                             buyButton.disabled = true;
+                //                         }
+                //                         else {
+                //                             buyButton.disabled = false;
+                //                         }
+                //                         if (property[newPositionAfterRoll2].owner == this)
+                //                         {
+                //                             sellButton.disabled = false;
+                //                         }
+                //     }, 100);
+                // }
     
             }, 100); 
 
@@ -733,9 +739,12 @@ class Player {
         else {
             buyButton.disabled = false;
         }
-        if (property[newPositionAfterRoll2].owner == this)
+        if (property[newPositionAfterRoll2].owner === this)
         {
             sellButton.disabled = false;
+            buyButton.disabled = true; 
+        } else if (property[newPositionAfterRoll2].owner != this && property[newPositionAfterRoll2].owner != 0) {
+            buyButton.disabled = true; 
         }
         //checkValidSquareBuy(property[newPositionAfterRoll]);
 
@@ -827,14 +836,19 @@ class Player {
             updateEstateValue(this);
             square.mortgage = true;
             document.getElementById('sellButton').innerHTML = "Unmortgage"; 
+            socket.emit('sell', this);
             socket.emit('chat',this.name + " has mortgaged " + square.name + " for $" + mortgageValue + " (+)");
         } else if (square.owner === this && square.mortgage === true) { 
             var confirmed = confirm("Are you sure you want to unmortgage this property?");
             if (confirmed) {
                 var unmortgageValue = square.price * 0.60;
                 this.cash -= unmortgageValue;
+                this.estate_value += square.price;
                 updateCash(this);
+                updateEstateValue(this);
                 document.getElementById('sellButton').innerHTML = "Mortgage";
+                square.mortgage = false; 
+                socket.emit('unsell', this);
                 socket.emit('chat',this.name + " has unmortgaged " + square.name + " for $" + unmortgageValue + " (-)");
             }
         }
@@ -872,7 +886,7 @@ function checkValidSquareBuy(square) {
 }
 
 function checkValidSquareMortgage(square, player) {
-    if (square.owner === player.name) {
+    if (square.owner === player) {
         sellButton.disabled = false; 
     } else {
         sellButton.disabled = true;
@@ -926,14 +940,16 @@ function payRent(square, player) {
     //  TODO: calculate special railroad rent
     // also need to determine if the square has any houses on it
     rent = square.baserent; 
-    if (square.owner != 0 && square.mortgage === false) {
-        if (square.owner != player) {
-            let player2 = square.owner; 
-            player.cash -= rent; 
-            player2.cash += rent; 
-            socket.emit('chat',player.name + " payed $" + rent + " to " + player2.name);
-            updateCash(player);
-            updateCash(player2);
+    if (square.owner != player) {
+        if (square.owner != 0) {
+            if (square.mortgage === false) {
+                let player2 = square.owner; 
+                player.cash -= rent; 
+                player2.cash += rent; 
+                socket.emit('chat',player.name + " payed $" + rent + " to " + player2.name);
+                updateCash(player);
+                updateCash(player2);
+            }
         }
     }
 };
@@ -1300,6 +1316,16 @@ socket.on('buy', function(player){
     currentCellOwner.title = player.name;
 })
 
+socket.on('sell', function(player){
+    let i = player.curCell; 
+    property[i].mortgage = true; 
+})
+
+socket.on('unsell', function(player){
+    let i = player.curCell; 
+    property[i].mortgage = false; 
+})
+
 socket.on('update_log_in_player',function(data){
     var if_new_player = true;
     var player_num;
@@ -1364,6 +1390,8 @@ socket.on('updateState',function(data){
     if(data.playerName == playerName){
         document.getElementById("endTurnButton").disabled = false;
         document.getElementById("throw").disabled = false;
+        document.getElementById("buyButton").disabled = false;
+        document.getElementById("sellButton").disabled = false;
     }else{
         document.getElementById('endTurnButton').disabled = true;
         document.getElementById('throw').disabled = true;
