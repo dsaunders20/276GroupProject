@@ -17,10 +17,10 @@ console.log('Server hosted at port:' + PORT);
 var browserSession = require('browser-session-store')
 
 // use this for testing
-// var pool = new Pool({
-//   host: 'localhost',
-//   database: 'postgres'
-// });
+var pool = new Pool({
+  host: 'localhost',
+  database: 'postgres'
+});
 //for Michael
 // const pool = new Pool({
 //   user: 'postgres',
@@ -29,9 +29,9 @@ var browserSession = require('browser-session-store')
 //   database: 'postgres'
 // });
 // use this block for heroku app
-const pool = new Pool({
- connectionString: process.env.DATABASE_URL
-});
+// const pool = new Pool({
+//  connectionString: process.env.DATABASE_URL
+// });
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
@@ -324,6 +324,10 @@ io.on('connection', function(socket){
     
     socket.on('updateCash', function(player){
       socket.broadcast.emit('updateCash', player)
+    });
+
+    socket.on('buy', function(player){
+      socket.broadcast.emit('buy', player)
     });
 
     socket.on('playerReady',function(name){

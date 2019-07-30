@@ -747,6 +747,7 @@ class Player {
             addToGameLog(this.name + " has bought " + square.name + " for $" + square.price + " (-)");
             //buyButton.disabled = true; 
             checkValidSquareMortgage(property[this.curCell], this);
+            socket.emit('buy', this);
             let i = this.curCell; 
             let currentCellOwner = document.getElementById("cell" + i + "owner");
             currentCellOwner.style.display = "block"; 
@@ -1158,11 +1159,14 @@ function whenAtchanceCard(){
 var displayed_players = [];
 var log_in_players = [];
 var playerName;
+var player_color; 
 
 function createPlayer(){
     // creating players
     for(let i = 0; i < log_in_players.length; i++){
         if(!displayed_players.includes(log_in_players[i].name)){
+            player_color = getRandomColor(); 
+            log_in_players[i].color = player_color; 
             player_num = i+1
             player_name = document.getElementById("player_name_" + player_num);
             player_name.innerHTML = log_in_players[i].name;
@@ -1234,6 +1238,14 @@ socket.on('updateCash', function(player)
 {
     player_money = document.getElementById("player_money_" + player.playerNumber);
     player_money.innerHTML = player.cash;
+})
+
+socket.on('buy', function(player){
+    let i = player.curCell; 
+    let currentCellOwner = document.getElementById("cell" + i + "owner");
+    currentCellOwner.style.display = "block"; 
+    currentCellOwner.style.backgroundColor = player.color; 
+    currentCellOwner.title = player.name;
 })
 
 socket.on('update_log_in_player',function(data){
