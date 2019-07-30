@@ -339,6 +339,14 @@ io.on('connection', function(socket){
       socket.broadcast.emit('buy', player)
     });
 
+    socket.on('sell', function(player){
+      socket.broadcast.emit('sell', player)
+    });
+
+    socket.on('unsell', function(player){
+      socket.broadcast.emit('sell', player)
+    });
+
     //check if all logged in players are ready
     socket.on('playerReady',function(name){
         let if_ready = false;

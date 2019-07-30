@@ -152,8 +152,8 @@ function rollDice() {
             // Create a random integer between 0 and 5
             randomd0 = Math.floor(Math.random() * 6) + 1
             randomd1 = Math.floor(Math.random() * 6) + 1
-            // randomd0 = 3;
-            // randomd1 = 4;
+            // randomd0 = 6;
+            // randomd1 = 2;
                 // Display result
             updateDice()
             socket.emit('throwDice', randomd0, randomd1);
@@ -832,6 +832,7 @@ class Player {
             updateEstateValue(this);
             square.mortgage = true;
             document.getElementById('sellButton').innerHTML = "Unmortgage"; 
+            socket.emit('sell', this);
             socket.emit('chat',this.name + " has mortgaged " + square.name + " for $" + mortgageValue + " (+)");
         } else if (square.owner === this && square.mortgage === true) { 
             var confirmed = confirm("Are you sure you want to unmortgage this property?");
@@ -843,6 +844,7 @@ class Player {
                 updateEstateValue(this);
                 document.getElementById('sellButton').innerHTML = "Mortgage";
                 square.mortgage = false; 
+                socket.emit('unsell', this);
                 socket.emit('chat',this.name + " has unmortgaged " + square.name + " for $" + unmortgageValue + " (-)");
             }
         }
@@ -935,13 +937,15 @@ function payRent(square, player) {
     // also need to determine if the square has any houses on it
     rent = square.baserent; 
     if (square.owner != player) {
-        if (square.owner != 0 && square.mortgage === false) {
-            let player2 = square.owner; 
-            player.cash -= rent; 
-            player2.cash += rent; 
-            socket.emit('chat',player.name + " payed $" + rent + " to " + player2.name);
-            updateCash(player);
-            updateCash(player2);
+        if (square.owner != 0) {
+            if (square.mortgage === false) {
+                let player2 = square.owner; 
+                player.cash -= rent; 
+                player2.cash += rent; 
+                socket.emit('chat',player.name + " payed $" + rent + " to " + player2.name);
+                updateCash(player);
+                updateCash(player2);
+            }
         }
     }
 };
@@ -1305,6 +1309,16 @@ socket.on('buy', function(player){
     currentCellOwner.style.display = "block"; 
     currentCellOwner.style.backgroundColor = player.color; 
     currentCellOwner.title = player.name;
+})
+
+socket.on('sell', function(player){
+    let i = player.curCell; 
+    property[i].mortgage = true; 
+})
+
+socket.on('unsell', function(player){
+    let i = player.curCell; 
+    property[i].mortgage = false; 
 })
 
 socket.on('update_log_in_player',function(data){
