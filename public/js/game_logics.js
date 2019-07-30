@@ -893,6 +893,7 @@ function updateCash(player){
 function updateEstateValue(player){
     player_estate_value = document.getElementById("player_estate_value_" + player.playerNumber);
     player_estate_value.innerHTML = player.estate_value;
+    socket.emit('updateEstateValue', player);
 }
 function updateTurn()
 {
@@ -913,6 +914,7 @@ function sendTo(position, player)
 function updatePlayerPropertyOwned(player) {
     player_properties = document.getElementById("player_property_" + player.playerNumber);
     player_properties.innerHTML = player.properties;
+    socket.emit('updateProperties', player);
     return;
 };
 
@@ -1273,9 +1275,19 @@ socket.on('updateCash', function(player)
     player_money = document.getElementById("player_money_" + player.playerNumber);
     player_money.innerHTML = player.cash;
 })
-
+socket.on('updateEstateValue', function(player)
+{
+    player_estate_value = document.getElementById("player_estate_value_" + player.playerNumber);
+    player_estate_value.innerHTML = player.estate_value;
+})
+socket.on('updateProperties', function(player)
+{
+    player_properties = document.getElementById("player_property_" + player.playerNumber);
+    player_properties.innerHTML = player.properties;
+})
 socket.on('buy', function(player){
     updatePlayerPropertyOwned(player);
+    updateEstateValue(player);
     let i = player.curCell; 
     property[i].owner = player; 
     let currentCellOwner = document.getElementById("cell" + i + "owner");

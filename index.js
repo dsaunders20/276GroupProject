@@ -315,6 +315,15 @@ io.on('connection', function(socket){
       socket.broadcast.emit('updateCash', player)
     });
 
+    socket.on('updateEstateValue', function(player)
+    {
+      socket.broadcast.emit('updateEstateValue', player)
+    })
+
+    socket.on('updateProperties', function(player){
+      socket.broadcast.emit('updateProperties', player)
+    })
+
     socket.on('buy', function(player){
       socket.broadcast.emit('buy', player)
     });
