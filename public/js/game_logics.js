@@ -25,7 +25,7 @@ diceButton.addEventListener('click', function(d){
     setTimeout(function () {
         $(".dice").removeClass('shake')
     }, 1800)
-    if (log_in_players[getCurrentPlayer()].inJail) {
+    if (log_in_players[getCurrentPlayer()-1].inJail) {
         jailButton.disabled = true;
     }
     throwDice();
@@ -65,7 +65,7 @@ socket.on('diceThrown', function(d0, d1){
     setTimeout(function () {
         $(".dice").removeClass('shake')
     }, 1800)
-    if (log_in_players[getCurrentPlayer()].inJail) {
+    if (log_in_players[getCurrentPlayer()-1].inJail) {
         jailButton.disabled = true;
     }
     document.getElementById("d0").src = eval("face" + d0 + ".src")
@@ -178,7 +178,7 @@ function updateDice() {
 const jailButton = document.getElementById("leaveJail");
 jailButton.addEventListener('click', function(b){
     var curPlayerNum = getCurrentPlayer();
-    var curPlayer = log_in_players[curPlayerNum];
+    var curPlayer = log_in_players[curPlayerNum-1];
 
     socket.emit('chat',"["+curPlayer.name+"] paid $50 to get out of jail.");
     curPlayer.cash -= 50;
