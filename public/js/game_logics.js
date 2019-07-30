@@ -1203,11 +1203,13 @@ function updatePlayer(name,data){
             current_player = log_in_players[i];
         }
     }
-    let player_status = document.getElementById("player_status_" + current_player.picture);
-      player_status.style.fontWeight = 'bold';
-      player_status.style.color = 'red';
-      player_status.innerHTML=(data.status);
     
+    if(data.status != undefined){
+        let player_status = document.getElementById("player_status_" + current_player.picture);
+          player_status.style.fontWeight = 'bold';
+          player_status.style.color = 'red';
+          player_status.innerHTML=(data.status);
+    }
     if(data.positionToMove != undefined){
         current_player.updatePosition(data.positionToMove);
     }
