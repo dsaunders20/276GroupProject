@@ -239,14 +239,6 @@ io.on('connection', function(socket){
       socket.emit('getRandNum', {r:r,player_id:current_player_id});
       socket.broadcast.emit('getRandNum', {r:r,player_id:current_player_id});
     })
-
-    socket.on('SelectChanceCard', function(x){
-      console.log('SelectChanceCard');
-      console.log("in index.js, x is: "+ x);
-    
-      x = Math.floor((Math.random() * 10));
-      socket.broadcast.emit('chanceCardSelected', x);
-    })
     
     socket.on('getAllPlayers',function(){
        console.log(log_in_players);
