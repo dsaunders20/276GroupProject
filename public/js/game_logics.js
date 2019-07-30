@@ -686,6 +686,7 @@ class Player {
         //  If player lands on jail
         if ( this.inJail === false && newPositionAfterRoll2 === 10 ){
             //  Set player's jail attributes
+            socket.emit('chat_broadcast',this.name + ' is now in jail!  Unlucky!')
             socket.emit('chat',this.name + ' is now in jail!  Unlucky!')
             this.inJail = true;
             this.turnsInJail = 0;
@@ -979,28 +980,6 @@ window.onload = function () {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-
-socket.on('chanceCardSelected', function(x){
-    console.log("x received is: " + x);
-    $('.card').toggleClass('flipped');//flip to chancecard;
-    var element=document.getElementById('cardImage');
-    
-    
-    element.src=imagearray[x]; 
-    sleep(5000).then(() => {
-        // Do something after the sleep!
-        $('.card').toggleClass('flipped'); // flip it back;
-    });
-    // if(getCurrentPlayer()===  current_server_turn_player_id){
-       
-    // }    
-})
-
-
-
-
-
-
 
 
 
