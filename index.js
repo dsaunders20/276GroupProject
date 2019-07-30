@@ -235,7 +235,8 @@ io.on('connection', function(socket){
     })
 
     socket.on('makeRandNum', function() {
-      var r = Math.floor((Math.random() * 10))
+      let img_array = [1,4,5,7,11,12,13,15];
+      var r = img_array[Math.floor((Math.random() * img_array.length))-1];
       socket.emit('getRandNum', {r:r,player_id:current_player_id});
       socket.broadcast.emit('getRandNum', {r:r,player_id:current_player_id});
     })
