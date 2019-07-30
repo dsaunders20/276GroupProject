@@ -9,6 +9,7 @@ var imagearray = [
 
 
 ];
+
 var x;
 //Global Variables
 let players = [];
@@ -159,13 +160,9 @@ function rollDice() {
             // Create a random integer between 0 and 5
             // randomd0 = Math.floor(Math.random() * 6) + 1
             // randomd1 = Math.floor(Math.random() * 6) + 1
-<<<<<<< HEAD
             randomd0 = 3;
             randomd1 = 4;
-=======
-            randomd0 = 6;
-            randomd1 = 2;
->>>>>>> 2b6414081a00ffd953de702ef99a510e4864dfaf
+
                 // Display result
             updateDice()
             socket.emit('throwDice', randomd0, randomd1);
@@ -456,7 +453,7 @@ class Player {
         this.name = name;
         this.cash = 1500;
         this.picture = picture;
-        this.curCell = 30;
+        this.curCell = 0;
         this.estate_value = 0;
         this.properties = 0;
         this.playerNumber = playerNumber;
@@ -491,226 +488,9 @@ class Player {
         
             
             socket.emit('makeRandNum');
-            socket.on('getRandNum', function(r) {
-                console.log("r is : " + r);
-                x =r;
-                console.log("x is:" + x);
-                $('.card').toggleClass('flipped');//flip to chancecard;
-                var element=document.getElementById('cardImage');
-                
-                
-                element.src=imagearray[x]; 
-                sleep(3500).then(() => {
-                    // Do something after the sleep!
-                    $('.card').toggleClass('flipped'); // flip it back;
-                });
-
-            
-                               
-            if(imagearray[x] == "/images/c1.png"){
-                //   //collect 50  
-                console.log("It is c1");
-                this.cash +=50
-                updateCash(this);
-                socket.emit('chat',this.name + ' Collected $50');
-                //updatecash
-              
-            
-            }
-<<<<<<< HEAD
-            
-=======
-            else if (tmp ===2){ //Go to 'Go'
-                newPositionAfterRoll+=(boardLength-newPositionAfterRoll);
-                this.cash+=200;
-                updateCash(this);
-                socket.emit('chat',this.name + ' made it around the board! Collect $200!');
-                socket.emit('chat_broadcast',this.name + ' made it around the board! Collect $200!');
-                
-            }
-            // else if (tmp ===3){ // go 3 blocks backwards
-           
-            //     Goback=true;
-            //     GoBackNum=3;
-            //     socket.emit('chat',this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
-            // }
-            else if (tmp ===4){ // pay $75
-                this.cash-=75;
-                updateCash(this);
-                socket.emit('chat',this.name + ' Paied $75');
->>>>>>> 2b6414081a00ffd953de702ef99a510e4864dfaf
-
-            else if(imagearray[x] == "/images/c4.png"){
-                console.log("It is c4");
-                //pay 75
-                    this.cash-=75;
-                updateCash(this);
-                socket.emit('chat',this.name + ' Paid $75');
-            }
-            else if(imagearray[x] == "/images/c5.png"){
-                console.log("It is c5");
-                //collec 100
-                     this.cash +=100;
-                updateCash(this);
-                socket.emit('chat',this.name = ' Collected $100');
-
-            }
-       
-            else if(imagearray[x] == "/images/c7.png"){
-                console.log("It is c7");
-                //pay 500
-                        this.cash -= 500;
-                updateCash(this);
-                socket.emit('chat',this.name + ' Lost $500');
-                return 7;
-            }
-
-            else if(imagearray[x] == "/images/c11.png"){
-                console.log("It is c11");
-                // get 45
-                  this.cash +=45;
-                updateCash(this);
-                socket.emit('chat',this.name + ' Gained $45');
-                return 11;
-            }
-            else if(imagearray[x] == "/images/c12.png"){
-                console.log("It is c12");
-                //get 0
-                // addToGameLog(player.name + ' Gained 0');
-                socket.emit('chat',this.name + ' Gets NOTHING');
-                return 12;
-            }
-            else if(imagearray[x] == "/images/c13.png"){
-                console.log("It is c13");
-                //pay 25
-                    this.cash -=25;
-                updateCash(this);
-                socket.emit('chat',this.name + ' Lost $25');
-        
-                return 13;
-                
-            }
-            else if(imagearray[x] == "/images/c15.png"){
-                console.log("It is c15");
-                //pay 150
-                       this.cash -=150;
-                updateCash(this);
-                socket.emit('chat',this.name + ' Paid $150');
-
-                return 15;
-                
-            }
-                
-            })
-            
-       
-
-            // socket.emit('SelectChanceCard', x);
-         
-
-
-
-            
-            // if (tmp ===1){ //collect 50
-              
-                
-            // }
-            // // else if (tmp ===2){ //Go to 'Go'
-            // //     newPositionAfterRoll+=(boardLength-newPositionAfterRoll);
-            // //     this.cash+=200;
-            // //     updateCash(this);
-            // //     socket.emit('chat',this.name + ' made it around the board! Collect $200!');
-                
-            // // }
-            // // else if (tmp ===3){ // go 3 blocks backwards
-           
-            // //     Goback=true;
-            // //     GoBackNum=3;
-            // //     socket.emit('chat',this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
-            // // }
-            // else if (tmp ===4){ // pay $75
-            //     this.cash-=75;
-            //     updateCash(this);
-            //     socket.emit('chat',this.name + ' Paied $75');
-
-            // }
-            // else if (tmp ===5){ // collect $100
-            //     this.cash +=100;
-            //     updateCash(this);
-            //     socket.emit('chat',this.name = ' Collected $100');
-                
-            // }
-            // // else if (tmp === 6){ //give 25 to each player
-                
-            // // }
-            // else if (tmp ===7){ //pay $500
-            //     this.cash -= 500;
-            //     updateCash(this);
-            //     socket.emit('chat',this.name + ' Lost $500');
-
-                
-            // }
-        
-            // // else if (tmp ===9){ // Go to Jail
-            // //     newPositionAfterRoll +=(boardLength-newPositionAfterRoll)+10;
-            // //     this.cash+=200;
-            // //     updateCash(this);
-            // //     socket.emit('chat',this.name + ' is passing "Go" and Going To Jail, Gained $200');
-            // // }
-            // // else if (tmp ===10){ //get out of Jail Card
-            // //      if(this.JailCard === true){
-
-            //     //};
-
-                
-            // // }
-            // else if (tmp === 11){ // gain 45
-            //     this.cash +=45;
-            //     updateCash(this);
-            //     socket.emit('chat',this.name + ' Gained $45');
-                
-            // }
-            // else if (tmp ===12){ // get 0
-            //     socket.emit('chat',this.name + ' Gets NOTHING');
-            // }
-            // else if (tmp ===13){ // Lose 25
-            //     this.cash -=25;
-            //     updateCash(this);
-            //     socket.emit('chat',this.name + ' Lost $25');
-                
-            // }
-            // // else if (tmp ===14){ //GO to Jail without passing 'GO'
-             
-              
-            // //     if(newPositionAfterRoll === 7){
-            // //         Goback=false;
-            // //         newPositionAfterRoll+=3;
-            // //     }
-            // //     else if(newPositionAfterRoll===22){
-            // //         Goback=true;
-            // //         GoBackNum=12;
-
-            // //     }
-            // //     else if(newPositionAfterRoll ===36){
-            // //         Goback=true;
-            // //         GoBackNum=26;
-            // //     }
-              
-                
-            // // }
-            // else if (tmp === 15){ // pay 150;
-            //     this.cash -=150;
-            //     updateCash(this);
-            //     socket.emit('chat',this.name + ' Paid $150');
-                
-            // }
-       
-
-        
         }
-        else if (newPositionAfterRoll2 === 30){
-            console.log("im at the airport");
-        }
+            
+            
         
         var m = this.curCell;
         
@@ -1032,13 +812,15 @@ function addToGameLog(message) {
     var Log = document.getElementById('gameLog');
     Log.scrollTop = Log.scrollHeight;
 }
-// function updateCash(player){
-//     player_money = document.getElementById("player_money_" + player.playerNumber);
-//     player_money.innerHTML = player.cash;
-//     socket.emit('updateCash', player)
 
-//     return;
-// };
+ function updateCash(player){
+     player_money = document.getElementById("player_money_" + player.playerNumber);
+     player_money.innerHTML = player.cash;
+     socket.emit('updateCash', player)
+
+     return;
+ };
+
 function updateEstateValue(player){
     player_estate_value = document.getElementById("player_estate_value_" + player.playerNumber);
     player_estate_value.innerHTML = player.estate_value;
@@ -1074,12 +856,15 @@ function payRent(square, player) {
     if (square.owner != player) {
         if (square.owner != 0) {
             if (square.mortgage === false) {
-                let player2 = square.owner; 
-                player.cash -= rent; 
-                player2.cash += rent; 
-                socket.emit('chat',player.name + " payed $" + rent + " to " + player2.name);
-                updateCash(player);
-                updateCash(player2);
+                let player2 = square.owner;
+                if (player2.name != player.name) {
+                    player.cash -= rent; 
+                    player2.cash += rent; 
+                    socket.emit('chat',player.name + " payed $" + rent + " to " + player2.name);
+                    updateCash(player);
+                    updateCash(player2);    
+                }
+                
             }
         }
     }
@@ -1455,7 +1240,7 @@ socket.on('initializeClientAvastar',function(){
             character_img.setAttribute("width", "25%");
             character_img.setAttribute("id", "player_avastar_"+log_in_players[i].picture);
             character_img.setAttribute("padding-top", "10px");
-            document.getElementById('cell30positionholder').appendChild(character_img);
+            document.getElementById('cell0positionholder').appendChild(character_img);
     }
 });
 
@@ -1469,7 +1254,99 @@ socket.on('update_player',function(data){
     updatePlayer(data.name,data.info);
 });
 
-//
+
+socket.on('getRandNum', function (data) {
+    let chance_card_num = data.r;
+    let player_id = data.player_id;
+    let current_player;
+    
+    for(let i =0; i<log_in_players.length;i++){
+        if(log_in_players[i].picture == (player_id)){
+            current_player = log_in_players[i];
+        }
+    }
+    
+    console.log(current_player);
+    
+    $('.card').toggleClass('flipped'); //flip to chancecard;
+    var element = document.getElementById('cardImage');
+    element.src = imagearray[chance_card_num];
+    
+    sleep(3500).then(() => {
+        // Do something after the sleep!
+        $('.card').toggleClass('flipped'); // flip it back;
+    });
+    if (imagearray[chance_card_num] == "/images/c1.png") {
+        //   //collect 50  
+        console.log("It is c1");
+        current_player.cash += 50
+        updateCash(current_player);
+//        socket.emit('chat_broadcast', current_player.name + ' Collected $50');
+        socket.emit('chat', current_player.name + ' Collected $50');
+        //updatecash
+    }
+    else if (imagearray[chance_card_num] == "/images/c4.png") {
+        console.log("It is c4");
+        //pay 75
+        current_player.cash -= 75;
+        updateCash(current_player);
+//        socket.emit('chat_broadcast', current_player.name + ' Paid $75');
+        socket.emit('chat', current_player.name + ' Paid $75');
+    }
+    else if (imagearray[chance_card_num] == "/images/c5.png") {
+        console.log("It is c5");
+        //collec 100
+        current_player.cash += 100;
+        updateCash(current_player);
+//        socket.emit('chat_broadcast', current_player.name + ' Collected $100');
+        socket.emit('chat', current_player.name + ' Collected $100');
+    }
+    else if (imagearray[chance_card_num] == "/images/c7.png") {
+        console.log("It is c7");
+        //pay 500
+        current_player.cash -= 500;
+        updateCash(current_player);
+//        socket.emit('chat_broadcast', current_player.name + ' Lost $500');
+        socket.emit('chat', current_player.name + ' Lost $500');
+        return 7;
+    }
+    else if (imagearray[chance_card_num] == "/images/c11.png") {
+        console.log("It is c11");
+        // get 45
+        current_player.cash += 45;
+        updateCash(current_player);
+//        socket.emit('chat_broadcast', current_player.name + ' Gained $45');
+        socket.emit('chat', current_player.name + ' Gained $45');
+        return 11;
+    }
+    else if (imagearray[chance_card_num] == "/images/c12.png") {
+        console.log("It is c12");
+        //get 0
+        // addToGameLog(player.name + ' Gained 0');
+//        socket.emit('chat_broadcast', current_player.name + ' Gets NOTHING');
+        socket.emit('chat', current_player.name + ' Gets NOTHING');
+        return 12;
+    }
+    else if (imagearray[chance_card_num] == "/images/c13.png") {
+        console.log("It is c13");
+        //pay 25
+        current_player.cash -= 25;
+        updateCash(current_player);
+//        socket.emit('chat_broadcast', current_player.name + ' Lost $25');
+        socket.emit('chat', current_player.name + ' Lost $25');
+        return 13;
+    }
+    else if (imagearray[chance_card_num] == "/images/c15.png") {
+        console.log("It is c15");
+        //pay 150
+        current_player.cash -= 150;
+        updateCash(current_player);
+//        socket.emit('chat_broadcast', current_player.name + ' Paid $150');
+        socket.emit('chat', current_player.name + ' Paid $150');
+        return 15;
+    }
+});
+
 socket.on('gameOver',function(){
     let max_property_value = 0;
     let winner;

@@ -3,11 +3,8 @@ var http = require('http');
 const app = express();
 var cors = require('cors')
 const path = require('path')
-<<<<<<< HEAD
-const PORT = process.env.PORT || 8080
-=======
 const PORT = process.env.PORT || 5000   
->>>>>>> 2b6414081a00ffd953de702ef99a510e4864dfaf
+
 
 
 
@@ -235,17 +232,14 @@ io.on('connection', function(socket){
         });
     }
     
-    socket.on('throwDice', function(d0,d1){
-        console.log('throwDice');
-        console.log('d0 = '+d0+' d1 = '+d1);
+    socket.on('throwDice', function(d0,d1){;
         socket.broadcast.emit('diceThrown', d0,d1);
     })
 
     socket.on('makeRandNum', function() {
-      console.log("in the makeRandNum");
       var r = Math.floor((Math.random() * 10))
-      socket.emit('getRandNum', r);
-      socket.broadcast.emit('getRandNum', r);
+//      socket.emit('getRandNum', {r:r,player_id:current_player_id});
+      socket.broadcast.emit('getRandNum', {r:r,player_id:current_player_id});
     })
 
     socket.on('SelectChanceCard', function(x){
