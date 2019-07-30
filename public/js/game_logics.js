@@ -1222,7 +1222,6 @@ function createPlayer(){
 }
 
 function updatePlayer(name,data){
-    console.log("update"+name);
     let current_player;
     for(let i=0; i<log_in_players.length; i++){
         if(log_in_players[i].name == name){
@@ -1423,6 +1422,18 @@ socket.on('gameOver',function(){
         if(total_property_value > max_property_value){
             max_property_value = total_property_value;
             winner = log_in_players[i].name;
+        }
+    }
+    
+    for(let i = 0; i< log_in_players.length; i++){
+        let player_status = document.getElementById("player_status_" + log_in_players[i].picture);
+        player_status.style.fontWeight = 'bold';
+        player_status.style.color = 'red';
+        
+        if(log_in_players[i].name == winner){
+            player_status.innerHTML = "Winner";
+        }else{
+            player_status.innerHTML = "";
         }
     }
     
