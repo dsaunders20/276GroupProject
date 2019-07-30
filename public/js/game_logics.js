@@ -20,10 +20,10 @@ var totalTurn = 0;
 
 const diceButton = document.getElementById('throw');
 diceButton.addEventListener('click', function(d){
-    if (players[getCurrentPlayer()].inJail) {
+    if (log_in_players[getCurrentPlayer()].inJail) {
         jailButton.disabled = true;
     }
-    throwDice();
+//     throwDice();
 })
 
 var socket = io('http://localhost:8080/');
@@ -99,6 +99,8 @@ async function throwDice() {
         }
         else if ( player.turnsInJail >= 3 ){    //  in jail for 3 turns
             addToGameLog(player.name+" has now paid the $50 fine after 3 turns in jail and is free to go!");
+            player.cash -= 50;
+            updateCash(player);
             unJail(player);
             doubleCount = 0;
             diceButton.disabled = true;
@@ -393,7 +395,7 @@ const endTurn = document.getElementById('endTurnButton');
 endTurn.addEventListener('click', function(e) {
     updateTurn();
     diceButton.disabled = false;
-    if ( players[getCurrentPlayer()].inJail ){
+    if ( log_in_players[getCurrentPlayer()].inJail ){
         jailButton.disabled = false;
     }
     // let player = players[getCurrentPlayer()];
@@ -573,9 +575,9 @@ class Player {
             // ================================================================
             // ENABLE THE NEXT TWO LINES IF YOU WANT MULTIPLE ROLLS PER TURN
             // ===============================================================
-            if (m == (newPositionAfterRoll % boardLength)) {
-                document.getElementById("throw").disabled = false;
-            }
+            // if (m == (newPositionAfterRoll % boardLength)) {
+            //     document.getElementById("throw").disabled = false;
+            // }
     
                 
             if(lap == false){
@@ -854,6 +856,7 @@ function updateTurn()
     // {
     //     endGame();
     // }
+    socket.emit('updateTurn', turn)
 }
 
 function sendTo(position, player)
