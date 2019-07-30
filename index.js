@@ -3,7 +3,7 @@ var http = require('http');
 const app = express();
 var cors = require('cors')
 const path = require('path')
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 5000   
 
 
 
@@ -17,18 +17,18 @@ console.log('Server hosted at port:' + PORT);
 var browserSession = require('browser-session-store')
 
 // use this for testing
-// var pool = new Pool({
-//   host: 'localhost',
-//   database: 'postgres'
-// });
+ var pool = new Pool({
+   host: 'localhost',
+   database: 'postgres'
+ });
 
 //for Michael
-const pool = new Pool({
-  user: 'postgres',
-  password: 'root',
-  host: 'localhost',
-  database: 'postgres'
-});
+//const pool = new Pool({
+//  user: 'postgres',
+//  password: 'root',
+//  host: 'localhost',
+//  database: 'postgres'
+//});
 // use this block for heroku app
 
 //const pool = new Pool({
@@ -251,6 +251,11 @@ io.on('connection', function(socket){
 
     socket.on('chat', function(message){
        socket.emit('message', message);
+//       socket.broadcast.emit('message', message); 
+    });
+    
+    socket.on('chat_broadcast', function(message){
+//       socket.emit('message', message);
        socket.broadcast.emit('message', message); 
     });
     

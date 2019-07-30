@@ -31,8 +31,8 @@ diceButton.addEventListener('click', function(d){
     throwDice();
 })
 
-var socket = io('http://localhost:8080/');
-//var socket = io('http://localhost:5000/');
+//var socket = io('http://localhost:8080/');
+var socket = io('http://localhost:5000/');
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
@@ -85,7 +85,8 @@ async function throwDice() {
         doubleCount++
     }
     // addToGameLog("[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
-    socket.emit('chat', player.name+' rolled a ' + (randomd0 + randomd1) + '!');
+     socket.emit('chat', player.name+' rolled a ' + (randomd0 + randomd1) + '!');
+    socket.emit('chat_broadcast', player.name+' rolled a ' + (randomd0 + randomd1) + '!');
     if ( player.inJail === false ){
         if ((double === true) && (doubleCount <= 2) && (player.curCell+randomd0+randomd1 != 10)) {
             // addToGameLog('Doubles! Roll again!')
@@ -491,6 +492,7 @@ class Player {
                 this.cash+=200;
                 updateCash(this);
                 socket.emit('chat',this.name + ' made it around the board! Collect $200!');
+                socket.emit('chat_broadcast',this.name + ' made it around the board! Collect $200!');
                 
             }
             // else if (tmp ===3){ // go 3 blocks backwards
@@ -752,7 +754,9 @@ class Player {
         {
             this.cash -= 200
             updateCash(this);
+            socket.emit('chat_broadcast',this.name + ' paid $200 for a Parking Ticket!');
             socket.emit('chat',this.name + ' paid $200 for a Parking Ticket!');
+            
         } 
         if (newPositionAfterRoll2 === 38)
         {
@@ -1292,6 +1296,7 @@ socket.on('updateTurn', function(data){
 
 socket.on('updateCash', function(player)
 {
+    console.log(player.cash);
     player_money = document.getElementById("player_money_" + player.playerNumber);
     player_money.innerHTML = player.cash;
 })
