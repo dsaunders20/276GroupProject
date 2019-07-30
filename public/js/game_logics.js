@@ -92,6 +92,7 @@ async function throwDice() {
     if ( player.inJail === false ){
         if ((double === true) && (doubleCount <= 2) && (player.curCell+randomd0+randomd1 != 10)) {
             // addToGameLog('Doubles! Roll again!')
+            socket.emit('chat_broadcast', player.name+' rolled doubles and gets to roll again!')
             socket.emit('chat', player.name+' rolled doubles and gets to roll again!');
             diceButton.disabled=false;
             player.updatePosition(randomd0+randomd1);
@@ -99,6 +100,7 @@ async function throwDice() {
             // player.updatePosition(8);
         }
         else if (doubleCount === 3) {
+            socket.emit('chat_broadcast','['+player.name+'] rolled doubles 3 times in a row, now sent to jail for 3 turns! ['+player.name+'] can pay $50 to get out.')
             socket.emit('chat','['+player.name+'] rolled doubles 3 times in a row, now sent to jail for 3 turns! ['+player.name+'] can pay $50 to get out.')
             doubleCount = 0;
 
@@ -985,7 +987,7 @@ socket.on('chanceCardSelected', function(x){
     
     
     element.src=imagearray[x]; 
-    sleep(3500).then(() => {
+    sleep(5000).then(() => {
         // Do something after the sleep!
         $('.card').toggleClass('flipped'); // flip it back;
     });
