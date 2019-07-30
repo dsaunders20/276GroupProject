@@ -3,7 +3,6 @@ var imagearray = [
 "/images/c1.png", 
 "/images/c4.png","/images/c5.png","/images/c7.png","/images/c11.png",
 "/images/c12.png","/images/c13.png","/images/c15.png"
-
 ];
 
 var x;

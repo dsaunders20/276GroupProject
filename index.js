@@ -175,7 +175,7 @@ var current_player_id = 1;
 //0 => game does not start; 1=> game has started; -1 => game has ended;
 var game_status = 0;
 var server_round_num = 1;
-var game_end_after_round = 20;
+var game_end_after_round = 10;
 var if_game_start = false;
 
 
