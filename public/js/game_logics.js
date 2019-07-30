@@ -346,10 +346,9 @@ sellButton.disabled = true;
 
 buyButton.addEventListener('click', function (e) {
     var currentPlayerNum = getCurrentPlayer();
-    var currentPlayer = log_in_players[currentPlayerNum];
+    var currentPlayer = log_in_players[currentPlayerNum - 1];
     //   console.log("current cell is: " + currentPlayer.curCell);
     var playerPosition = currentPlayer.curCell; // should return int
-    // this is hard coded currently, change 2 to playerPosition
     var currentSquare = property[playerPosition]; //this will get the property
     //   console.log("squre name is: " + currentSquare.name);
     // already owned
@@ -379,7 +378,7 @@ buyButton.addEventListener('click', function (e) {
 
 sellButton.addEventListener('click', function (e) {
     var currentPlayerNum = getCurrentPlayer();
-    var currentPlayer = log_in_players[currentPlayerNum];
+    var currentPlayer = log_in_players[currentPlayerNum - 1];
     var playerPosition = currentPlayer.curCell;
     console.log("player position is: " + playerPosition);
     // this is hard coded currently, change 2 to playerPosition
@@ -1203,11 +1202,13 @@ function updatePlayer(name,data){
             current_player = log_in_players[i];
         }
     }
-    let player_status = document.getElementById("player_status_" + current_player.picture);
-      player_status.style.fontWeight = 'bold';
-      player_status.style.color = 'red';
-      player_status.innerHTML=(data.status);
     
+    if(data.status != undefined){
+        let player_status = document.getElementById("player_status_" + current_player.picture);
+          player_status.style.fontWeight = 'bold';
+          player_status.style.color = 'red';
+          player_status.innerHTML=(data.status);
+    }
     if(data.positionToMove != undefined){
         current_player.updatePosition(data.positionToMove);
     }
