@@ -102,7 +102,7 @@ async function throwDice() {
         }
         else {
             doubleCount = 0
-            socket.emit('chat', 'dice button should be disabled');
+//            socket.emit('chat', 'dice button should be disabled');
             // diceButton.disabled = true;
             document.getElementById('throw').disabled = true;
             player.updatePosition(randomd0+randomd1);
@@ -437,7 +437,7 @@ class Player {
         this.name = name;
         this.cash = 1500;
         this.picture = picture;
-        this.curCell = 0;
+        this.curCell = 30;
         this.estate_value = 0;
         this.properties = 0;
         this.playerNumber = playerNumber;
@@ -629,7 +629,7 @@ class Player {
                         m = ((m + 1) % boardLength);
                         document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
                     
-                }else if( m == boardLength - 1){
+                }else if( m == boardLength - 1 && if_calculate_lap == false){
                         let position_holder = document.getElementById('cell'+ m + 'positionholder');
                         let current_player = document.getElementById("player_avastar_"+this.picture);
                         position_holder.removeChild(current_player);
@@ -646,77 +646,82 @@ class Player {
                         position_holder.removeChild(current_player);
                             m = ((m + 1) % boardLength);
                             document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
-                        
-                    }else if( m == boardLength - 1){
-                        let position_holder = document.getElementById('cell'+ m + 'positionholder');
-                        let current_player = document.getElementById("player_avastar_"+this.picture);
-                        position_holder.removeChild(current_player);
-                                if_calculate_lap = true;
-                                if(reset == true){
-                                    m = 0;
-                                    reset = false;
-                                }
-                            document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
-                    }else{
-                        if( m < (newPositionAfterRoll % boardLength)){
-                                let position_holder = document.getElementById('cell'+ m + 'positionholder');
-                                let current_player = document.getElementById("player_avastar_"+this.picture);
-                                position_holder.removeChild(current_player);
-                                m = ((m + 1) % boardLength);
-                                document.getElementById('cell' + m + 'positionholder').appendChild(character_img);   
-
                         }else{
-                            m = (newPositionAfterRoll % boardLength)
+                            m = (newPositionAfterRoll % boardLength);
                             this.curCell = (newPositionAfterRoll % boardLength);
                             i++;
-                            clearInterval(interval); 
+                            clearInterval(interval);
                         }
+                        
+//                    }else if( m == boardLength - 1){
+//                        let position_holder = document.getElementById('cell'+ m + 'positionholder');
+//                        let current_player = document.getElementById("player_avastar_"+this.picture);
+//                        position_holder.removeChild(current_player);
+//                                if_calculate_lap = true;
+//                                if(reset == true){
+//                                    m = 0;
+//                                    reset = false;
+//                                }
+//                            document.getElementById('cell' + m + 'positionholder').appendChild(character_img);
+//                    }else{
+//                        if( m < (newPositionAfterRoll % boardLength)){
+//                                let position_holder = document.getElementById('cell'+ m + 'positionholder');
+//                                let current_player = document.getElementById("player_avastar_"+this.picture);
+//                                position_holder.removeChild(current_player);
+//                                m = ((m + 1) % boardLength);
+//                                document.getElementById('cell' + m + 'positionholder').appendChild(character_img);   
+//
+//                        }else{
+//                            m = (newPositionAfterRoll % boardLength)
+//                            this.curCell = (newPositionAfterRoll % boardLength);
+//                            i++;
+//                            clearInterval(interval); 
+//                        }
                     }
                 }
             
 
                 
                 
-            }
                 
-                
-                if(i== 1&& Goback===true){
-                    console.log("GoBackNum is: " + GoBackNum);
-                    console.log("m is: "+ m);
-                    newPositionAfterRoll-=GoBackNum;
-                    var intervalforBack = setInterval(()=>{
-                        if(lap == false){
-                                        if((m % boardLength) > newPositionAfterRoll){
-                                            document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
-                                            m = ((m - 1) % boardLength);
-                                            document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
-                                        }else{
-                                            m = newPositionAfterRoll;
-                                            this.curCell = newPositionAfterRoll;
-                                            clearInterval(intervalforBack);
-                                        }
-                                    }
-                                    
-                                    if (newPositionAfterRoll2 === 4)
-                                        {
-                                            console.log("here");
-                                            this.cash -= 200
-                                            updateCash(this);
-                                            socket.emit('chat',this.name + ' paid $200 for a Parking Ticket!');
-                                        } 
-                                        if (property[newPositionAfterRoll2].groupNumber == 0)
-                                        {
-                                            buyButton.disabled = true;
-                                        }
-                                        else {
-                                            buyButton.disabled = false;
-                                        }
-                                        if (property[newPositionAfterRoll2].owner == this)
-                                        {
-                                            sellButton.disabled = false;
-                                        }
-                    }, 100);
-                }
+//                
+//                if(i== 1&& Goback===true){
+//                    console.log("GoBackNum is: " + GoBackNum);
+//                    console.log("m is: "+ m);
+//                    newPositionAfterRoll-=GoBackNum;
+//                    var intervalforBack = setInterval(()=>{
+//                        if(lap == false){
+//                                        if((m % boardLength) > newPositionAfterRoll){
+//                                            document.getElementById('cell'+ m + 'positionholder').innerHTML = '';
+//                                            m = ((m - 1) % boardLength);
+//                                            document.getElementById('cell'+ m +'positionholder').appendChild(character_img);
+//                                        }else{
+//                                            m = newPositionAfterRoll;
+//                                            this.curCell = newPositionAfterRoll;
+//                                            clearInterval(intervalforBack);
+//                                        }
+//                                    }
+//                                    
+//                                    if (newPositionAfterRoll2 === 4)
+//                                        {
+//                                            console.log("here");
+//                                            this.cash -= 200
+//                                            updateCash(this);
+//                                            socket.emit('chat',this.name + ' paid $200 for a Parking Ticket!');
+//                                        } 
+//                                        if (property[newPositionAfterRoll2].groupNumber == 0)
+//                                        {
+//                                            buyButton.disabled = true;
+//                                        }
+//                                        else {
+//                                            buyButton.disabled = false;
+//                                        }
+//                                        if (property[newPositionAfterRoll2].owner == this)
+//                                        {
+//                                            sellButton.disabled = false;
+//                                        }
+//                    }, 100);
+//                }
     
             }, 100); 
 
@@ -1193,6 +1198,7 @@ function createPlayer(){
             log_in_players[i].color = player_color; 
             player_num = i+1
             player_name = document.getElementById("player_name_" + player_num);
+//            player_name.style.color = player_color;
             player_name.innerHTML = log_in_players[i].name;
             log_in_players[i].playerNumber = i + 1;
 
@@ -1399,7 +1405,7 @@ socket.on('initializeClientAvastar',function(){
             character_img.setAttribute("width", "25%");
             character_img.setAttribute("id", "player_avastar_"+log_in_players[i].picture);
             character_img.setAttribute("padding-top", "10px");
-            document.getElementById('cell0positionholder').appendChild(character_img);
+            document.getElementById('cell30positionholder').appendChild(character_img);
     }
 });
 
