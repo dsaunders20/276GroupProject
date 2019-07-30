@@ -49,7 +49,7 @@ $("#throw").click(function () {
 })
 async function throwDice() {
     let current_player_num = getCurrentPlayer();
-    let player = players[current_player_num];
+    let player = log_in_players[current_player_num];
     
     // Disable the button so user can't keep pressing it
     document.getElementById("throw").disabled = true
@@ -269,7 +269,7 @@ sellButton.disabled = true;
 
 buyButton.addEventListener('click', function (e) {
     var currentPlayerNum = getCurrentPlayer();
-    var currentPlayer = players[currentPlayerNum];
+    var currentPlayer = log_in_players[currentPlayerNum];
     //   console.log("current cell is: " + currentPlayer.curCell);
     var playerPosition = currentPlayer.curCell; // should return int
     // this is hard coded currently, change 2 to playerPosition
@@ -302,7 +302,7 @@ buyButton.addEventListener('click', function (e) {
 
 sellButton.addEventListener('click', function (e) {
     var currentPlayerNum = getCurrentPlayer();
-    var currentPlayer = players[currentPlayerNum];
+    var currentPlayer = log_in_players[currentPlayerNum];
     var playerPosition = currentPlayer.curCell;
     console.log("player position is: " + playerPosition);
     // this is hard coded currently, change 2 to playerPosition
@@ -458,7 +458,7 @@ class Player {
             else if (tmp === 15){ // pay 150;
                 this.cash -=150;
                 updateCash(this);
-                addToGameLog(this.name + ' Paied $150');
+                addToGameLog(this.name + ' Paid $150');
                 
             }
        
@@ -752,6 +752,8 @@ function addToGameLog(message) {
 function updateCash(player){
     player_money = document.getElementById("player_money_" + player.playerNumber);
     player_money.innerHTML = player.cash;
+    socket.emit('updateCash', player)
+
     return;
 };
 function updateEstateValue(player){
@@ -760,12 +762,13 @@ function updateEstateValue(player){
 }
 function updateTurn()
 {
-    turn = (turn + 1) % players.length;
+    turn = (turn + 1) % log_in_players.length;
     totalTurn++;
     if (totalTurn >= 5)
     {
         endGame();
     }
+    socket.emit('updateTurn', turn);
 }
 
 function sendTo(position, player)
@@ -883,11 +886,11 @@ function endGame()
 };
 function getWinner(){
     var max = 0;
-    for (var i = 0; i < players.length - 1; i++)
+    for (var i = 0; i < log_in_players.length - 1; i++)
     {
-        for (var j = i + 1; j < players.length; j++)
+        for (var j = i + 1; j < log_in_players.length; j++)
         {
-            if ((players[j].cash + players[j].estate_value) > (players[i].cash + players[i].estate_value))
+            if ((log_in_players[j].cash + log_in_players[j].estate_value) > (log_in_players[i].cash + log_in_players[i].estate_value))
             {
                 max = j;
             }
@@ -1078,7 +1081,7 @@ function createPlayer(){
             player_num = i+1
             player_name = document.getElementById("player_name_" + player_num);
             player_name.innerHTML = log_in_players[i].name;
-
+            log_in_players[i].playerNumber = i + 1;
 
             player_picture = document.getElementById("player_picture_" + player_num);
 //            var character_img = document.createElement("img");
@@ -1137,6 +1140,16 @@ socket.on('connected', function(data){
 	var msg = data + " has connected!!";
 	socket.emit('chat',msg);
 });
+
+socket.on('updateTurn', function(data){
+    turn = data;
+})
+
+socket.on('updateCash', function(player)
+{
+    player_money = document.getElementById("player_money_" + player.playerNumber);
+    player_money.innerHTML = player.cash;
+})
 
 socket.on('update_log_in_player',function(data){
     var if_new_player = true;

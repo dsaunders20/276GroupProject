@@ -153,20 +153,20 @@ app.get('/fetch_players_info',function(req,res,next){
 
 // ==============NETWORKING FOR CHAT BOX===================
 // inspired by https://itnext.io/build-a-group-chat-app-in-30-lines-using-node-js-15bfe7a2417b
-io.sockets.on('connection', function(socket) {
-  socket.on('username', function(username) {
-      socket.username = username;
-      io.emit('is_online', '<i>' + socket.username + ' joined the chat..</i>');
-  });
+// io.sockets.on('connection', function(socket) {
+//   socket.on('username', function(username) {
+//       socket.username = username;
+//       io.emit('is_online', '<i>' + socket.username + ' joined the chat..</i>');
+//   });
 
-  socket.on('disconnect', function(username) {
-    io.emit('is_online', '<i>' + socket.username + ' left the chat..</i>');
-  });
-  socket.on('chat_message', function(message) {
-    io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
-  });
+//   socket.on('disconnect', function(username) {
+//     io.emit('is_online', '<i>' + socket.username + ' left the chat..</i>');
+//   });
+//   socket.on('chat_message', function(message) {
+//     io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
+//   });
 
-});
+// });
 
 
 // app.get('/update_winning_player', function(req, res, next){
@@ -189,6 +189,7 @@ var current_player_id = 1;
 //0 => game does not start; 1=> game has started; -1 => game has ended;
 var game_status = 1;
 var if_game_start = false;
+var turn = 0;
 
 function switchPlayer(current_player_id, player_list){
     if(current_player_id < Object.keys(player_list).length){
@@ -316,7 +317,15 @@ io.on('connection', function(socket){
             id:current_player_id,
         });
     });
+
+    socket.on('updateTurn', function(turn){
+      socket.broadcast.emit('updateTurn', turn);
+    });
     
+    socket.on('updateCash', function(player){
+      socket.broadcast.emit('updateCash', player)
+    });
+
     socket.on('playerReady',function(name){
         let if_ready = false;
         for(let i = 0; i<player_ready_list.length;i++){
