@@ -1238,6 +1238,9 @@ function updatePlayer(name,data){
     if(data.positionToMove != undefined){
         current_player.updatePosition(data.positionToMove);
     }
+    if (current_player.curCell != property[current_player.curCell]) {
+        document.getElementById('buyButton').disabled = true; 
+    }
 }
 
 //send socket.id to server for identification
@@ -1271,7 +1274,9 @@ socket.on('updateCash', function(player)
 })
 
 socket.on('buy', function(player){
+    updatePlayerPropertyOwned(player);
     let i = player.curCell; 
+    property[i].owner = player; 
     let currentCellOwner = document.getElementById("cell" + i + "owner");
     currentCellOwner.style.display = "block"; 
     currentCellOwner.style.backgroundColor = player.color; 
