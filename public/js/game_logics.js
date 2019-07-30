@@ -1,6 +1,6 @@
 var imagearray = [
 
-"/images/c1.png",  "/images/c2.png", "/images/c3.png",
+"/images/c1.png", 
 "/images/c4.png","/images/c5.png","/images/c7.png",
 "/images/c9.png","/images/c11.png",
 "/images/c12.png","/images/c13.png","/images/c14.png","/images/c15.png"
@@ -9,6 +9,7 @@ var imagearray = [
 
 
 ];
+var x;
 //Global Variables
 let players = [];
 let boardLength = 40;
@@ -72,6 +73,10 @@ socket.on('diceThrown', function(d0, d1){
     document.getElementById("d0").src = eval("face" + d0 + ".src")
     document.getElementById("d1").src = eval("face" + d1 + ".src")
 })
+
+
+
+
 
 async function throwDice() {
     let current_player_num = getCurrentPlayer();
@@ -154,8 +159,13 @@ function rollDice() {
             // Create a random integer between 0 and 5
             // randomd0 = Math.floor(Math.random() * 6) + 1
             // randomd1 = Math.floor(Math.random() * 6) + 1
+<<<<<<< HEAD
+            randomd0 = 3;
+            randomd1 = 4;
+=======
             randomd0 = 6;
             randomd1 = 2;
+>>>>>>> 2b6414081a00ffd953de702ef99a510e4864dfaf
                 // Display result
             updateDice()
             socket.emit('throwDice', randomd0, randomd1);
@@ -478,15 +488,38 @@ class Player {
         //when landed on the chanceblock
         if (newPositionAfterRoll2 === 7 || newPositionAfterRoll2 === 22 || newPositionAfterRoll2 === 36){
             console.log("ChanceCard Begin");
-            var Goback = false;
-            var GoBackNum;
+        
             
-            var tmp = whenAtchanceCard();
-            if (tmp ===1){ //collect 50
+            socket.emit('makeRandNum');
+            socket.on('getRandNum', function(r) {
+                console.log("r is : " + r);
+                x =r;
+                console.log("x is:" + x);
+                $('.card').toggleClass('flipped');//flip to chancecard;
+                var element=document.getElementById('cardImage');
+                
+                
+                element.src=imagearray[x]; 
+                sleep(3500).then(() => {
+                    // Do something after the sleep!
+                    $('.card').toggleClass('flipped'); // flip it back;
+                });
+
+            
+                               
+            if(imagearray[x] == "/images/c1.png"){
+                //   //collect 50  
+                console.log("It is c1");
                 this.cash +=50
                 updateCash(this);
                 socket.emit('chat',this.name + ' Collected $50');
+                //updatecash
+              
+            
             }
+<<<<<<< HEAD
+            
+=======
             else if (tmp ===2){ //Go to 'Go'
                 newPositionAfterRoll+=(boardLength-newPositionAfterRoll);
                 this.cash+=200;
@@ -505,78 +538,172 @@ class Player {
                 this.cash-=75;
                 updateCash(this);
                 socket.emit('chat',this.name + ' Paied $75');
+>>>>>>> 2b6414081a00ffd953de702ef99a510e4864dfaf
 
+            else if(imagearray[x] == "/images/c4.png"){
+                console.log("It is c4");
+                //pay 75
+                    this.cash-=75;
+                updateCash(this);
+                socket.emit('chat',this.name + ' Paid $75');
             }
-            else if (tmp ===5){ // collect $100
-                this.cash +=100;
+            else if(imagearray[x] == "/images/c5.png"){
+                console.log("It is c5");
+                //collec 100
+                     this.cash +=100;
                 updateCash(this);
                 socket.emit('chat',this.name = ' Collected $100');
-                
+
             }
-            // else if (tmp === 6){ //give 25 to each player
-                
-            // }
-            else if (tmp ===7){ //pay $500
-                this.cash -= 500;
+       
+            else if(imagearray[x] == "/images/c7.png"){
+                console.log("It is c7");
+                //pay 500
+                        this.cash -= 500;
                 updateCash(this);
                 socket.emit('chat',this.name + ' Lost $500');
+                return 7;
+            }
 
+            else if(imagearray[x] == "/images/c11.png"){
+                console.log("It is c11");
+                // get 45
+                  this.cash +=45;
+                updateCash(this);
+                socket.emit('chat',this.name + ' Gained $45');
+                return 11;
+            }
+            else if(imagearray[x] == "/images/c12.png"){
+                console.log("It is c12");
+                //get 0
+                // addToGameLog(player.name + ' Gained 0');
+                socket.emit('chat',this.name + ' Gets NOTHING');
+                return 12;
+            }
+            else if(imagearray[x] == "/images/c13.png"){
+                console.log("It is c13");
+                //pay 25
+                    this.cash -=25;
+                updateCash(this);
+                socket.emit('chat',this.name + ' Lost $25');
+        
+                return 13;
                 
             }
-        
-            else if (tmp ===9){ // Go to Jail
-                newPositionAfterRoll +=(boardLength-newPositionAfterRoll)+10;
-                this.cash+=200;
+            else if(imagearray[x] == "/images/c15.png"){
+                console.log("It is c15");
+                //pay 150
+                       this.cash -=150;
                 updateCash(this);
-                socket.emit('chat',this.name + ' is passing "Go" and Going To Jail, Gained $200');
-            }
-            // else if (tmp ===10){ //get out of Jail Card
-            //      if(this.JailCard === true){
+                socket.emit('chat',this.name + ' Paid $150');
 
-                //};
+                return 15;
+                
+            }
+                
+            })
+            
+       
+
+            // socket.emit('SelectChanceCard', x);
+         
+
+
+
+            
+            // if (tmp ===1){ //collect 50
+              
+                
+            // }
+            // // else if (tmp ===2){ //Go to 'Go'
+            // //     newPositionAfterRoll+=(boardLength-newPositionAfterRoll);
+            // //     this.cash+=200;
+            // //     updateCash(this);
+            // //     socket.emit('chat',this.name + ' made it around the board! Collect $200!');
+                
+            // // }
+            // // else if (tmp ===3){ // go 3 blocks backwards
+           
+            // //     Goback=true;
+            // //     GoBackNum=3;
+            // //     socket.emit('chat',this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
+            // // }
+            // else if (tmp ===4){ // pay $75
+            //     this.cash-=75;
+            //     updateCash(this);
+            //     socket.emit('chat',this.name + ' Paied $75');
+
+            // }
+            // else if (tmp ===5){ // collect $100
+            //     this.cash +=100;
+            //     updateCash(this);
+            //     socket.emit('chat',this.name = ' Collected $100');
+                
+            // }
+            // // else if (tmp === 6){ //give 25 to each player
+                
+            // // }
+            // else if (tmp ===7){ //pay $500
+            //     this.cash -= 500;
+            //     updateCash(this);
+            //     socket.emit('chat',this.name + ' Lost $500');
 
                 
             // }
-            else if (tmp === 11){ // gain 45
-                this.cash +=45;
-                updateCash(this);
-                socket.emit('chat',this.name + ' Gained $45');
+        
+            // // else if (tmp ===9){ // Go to Jail
+            // //     newPositionAfterRoll +=(boardLength-newPositionAfterRoll)+10;
+            // //     this.cash+=200;
+            // //     updateCash(this);
+            // //     socket.emit('chat',this.name + ' is passing "Go" and Going To Jail, Gained $200');
+            // // }
+            // // else if (tmp ===10){ //get out of Jail Card
+            // //      if(this.JailCard === true){
+
+            //     //};
+
                 
-            }
-            else if (tmp ===12){ // get 0
-                socket.emit('chat',this.name + ' Gets NOTHING');
-            }
-            else if (tmp ===13){ // Lose 25
-                this.cash -=25;
-                updateCash(this);
-                socket.emit('chat',this.name + ' Lost $25');
+            // // }
+            // else if (tmp === 11){ // gain 45
+            //     this.cash +=45;
+            //     updateCash(this);
+            //     socket.emit('chat',this.name + ' Gained $45');
                 
-            }
-            else if (tmp ===14){ //GO to Jail without passing 'GO'
+            // }
+            // else if (tmp ===12){ // get 0
+            //     socket.emit('chat',this.name + ' Gets NOTHING');
+            // }
+            // else if (tmp ===13){ // Lose 25
+            //     this.cash -=25;
+            //     updateCash(this);
+            //     socket.emit('chat',this.name + ' Lost $25');
+                
+            // }
+            // // else if (tmp ===14){ //GO to Jail without passing 'GO'
              
               
-                if(newPositionAfterRoll === 7){
-                    Goback=false;
-                    newPositionAfterRoll+=3;
-                }
-                else if(newPositionAfterRoll===22){
-                    Goback=true;
-                    GoBackNum=12;
+            // //     if(newPositionAfterRoll === 7){
+            // //         Goback=false;
+            // //         newPositionAfterRoll+=3;
+            // //     }
+            // //     else if(newPositionAfterRoll===22){
+            // //         Goback=true;
+            // //         GoBackNum=12;
 
-                }
-                else if(newPositionAfterRoll ===36){
-                    Goback=true;
-                    GoBackNum=26;
-                }
+            // //     }
+            // //     else if(newPositionAfterRoll ===36){
+            // //         Goback=true;
+            // //         GoBackNum=26;
+            // //     }
               
                 
-            }
-            else if (tmp === 15){ // pay 150;
-                this.cash -=150;
-                updateCash(this);
-                socket.emit('chat',this.name + ' Paid $150');
+            // // }
+            // else if (tmp === 15){ // pay 150;
+            //     this.cash -=150;
+            //     updateCash(this);
+            //     socket.emit('chat',this.name + ' Paid $150');
                 
-            }
+            // }
        
 
         
@@ -906,13 +1033,13 @@ function addToGameLog(message) {
     var Log = document.getElementById('gameLog');
     Log.scrollTop = Log.scrollHeight;
 }
-function updateCash(player){
-    player_money = document.getElementById("player_money_" + player.playerNumber);
-    player_money.innerHTML = player.cash;
-    socket.emit('updateCash', player)
+// function updateCash(player){
+//     player_money = document.getElementById("player_money_" + player.playerNumber);
+//     player_money.innerHTML = player.cash;
+//     socket.emit('updateCash', player)
 
-    return;
-};
+//     return;
+// };
 function updateEstateValue(player){
     player_estate_value = document.getElementById("player_estate_value_" + player.playerNumber);
     player_estate_value.innerHTML = player.estate_value;
@@ -1068,139 +1195,29 @@ window.onload = function () {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-function whenAtchanceCard(){
-   
-    $('.card').toggleClass('flipped'); //flip to chancecard;
-     
-    console.log(imagearray);
-   
-    if (imagearray.length == 0){  
-         var element=document.getElementById('cardImage');
-    element.src="/images/end.jpg"
-    sleep(3500).then(() => {
-        // Do something after the sleep!
-        $('.card').toggleClass('flipped');
-    });
 
-    }
-
-   if(imagearray.length != 0){
+socket.on('chanceCardSelected', function(x){
+    console.log("x received is: " + x);
+    $('.card').toggleClass('flipped');//flip to chancecard;
+    var element=document.getElementById('cardImage');
+    
+    
+    element.src=imagearray[x]; 
     sleep(3500).then(() => {
         // Do something after the sleep!
         $('.card').toggleClass('flipped'); // flip it back;
     });
-        var element=document.getElementById('cardImage');
-        var x = Math.floor((Math.random() * imagearray.length));
-        element.src=imagearray[x];
-        if(imagearray[x] == "/images/c1.png"){
-            //   //collect 50  
-            console.log("It is c1");
-            imagearray.splice(x, 1);
-            return 1;
-          
-        }
-        else   if(imagearray[x] == "/images/c2.png"){
-            //   //collect 50  
-            console.log("It is c2");
-            imagearray.splice(x, 1);
-            return 2;
-          
-        }
-        else if(imagearray[x] == "/images/c3.png"){ 
-            //go 3 blocks backwards
-            console.log("Entering c3");
-            imagearray.splice(x, 1);
-            return 3
-    
-           
-
-
-            
-        }
-        else if(imagearray[x] == "/images/c4.png"){
-            console.log("It is c4");
-            //pay 75
-
-            imagearray.splice(x, 1);
-            return 4;
-        }
-        else if(imagearray[x] == "/images/c5.png"){
-            console.log("It is c5");
-            //collec 100
-            imagearray.splice(x, 1);
-            return 5;
-        }
-        // else if(imagearray[x] == "/images/c6.png"){
-        //     console.log("It is c6");
-        //     //pay each player 25
-
-        // }
-        else if(imagearray[x] == "/images/c7.png"){
-            console.log("It is c7");
-            //pay 500
+    // if(getCurrentPlayer()===  current_server_turn_player_id){
        
-            imagearray.splice(x, 1);
-            return 7;
-        }
- 
-        else if(imagearray[x] == "/images/c9.png"){
-            console.log("It is c9 and ");
-            //go to jail
-     
-            imagearray.splice(x, 1);
-            return 9;
-        }
-        // else if(imagearray[x] == "/images/c10.png"){
-        //     console.log("It is c10");
-        //     //get out of jail card, keep the card
-        // }
-        else if(imagearray[x] == "/images/c11.png"){
-            console.log("It is c11");
-            //get 45
-            // player.cash +=40;
-            // updateCash(player);
-            // addToGameLog(player.name + ' Gained $45');
-            imagearray.splice(x, 1);
-            return 11;
-        }
-        else if(imagearray[x] == "/images/c12.png"){
-            console.log("It is c12");
-            //get 0
-            // addToGameLog(player.name + ' Gained 0');
-            imagearray.splice(x, 1);
-            return 12;
-        }
-        else if(imagearray[x] == "/images/c13.png"){
-            console.log("It is c13");
-            //pay 25
-     
-            imagearray.splice(x, 1);
-            return 13;
-            
-        }
-        else if(imagearray[x] == "/images/c14.png"){
-            console.log("It is c14");
-            //GO to jail, do not pass GO, do not collect 200
-            imagearray.splice(x, 1);
-            return 14;
-        }else if(imagearray[x] == "/images/c15.png"){
-            console.log("It is c15");
-            //pay 150
-    
-            imagearray.splice(x, 1);
-            return 15;
-            
-        }
-    
-
-        
-     
-      
-    } 
+    // }    
+})
 
 
 
-}
+
+
+
+
 
 
 // ----------------------------------- Networking ------------------------------------------
