@@ -344,7 +344,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('unsell', function(player){
-      socket.broadcast.emit('sell', player)
+      socket.broadcast.emit('unsell', player)
     });
 
     //check if all logged in players are ready

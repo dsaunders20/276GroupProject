@@ -150,10 +150,10 @@ function rollDice() {
                 clearInterval(roll)
             }
             // Create a random integer between 0 and 5
-            randomd0 = Math.floor(Math.random() * 6) + 1
-            randomd1 = Math.floor(Math.random() * 6) + 1
-            // randomd0 = 6;
-            // randomd1 = 2;
+            // randomd0 = Math.floor(Math.random() * 6) + 1
+            // randomd1 = Math.floor(Math.random() * 6) + 1
+            randomd0 = 6;
+            randomd1 = 2;
                 // Display result
             updateDice()
             socket.emit('throwDice', randomd0, randomd1);
