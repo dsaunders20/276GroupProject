@@ -17,18 +17,18 @@ console.log('Server hosted at port:' + PORT);
 var browserSession = require('browser-session-store')
 
 // use this for testing
-var pool = new Pool({
-  host: 'localhost',
-  database: 'postgres'
-});
-
-//for Michael
-// const pool = new Pool({
-//   user: 'postgres',
-//   password: 'root',
+// var pool = new Pool({
 //   host: 'localhost',
 //   database: 'postgres'
 // });
+
+//for Michael
+const pool = new Pool({
+  user: 'postgres',
+  password: 'root',
+  host: 'localhost',
+  database: 'postgres'
+});
 // use this block for heroku app
 
 //const pool = new Pool({

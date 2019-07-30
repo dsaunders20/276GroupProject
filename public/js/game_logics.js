@@ -359,18 +359,18 @@ function set_up_game_board() {
 }
 
 //resign
-resignButton.addEventListener('click', function(e) {
-    var confirmed = confirm("Are you sure you want to resign?");
-    if (confirmed) {
-        endGame();
-    }
-});
+// resignButton.addEventListener('click', function(e) {
+//     var confirmed = confirm("Are you sure you want to resign?");
+//     if (confirmed) {
+//         endGame();
+//     }
+// });
 
 //Buy and Sell
 const buyButton = document.getElementById('buyButton');
 const sellButton = document.getElementById('sellButton'); //mortgage
-buyButton.disabled = true;
-sellButton.disabled = true;
+// buyButton.disabled = true;
+// sellButton.disabled = true;
 
 buyButton.addEventListener('click', function (e) {
     var currentPlayerNum = getCurrentPlayer();
@@ -426,6 +426,8 @@ endTurn.addEventListener('click', function(e) {
     var curPlayer = getCurrentPlayer()-1
     var player = log_in_players[curPlayer];
     diceButton.disabled = false;
+    buyButton.disabled = true; 
+    sellButton.disabled = true;
     
     if ( player.inJail && current_server_turn_player_id == player.playerNumber ){
         jailButton.disabled = false;
@@ -835,6 +837,7 @@ class Player {
                 this.cash -= unmortgageValue;
                 updateCash(this);
                 document.getElementById('sellButton').innerHTML = "Mortgage";
+                square.mortgage = false; 
                 socket.emit('chat',this.name + " has unmortgaged " + square.name + " for $" + unmortgageValue + " (-)");
             }
         }
@@ -872,7 +875,7 @@ function checkValidSquareBuy(square) {
 }
 
 function checkValidSquareMortgage(square, player) {
-    if (square.owner === player.name) {
+    if (square.owner === player) {
         sellButton.disabled = false; 
     } else {
         sellButton.disabled = true;
