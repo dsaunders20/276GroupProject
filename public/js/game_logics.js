@@ -31,8 +31,8 @@ diceButton.addEventListener('click', function(d){
     throwDice();
 })
 
-//var socket = io('http://localhost:8080/');
-var socket = io('http://localhost:5000/');
+var socket = io('http://localhost:8080/');
+// var socket = io('http://localhost:5000/');
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
@@ -804,7 +804,8 @@ class Player {
             updateCash(this);
             updatePlayerPropertyOwned(this);
             updateEstateValue(this);
-            socket.emit('chat',this.name + " has bought " + square.name + " for $" + square.price + " (-)");
+            addToGameLog(this.name + " has bought " + square.name + " for $" + square.price + " (-)");
+            socket.emit('chat_broadcast',this.name + " has bought " + square.name + " for $" + square.price + " (-)");
             //buyButton.disabled = true; 
             checkValidSquareMortgage(property[this.curCell], this);
             socket.emit('buy', this);
