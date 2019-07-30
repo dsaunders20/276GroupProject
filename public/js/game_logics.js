@@ -835,7 +835,9 @@ class Player {
             if (confirmed) {
                 var unmortgageValue = square.price * 0.60;
                 this.cash -= unmortgageValue;
+                this.estate_value += square.price;
                 updateCash(this);
+                updateEstateValue(this);
                 document.getElementById('sellButton').innerHTML = "Mortgage";
                 square.mortgage = false; 
                 socket.emit('chat',this.name + " has unmortgaged " + square.name + " for $" + unmortgageValue + " (-)");
