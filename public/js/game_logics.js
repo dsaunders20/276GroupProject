@@ -26,7 +26,7 @@ const diceButton = document.getElementById('throw');
 ////     throwDice();
 //})
 
-var socket = io('http://localhost:8080/');
+var socket = io('http://localhost:5000/');
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
@@ -394,11 +394,11 @@ sellButton.addEventListener('click', function (e) {
 // end turn button functionality
 const endTurn = document.getElementById('endTurnButton');
 endTurn.addEventListener('click', function(e) {
-    updateTurn();
+//    updateTurn();
     diceButton.disabled = false;
-    if ( log_in_players[getCurrentPlayer()].inJail ){
-        jailButton.disabled = false;
-    }
+//    if ( log_in_players[getCurrentPlayer()].inJail ){
+//        jailButton.disabled = false;
+//    }
     // let player = players[getCurrentPlayer()];
     // checkValidSquareBuy(property[player.curCell]);
     // checkValidSquareMortgage(property[player.curCell], player);
@@ -1308,6 +1308,7 @@ socket.on('dis', function(data){
 
 //update game status, for instance, who is playing
 socket.on('updateState',function(data){
+    document.querySelector("#round_info").innerHTML = "Round:" + data.roundNum;
     document.querySelector("#turn_info").innerHTML = "Playing:" + data.playerName;
     current_server_turn_player = data.playerName;
     current_server_turn_player_id = data.id;
@@ -1333,12 +1334,14 @@ socket.on('gameStart',function(){
     //display board
     document.getElementById("board").style.display = "table";
     document.getElementById("turn_info").style.display = "initial";
+    document.getElementById("round_info").style.display ="initial";
     
     //close spots which are not filled
     for(let i=log_in_players.length+1;i<5;i++){
         let tmp= document.getElementById("player_holder"+i);
         tmp.innerHTML = "";
     }
+    document.querySelector("#round_info").innerHTML = "Round:" + 1;
     socket.emit('playerAfterReady',playerName);
     socket.emit('initializeGameAvastar');
 });
@@ -1366,6 +1369,29 @@ function end_turn_click(){
 socket.on('update_player',function(data){
     updatePlayer(data.name,data.info);
 });
+
+//
+socket.on('gameOver',function(){
+    let max_property_value = 0;
+    let winner;
+    for(let i = 0; i< log_in_players.length; i++){
+        let total_property_value = log_in_players[i].estate_value + log_in_players[i].cash;
+        if(total_property_value > max_property_value){
+            max_property_value = total_property_value;
+            winner = log_in_players[i].name;
+        }
+    }
+    
+    document.getElementById("turn_info").style.display = "none";
+    document.getElementById("round_info").style.display = "none";
+    document.getElementById("control").style.display = "none";
+    let board = document.getElementById("board");
+    board.style.display="none";
+//    board.parentNode.removeChild(board);
+    let endGame = document.getElementById("endGame");
+    endGame.style.display="block";
+    endGame.innerHTML = "Winner of game is:" + winner + " with total propery value of:" + max_property_value;
+})
 
 //disable ready button after click
 function ready_button_click(){

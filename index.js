@@ -190,7 +190,9 @@ var log_in_players = [];
 var clients = 0;
 var current_player_id = 1;
 //0 => game does not start; 1=> game has started; -1 => game has ended;
-var game_status = 1;
+var game_status = 0;
+var server_round_num = 1;
+var game_end_after_round = 20;
 var if_game_start = false;
 
 
@@ -198,7 +200,9 @@ function switchPlayer(current_player_id, player_list){
     if(current_player_id < Object.keys(player_list).length){
                 current_player_id += 1;
     }else{
+                server_round_num += 1;
                 current_player_id = 1;
+                
     }
     return current_player_id;
 }
@@ -299,28 +303,35 @@ io.on('connection', function(socket){
     //switch turn and tells client who is playing
     socket.on('switchPlayer', function(){
         if(game_status == 1){
-            console.log(Object.keys(player_list).length);
             current_player_id = switchPlayer(current_player_id,player_list);
-            console.log("current_player_id:"+current_player_id);
+            if(server_round_num > game_end_after_round){
+                game_status = -1;
+                socket.emit('gameOver');
+                socket.broadcast.emit('gameOver')
+            }
+            
+            socket.emit('updateState', {
+                player: player_list[Object.keys(player_list)[current_player_id - 1]],
+                playerName: Object.keys(player_list)[current_player_id - 1],
+                status: 1,
+                roundNum:server_round_num,
+                id:current_player_id,
+            });
+            socket.broadcast.emit('updateState', {
+                player: player_list[Object.keys(player_list)[current_player_id - 1]],
+                playerName: Object.keys(player_list)[current_player_id - 1], 
+                status: 1,
+                roundNum:server_round_num,
+                id:current_player_id,
+            });
         }
+    });
         
-        socket.emit('updateState', {
-            player: player_list[Object.keys(player_list)[current_player_id - 1]],
-            playerName: Object.keys(player_list)[current_player_id - 1],
-            status: 1,
-            id:current_player_id,
-        });
-        socket.broadcast.emit('updateState', {
-            player: player_list[Object.keys(player_list)[current_player_id - 1]],
-            playerName: Object.keys(player_list)[current_player_id - 1], 
-            status: 1,
-            id:current_player_id,
-        });
-    });
+        
 
-    socket.on('updateTurn', function(turn){
-      socket.broadcast.emit('updateTurn', turn);
-    });
+//    socket.on('updateTurn', function(turn){
+//      socket.broadcast.emit('updateTurn', turn);
+//    });
     
     socket.on('updateCash', function(player){
       socket.broadcast.emit('updateCash', player)
@@ -355,6 +366,7 @@ io.on('connection', function(socket){
             socket.emit('gameStart');
             socket.broadcast.emit('gameStart');
             if_game_start = true;
+            game_status = 1;
         }
     });
     
