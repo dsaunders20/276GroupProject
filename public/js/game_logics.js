@@ -174,11 +174,12 @@ function updateDice() {
 const jailButton = document.getElementById("leaveJail");
 jailButton.addEventListener('click', function(b){
     var curPlayerNum = getCurrentPlayer();
-    var curPlayer = players[curPlayerNum];
+    var curPlayer = log_in_players[curPlayerNum];
 
     socket.emit('chat', "["+curPlayer.name+"] paid $50 to get out of jail.");
     curPlayer.cash -= 50;
     updateCash(curPlayer);
+    // socket.emit('updateCash', curPlayer);
 
     unJail(curPlayer);
 })
@@ -598,9 +599,9 @@ class Player {
             // ================================================================
             // ENABLE THE NEXT TWO LINES IF YOU WANT MULTIPLE ROLLS PER TURN
             // ===============================================================
-            if (m == (newPositionAfterRoll % boardLength)) {
-                document.getElementById("throw").disabled = false;
-            }
+            // if (m == (newPositionAfterRoll % boardLength)) {
+            //     document.getElementById("throw").disabled = false;
+            // }
     
                 
             if(lap == false){
