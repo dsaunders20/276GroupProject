@@ -26,7 +26,7 @@ const diceButton = document.getElementById('throw');
 ////     throwDice();
 //})
 
-var socket = io('http://localhost:5000/');
+var socket = io('http://localhost:8080/');
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
@@ -67,7 +67,7 @@ async function throwDice() {
     addToGameLog("[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
     if ( player.inJail === false ){
         if ((double === true) && (doubleCount <= 2) && (player.curCell+randomd0+randomd1 != 10)) {
-            addToGameLog('Doubles! Roll again!')
+            socket.emit('chat','Doubles! Roll again!')
             diceButton.disabled=false;
             player.updatePosition(randomd0+randomd1);
             socket.emit('afterDiceRoll',getCurrentPlayerName(),(randomd0+randomd1))
