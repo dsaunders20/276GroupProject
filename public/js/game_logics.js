@@ -635,7 +635,7 @@ class Player {
                 //     }, 100);
                 // }
     
-            }, 100); 
+            }, 500); 
 
         // enable or disable the buy button depending on the property
         if (property[newPositionAfterRoll2].groupNumber == 0)
