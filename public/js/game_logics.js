@@ -735,9 +735,12 @@ class Player {
         else {
             buyButton.disabled = false;
         }
-        if (property[newPositionAfterRoll2].owner == this)
+        if (property[newPositionAfterRoll2].owner === this)
         {
             sellButton.disabled = false;
+            buyButton.disabled = true; 
+        } else if (property[newPositionAfterRoll2].owner != this && property[newPositionAfterRoll2].owner != 0) {
+            buyButton.disabled = true; 
         }
         //checkValidSquareBuy(property[newPositionAfterRoll]);
 
@@ -931,8 +934,8 @@ function payRent(square, player) {
     //  TODO: calculate special railroad rent
     // also need to determine if the square has any houses on it
     rent = square.baserent; 
-    if (square.owner != 0 && square.mortgage === false) {
-        if (square.owner != player) {
+    if (square.owner != player) {
+        if (square.owner != 0 && square.mortgage === false) {
             let player2 = square.owner; 
             player.cash -= rent; 
             player2.cash += rent; 
@@ -1368,6 +1371,8 @@ socket.on('updateState',function(data){
     if(data.playerName == playerName){
         document.getElementById("endTurnButton").disabled = false;
         document.getElementById("throw").disabled = false;
+        document.getElementById("buyButton").disabled = false;
+        document.getElementById("sellButton").disabled = false;
     }else{
         document.getElementById('endTurnButton').disabled = true;
         document.getElementById('throw').disabled = true;
