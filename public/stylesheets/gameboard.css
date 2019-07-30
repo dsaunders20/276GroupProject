@@ -75,8 +75,9 @@ h1 {
 }
 #chatBox {
 	position: relative;
-	top: -175px;
+	top: -10px;
 	padding-left: 10px;
+	display: none;
 }
 #messages li { padding: 5px 5px; }
 #messages li:nth-child(odd) { background: #eee; }

@@ -258,7 +258,7 @@
                             <img src="images/f0.png" class="dice" id="d0" class="rounded" alt="...">
                             <img src="images/f0.png" class="dice" id="d1" class="rounded" alt="..."> &nbsp;
                            <div></div>
-                            <button type="button" id="throw" class="btn btn-primary" disabled="true" onclick="throwDice()">Throw!</button>
+                            <button type="button" id="throw" class="btn btn-primary" disabled="true">Throw!</button>
 
                            </div>
                         </div>
@@ -311,16 +311,19 @@
         <td class="cell board-corner" id="cell0"></td>
     </tr>
 </table>
+<div id="chatBox">
+        <div id="messageDisplay">
+            <ul id="messages"></ul>
+        </div>
+        <div id="enterMessage">
+            <form action="/" method="POST" id="chatForm">
+            <input id="txt" autocomplete="off" autofocus="on" placeholder="say something..." /><button>Send</button>
+            </form>
 
+        </div>
+    </div>
 
         
-    <!-- weather api  -->
-    <!-- <p id="weather-text">Current Weather via OpenWeatherMap.org</p>
-    <div id="weather">
-        <div id="description">raining</div>
-        <h1 id="temp">10</h1>
-        <div id="location">Vancouver</div>
-    </div> -->
 </body>
 
 <footer>
