@@ -32,7 +32,8 @@ diceButton.addEventListener('click', function(d){
     throwDice();
 })
 
-var socket = io('http://localhost:8080/');
+var socket = io('https://infinite-escarpment-67408.herokuapp.com/');
+//var socket = io('http://localhost:8080/');
 // var socket = io('http://localhost:5000/');
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
@@ -159,13 +160,8 @@ function rollDice() {
             // Create a random integer between 0 and 5
             // randomd0 = Math.floor(Math.random() * 6) + 1
             // randomd1 = Math.floor(Math.random() * 6) + 1
-<<<<<<< HEAD
-            randomd0 = 3;
-            randomd1 = 4;
-=======
             randomd0 = 6;
             randomd1 = 2;
->>>>>>> 2b6414081a00ffd953de702ef99a510e4864dfaf
                 // Display result
             updateDice()
             socket.emit('throwDice', randomd0, randomd1);
@@ -517,28 +513,7 @@ class Player {
               
             
             }
-<<<<<<< HEAD
             
-=======
-            else if (tmp ===2){ //Go to 'Go'
-                newPositionAfterRoll+=(boardLength-newPositionAfterRoll);
-                this.cash+=200;
-                updateCash(this);
-                socket.emit('chat',this.name + ' made it around the board! Collect $200!');
-                socket.emit('chat_broadcast',this.name + ' made it around the board! Collect $200!');
-                
-            }
-            // else if (tmp ===3){ // go 3 blocks backwards
-           
-            //     Goback=true;
-            //     GoBackNum=3;
-            //     socket.emit('chat',this.name + ' Going 3 Blocks Backwards, Landed On ' + property[newPositionAfterRoll].name)
-            // }
-            else if (tmp ===4){ // pay $75
-                this.cash-=75;
-                updateCash(this);
-                socket.emit('chat',this.name + ' Paied $75');
->>>>>>> 2b6414081a00ffd953de702ef99a510e4864dfaf
 
             else if(imagearray[x] == "/images/c4.png"){
                 console.log("It is c4");
@@ -1033,13 +1008,13 @@ function addToGameLog(message) {
     var Log = document.getElementById('gameLog');
     Log.scrollTop = Log.scrollHeight;
 }
-// function updateCash(player){
-//     player_money = document.getElementById("player_money_" + player.playerNumber);
-//     player_money.innerHTML = player.cash;
-//     socket.emit('updateCash', player)
+function updateCash(player){
+    player_money = document.getElementById("player_money_" + player.playerNumber);
+    player_money.innerHTML = player.cash;
+    socket.emit('updateCash', player)
 
-//     return;
-// };
+    return;
+};
 function updateEstateValue(player){
     player_estate_value = document.getElementById("player_estate_value_" + player.playerNumber);
     player_estate_value.innerHTML = player.estate_value;

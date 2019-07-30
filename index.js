@@ -3,11 +3,7 @@ var http = require('http');
 const app = express();
 var cors = require('cors')
 const path = require('path')
-<<<<<<< HEAD
-const PORT = process.env.PORT || 8080
-=======
 const PORT = process.env.PORT || 5000   
->>>>>>> 2b6414081a00ffd953de702ef99a510e4864dfaf
 
 
 
