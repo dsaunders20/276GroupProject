@@ -207,8 +207,8 @@ function toJail(player) {
     //  Move avatar
     var character_img = document.createElement("img");
         character_img.src = "/images/" + player.picture + "character.png";
-        character_img.setAttribute("height", "auto");
-        character_img.setAttribute("width", "25%");
+        character_img.setAttribute("height", "40px");
+        character_img.setAttribute("width", "35px");
         character_img.setAttribute("padding-top", "10px");
     document.getElementById('cell'+ player.curCell + 'positionholder').innerHTML = '';  //  Maybe use some animations?
     document.getElementById('cell10positionholder').appendChild(character_img);         //  But not sure how to implement...
@@ -512,8 +512,8 @@ class Player {
         var character_img = document.createElement("img");
         character_img.setAttribute("id", "player_avastar_"+this.picture);
         character_img.src = "/images/" + this.picture + "character.png";
-        character_img.setAttribute("height", "auto");
-        character_img.setAttribute("width", "25%");
+        character_img.setAttribute("height", "40px");
+        character_img.setAttribute("width", "35px");
         character_img.setAttribute("padding-top", "10px");
         
         var interval = setInterval(() => {
@@ -1239,8 +1239,8 @@ socket.on('initializeClientAvastar',function(){
             var character_img = document.createElement("img");
             character_img.src = "/images/" + (log_in_players[i].picture) + "character.png";
             // add character image to first square on the board
-            character_img.setAttribute("height", "auto");
-            character_img.setAttribute("width", "25%");
+            character_img.setAttribute("height", "40px");
+            character_img.setAttribute("width", "35px");
             character_img.setAttribute("id", "player_avastar_"+log_in_players[i].picture);
             character_img.setAttribute("padding-top", "10px");
             document.getElementById('cell0positionholder').appendChild(character_img);
