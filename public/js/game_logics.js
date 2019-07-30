@@ -31,7 +31,7 @@ diceButton.addEventListener('click', function(d){
     throwDice();
 })
 
-var socket = io('http://localhost:5000/');
+var socket = io('http://localhost:8080/');
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
@@ -113,7 +113,7 @@ async function throwDice() {
     else {      //  player rolls while in jail
         player.turnsInJail += 1;
         if ( player.turnsInJail < 3 && double === true ){   //  rolls doubles
-            socket.emit('chat',"Doubles! ["+players.name+"] is free to go.");
+            socket.emit('chat',"Doubles! ["+player.name+"] is free to go.");
             doubleCount = 0;
             unJail(player);
             // diceButton.disabled = true;
@@ -421,8 +421,11 @@ sellButton.addEventListener('click', function (e) {
 const endTurn = document.getElementById('endTurnButton');
 endTurn.addEventListener('click', function(e) {
 //    updateTurn();
+    var curPlayer = getCurrentPlayer()-1
+    var player = log_in_players[curPlayer];
     diceButton.disabled = false;
-    if ( log_in_players[getCurrentPlayer()].inJail ){
+    
+    if ( player.inJail && current_server_turn_player_id == player.playerNumber ){
         jailButton.disabled = false;
     }
     // checkValidSquareBuy(property[player.curCell]);
