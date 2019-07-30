@@ -19,12 +19,17 @@ var turn = 0;
 var totalTurn = 0;
 
 const diceButton = document.getElementById('throw');
-//diceButton.addEventListener('click', function(d){
-//    if (log_in_players[getCurrentPlayer()].inJail) {
-//        jailButton.disabled = true;
-//    }
-////     throwDice();
-//})
+diceButton.addEventListener('click', function(d){
+    socket.emit('throwDice');
+    $(".dice").addClass('shake')
+    setTimeout(function () {
+        $(".dice").removeClass('shake')
+    }, 1800)
+    if (log_in_players[getCurrentPlayer()-1].inJail) {
+        jailButton.disabled = true;
+    }
+    throwDice();
+})
 
 var socket = io('http://localhost:8080/');
 
@@ -47,12 +52,26 @@ var randomd1 = 1
 var doubleCount = 0
 var double = false;
 
-$("#throw").click(function () {
+// $("#throw").click(function () {
+    // socket.emit('throwDice');
+    // $(".dice").addClass('shake')
+    // setTimeout(function () {
+    //     $(".dice").removeClass('shake')
+    // }, 1800)
+// })
+
+socket.on('diceThrown', function(d0, d1){
     $(".dice").addClass('shake')
     setTimeout(function () {
         $(".dice").removeClass('shake')
     }, 1800)
+    if (log_in_players[getCurrentPlayer()-1].inJail) {
+        jailButton.disabled = true;
+    }
+    document.getElementById("d0").src = eval("face" + d0 + ".src")
+    document.getElementById("d1").src = eval("face" + d1 + ".src")
 })
+
 async function throwDice() {
     let current_player_num = getCurrentPlayer();
     let player = log_in_players[current_player_num - 1];
@@ -64,10 +83,12 @@ async function throwDice() {
     if (double == 1) {
         doubleCount++
     }
-    socket.emit('chat',"[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
+    // addToGameLog("[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
+    socket.emit('chat', player.name+' rolled a ' + (randomd0 + randomd1) + '!');
     if ( player.inJail === false ){
         if ((double === true) && (doubleCount <= 2) && (player.curCell+randomd0+randomd1 != 10)) {
-            socket.emit('chat','Doubles! Roll again!')
+            // addToGameLog('Doubles! Roll again!')
+            socket.emit('chat', player.name+' rolled doubles and gets to roll again!');
             diceButton.disabled=false;
             player.updatePosition(randomd0+randomd1);
             socket.emit('afterDiceRoll',getCurrentPlayerName(),(randomd0+randomd1))
@@ -81,7 +102,9 @@ async function throwDice() {
         }
         else {
             doubleCount = 0
-            diceButton.disabled = true;
+            socket.emit('chat', 'dice button should be disabled');
+            // diceButton.disabled = true;
+            document.getElementById('throw').disabled = true;
             player.updatePosition(randomd0+randomd1);
             socket.emit('afterDiceRoll',getCurrentPlayerName(),(randomd0+randomd1))
             // player.updatePosition(8);
@@ -93,7 +116,8 @@ async function throwDice() {
             socket.emit('chat',"Doubles! ["+players.name+"] is free to go.");
             doubleCount = 0;
             unJail(player);
-            diceButton.disabled = true;
+            // diceButton.disabled = true;
+            document.getElementById('throw').disabled = true;
             player.updatePosition(randomd0+randomd1);
             socket.emit('afterDiceRoll',getCurrentPlayerName(),(randomd0+randomd1))
         }
@@ -130,6 +154,7 @@ function rollDice() {
             randomd1 = Math.floor(Math.random() * 6) + 1
                 // Display result
             updateDice()
+            socket.emit('throwDice', randomd0, randomd1);
             num++
         }, 100)
         // Return whether we rolled a double
@@ -153,11 +178,12 @@ function updateDice() {
 const jailButton = document.getElementById("leaveJail");
 jailButton.addEventListener('click', function(b){
     var curPlayerNum = getCurrentPlayer();
-    var curPlayer = players[curPlayerNum];
+    var curPlayer = log_in_players[curPlayerNum-1];
 
     socket.emit('chat',"["+curPlayer.name+"] paid $50 to get out of jail.");
     curPlayer.cash -= 50;
     updateCash(curPlayer);
+    // socket.emit('updateCash', curPlayer);
 
     unJail(curPlayer);
 })
@@ -399,7 +425,7 @@ endTurn.addEventListener('click', function(e) {
     if ( log_in_players[getCurrentPlayer()].inJail ){
         jailButton.disabled = false;
     }
-    // let player = players[getCurrentPlayer()];
+    // let player = log_in_players[getCurrentPlayer()];
     // checkValidSquareBuy(property[player.curCell]);
     // checkValidSquareMortgage(property[player.curCell], player);
 })
@@ -1212,6 +1238,9 @@ function updatePlayer(name,data){
     if(data.positionToMove != undefined){
         current_player.updatePosition(data.positionToMove);
     }
+    if (current_player.curCell != property[current_player.curCell]) {
+        document.getElementById('buyButton').disabled = true; 
+    }
 }
 
 //send socket.id to server for identification
@@ -1246,7 +1275,9 @@ socket.on('updateCash', function(player)
 })
 
 socket.on('buy', function(player){
+    updatePlayerPropertyOwned(player);
     let i = player.curCell; 
+    property[i].owner = player; 
     let currentCellOwner = document.getElementById("cell" + i + "owner");
     currentCellOwner.style.display = "block"; 
     currentCellOwner.style.backgroundColor = player.color; 

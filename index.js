@@ -227,6 +227,11 @@ io.on('connection', function(socket){
         });
     }
     
+    socket.on('throwDice', function(d0,d1){
+        console.log('throwDice');
+        console.log('d0 = '+d0+' d1 = '+d1);
+        socket.broadcast.emit('diceThrown', d0,d1);
+    })
     
     socket.on('getAllPlayers',function(){
        console.log(log_in_players);
