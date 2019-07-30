@@ -20,7 +20,12 @@ var totalTurn = 0;
 
 const diceButton = document.getElementById('throw');
 diceButton.addEventListener('click', function(d){
-    if (players[getCurrentPlayer()].inJail) {
+    socket.emit('throwDice');
+    $(".dice").addClass('shake')
+    setTimeout(function () {
+        $(".dice").removeClass('shake')
+    }, 1800)
+    if (log_in_players[getCurrentPlayer()].inJail) {
         jailButton.disabled = true;
     }
     throwDice();
@@ -47,12 +52,26 @@ var randomd1 = 1
 var doubleCount = 0
 var double = false;
 
-$("#throw").click(function () {
+// $("#throw").click(function () {
+    // socket.emit('throwDice');
+    // $(".dice").addClass('shake')
+    // setTimeout(function () {
+    //     $(".dice").removeClass('shake')
+    // }, 1800)
+// })
+
+socket.on('diceThrown', function(d0, d1){
     $(".dice").addClass('shake')
     setTimeout(function () {
         $(".dice").removeClass('shake')
     }, 1800)
+    if (log_in_players[getCurrentPlayer()].inJail) {
+        jailButton.disabled = true;
+    }
+    document.getElementById("d0").src = eval("face" + d0 + ".src")
+    document.getElementById("d1").src = eval("face" + d1 + ".src")
 })
+
 async function throwDice() {
     let current_player_num = getCurrentPlayer();
     let player = log_in_players[current_player_num];
@@ -63,23 +82,27 @@ async function throwDice() {
     if (double == 1) {
         doubleCount++
     }
-    addToGameLog("[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
+    // addToGameLog("[" + player.name +"]" + ' rolled a ' + (randomd0 + randomd1) + '!');
+    socket.emit('chat', log_in_players[current_player_num].name+' rolled a ' + (randomd0 + randomd1) + '!');
     if ( player.inJail === false ){
         if ((double === true) && (doubleCount <= 2) && (player.curCell+randomd0+randomd1 != 10)) {
-            addToGameLog('Doubles! Roll again!')
+            // addToGameLog('Doubles! Roll again!')
+            socket.emit('chat', log_in_players[current_player_num].name+' rolled doubles and gets to roll again!');
             diceButton.disabled=false;
             player.updatePosition(randomd0+randomd1);
             // player.updatePosition(8);
         }
         else if (doubleCount === 3) {
-            addToGameLog('['+player.name+'] rolled doubles 3 times in a row, now sent to jail for 3 turns! ['+player.name+'] can pay $50 to get out.')
+            socket.emit('chat','['+player.name+'] rolled doubles 3 times in a row, now sent to jail for 3 turns! ['+player.name+'] can pay $50 to get out.')
             doubleCount = 0;
 
             toJail(player);
         }
         else {
             doubleCount = 0
-            diceButton.disabled = true;
+            socket.emit('chat', 'dice button should be disabled');
+            // diceButton.disabled = true;
+            document.getElementById('throw').disabled = true;
             player.updatePosition(randomd0+randomd1);
             // player.updatePosition(8);
         }
@@ -87,25 +110,26 @@ async function throwDice() {
     else {      //  player rolls while in jail
         player.turnsInJail += 1;
         if ( player.turnsInJail < 3 && double === true ){   //  rolls doubles
-            addToGameLog("Doubles! ["+players.name+"] is free to go.");
+            socket.emit('chat',"Doubles! ["+players.name+"] is free to go.");
             doubleCount = 0;
             unJail(player);
-            diceButton.disabled = true;
+            // diceButton.disabled = true;
+            document.getElementById('throw').disabled = true;
             player.updatePosition(randomd0+randomd1);
         }
         else if ( player.turnsInJail < 3 && double === false ){ //  in jail less than 3 turns, no double
-            addToGameLog("Try again next turn!");
+            socket.emit('chat', "Try again next turn!");
             diceButton.disabled = true;
         }
         else if ( player.turnsInJail >= 3 ){    //  in jail for 3 turns
-            addToGameLog(player.name+" has now paid the $50 fine after 3 turns in jail and is free to go!");
+            socket.emit('chat', player.name+" has now paid the $50 fine after 3 turns in jail and is free to go!");
             unJail(player);
             doubleCount = 0;
             diceButton.disabled = true;
             player.updatePosition(randomd0+randomd1);
         }
         else {
-            addToGameLog("Error in roll dice");
+            socket.emit('chat',"Error in roll dice");
         }
     }
     // Re-enable the button
@@ -126,6 +150,7 @@ function rollDice() {
             randomd1 = Math.floor(Math.random() * 6) + 1
                 // Display result
             updateDice()
+            socket.emit('throwDice', randomd0, randomd1);
             num++
         }, 100)
         // Return whether we rolled a double
@@ -151,7 +176,7 @@ jailButton.addEventListener('click', function(b){
     var curPlayerNum = getCurrentPlayer();
     var curPlayer = players[curPlayerNum];
 
-    addToGameLog("["+curPlayer.name+"] paid $50 to get out of jail.");
+    socket.emit('chat', "["+curPlayer.name+"] paid $50 to get out of jail.");
     curPlayer.cash -= 50;
     updateCash(curPlayer);
 
@@ -393,10 +418,10 @@ const endTurn = document.getElementById('endTurnButton');
 endTurn.addEventListener('click', function(e) {
     updateTurn();
     diceButton.disabled = false;
-    if ( players[getCurrentPlayer()].inJail ){
+    if ( log_in_players[getCurrentPlayer()].inJail ){
         jailButton.disabled = false;
     }
-    // let player = players[getCurrentPlayer()];
+    // let player = log_in_players[getCurrentPlayer()];
     // checkValidSquareBuy(property[player.curCell]);
     // checkValidSquareMortgage(property[player.curCell], player);
 })
@@ -720,7 +745,7 @@ class Player {
         //  If player lands on jail
         if ( this.inJail === false && newPositionAfterRoll2 === 10 ){
             //  Set player's jail attributes
-            addToGameLog(this.name + ' is now in jail!  Unlucky!')
+            socket.emit('chat',this.name + ' is now in jail!  Unlucky!')
             this.inJail = true;
             this.turnsInJail = 0;
             // jailButton.disabled = false;
