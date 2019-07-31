@@ -1330,7 +1330,7 @@ socket.on('gameOver',function(){
     let max_property_value = 0;
     let winner;
     for(let i = 0; i< log_in_players.length; i++){
-        let total_property_value = log_in_players[i].estate_value + log_in_players[i].cash;
+        let total_property_value = log_in_players[i].estate_value;
         if(total_property_value > max_property_value){
             max_property_value = total_property_value;
             winner = log_in_players[i].name;
@@ -1357,7 +1357,7 @@ socket.on('gameOver',function(){
 //    board.parentNode.removeChild(board);
     let endGame = document.getElementById("endGame");
     endGame.style.display="block";
-    endGame.innerHTML = "Winner of game is:" + winner + " with total propery value of:" + max_property_value;
+    endGame.innerHTML = "Winner of game is:" + winner + " with estate propery value of:" + max_property_value;
 })
 
 //disable ready button after click
