@@ -29,8 +29,8 @@ diceButton.addEventListener('click', function(d){
 })
 
 //var socket = io('https://infinite-escarpment-67408.herokuapp.com/');
-var socket = io('http://localhost:8080/');
-// var socket = io('http://localhost:5000/');
+//var socket = io('http://localhost:8080/');
+ var socket = io('http://localhost:5000/');
 
 // ----------------------------------- DICE ROLLING ------------------------------------------
 //preload the six dice images
